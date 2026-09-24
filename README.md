@@ -1,2 +1,23 @@
-# Personal-AI-Agent
-Personal AI Agent for smart daily routine planning and task management. Create, organize, prioritize, and track tasks with intelligent reminders, schedules, recurring routines, and productivity insights.
+# Personal AI Agent
+
+A smart personal AI assistant for daily routine planning, task management,
+reminders, recurring schedules, and productivity tracking.
+
+## Features
+
+- Daily routine management
+- Task creation and tracking
+- Smart reminders
+- Recurring tasks
+- Priority management
+- Schedule management
+- Productivity insights
+- AI-powered assistance
+
+## Project Status
+
+🚧 Currently under development.
+
+## License
+
+MIT
