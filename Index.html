@@ -1,0 +1,2665 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#b5502f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Admin Agent">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<title>Personal Admin Agent · AI এজেন্ট</title>
+<style>
+:root{
+  --bg:#f5f4f0; --bg2:#eceae3; --card:#ffffff; --ink:#1a1916; --sub:#6f6e67;
+  --line:#e2e0d8; --accent:#b5502f; --accent-soft:#f4e6e0;
+  --ok:#2f6b52; --ok-soft:#e2efe8;
+  --warn:#c98a2f; --warn-soft:#f8efdc;
+  --danger:#c0392b; --danger-soft:#fae2e0;
+  --gold:#c9a961; --gold-soft:#f8f0dc;
+  --shadow-sm:0 1px 2px rgba(20,18,12,.04);
+  --shadow-md:0 4px 14px rgba(20,18,12,.06);
+  --shadow-lg:0 12px 40px rgba(20,18,12,.12);
+  --radius:14px; --radius-sm:10px; --radius-lg:20px;
+  --ease:cubic-bezier(.4,0,.2,1);
+  --font-bn:"Noto Sans Bengali","Hind Siliguri",system-ui,sans-serif;
+}
+[data-theme="dark"]{
+  --bg:#14130f; --bg2:#1c1a15; --card:#211f1a; --ink:#f2efe7; --sub:#a5a297;
+  --line:#332f26; --accent:#d8734c; --accent-soft:#2a1d17;
+  --ok:#5fa585; --ok-soft:#1a2a22; --warn:#e0b06a; --warn-soft:#2a2317;
+  --danger:#e57366; --danger-soft:#2a1a18; --gold:#e0c089; --gold-soft:#2a2417;
+  --shadow-sm:0 1px 2px rgba(0,0,0,.3);
+  --shadow-md:0 4px 14px rgba(0,0,0,.35);
+  --shadow-lg:0 12px 40px rgba(0,0,0,.5);
+}
+[data-theme="ocean"]{
+  --bg:#eef5f8; --bg2:#dce9ef; --card:#ffffff; --ink:#0f2b38; --sub:#527a8a;
+  --line:#c9dbe4; --accent:#0d7ea3; --accent-soft:#d8eef6;
+  --ok:#0f7a5c; --ok-soft:#d8f0e6; --warn:#c98a2f; --warn-soft:#f8efdc;
+  --danger:#c0392b; --danger-soft:#fae2e0; --gold:#c9a961; --gold-soft:#f8f0dc;
+}
+[data-theme="forest"]{
+  --bg:#eef3ea; --bg2:#dfe9d8; --card:#ffffff; --ink:#1a2e18; --sub:#5a6e54;
+  --line:#cfdcc6; --accent:#3a7d44; --accent-soft:#dbeedb;
+  --ok:#2f6b52; --ok-soft:#e2efe8; --warn:#c98a2f; --warn-soft:#f8efdc;
+  --danger:#c0392b; --danger-soft:#fae2e0; --gold:#c9a961; --gold-soft:#f8f0dc;
+}
+[data-theme="sunset"]{
+  --bg:#fbf1ec; --bg2:#f4e0d6; --card:#ffffff; --ink:#2d1a12; --sub:#8a6b5d;
+  --line:#eed4c6; --accent:#d6502f; --accent-soft:#fbe2da;
+  --ok:#2f6b52; --ok-soft:#e2efe8; --warn:#c98a2f; --warn-soft:#f8efdc;
+  --danger:#c0392b; --danger-soft:#fae2e0; --gold:#c9a961; --gold-soft:#f8f0dc;
+}
+[data-theme="purple"]{
+  --bg:#f4f0fa; --bg2:#e8e0f2; --card:#ffffff; --ink:#241a33; --sub:#665e7a;
+  --line:#dbd0e8; --accent:#7c3aed; --accent-soft:#ece0ff;
+  --ok:#2f6b52; --ok-soft:#e2efe8; --warn:#c98a2f; --warn-soft:#f8efdc;
+  --danger:#c0392b; --danger-soft:#fae2e0; --gold:#c9a961; --gold-soft:#f8f0dc;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--font-bn),-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Roboto,sans-serif;
+  font-size:15px; line-height:1.45; -webkit-font-smoothing:antialiased;
+  transition:background .25s var(--ease), color .25s var(--ease);
+  padding-top:env(safe-area-inset-top); padding-bottom:env(safe-area-inset-bottom);
+}
+button{font:inherit; cursor:pointer; border:none; background:none; color:inherit;}
+input,select,textarea{font:inherit; color:inherit;}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:var(--line); border-radius:8px}
+
+.app{display:grid; grid-template-columns:1fr; min-height:100vh; max-width:1500px; margin:0 auto;}
+@media(min-width:900px){.app{grid-template-columns:260px 1fr;}}
+
+.sidebar{background:var(--bg2); border-right:1px solid var(--line); padding:20px 16px; display:flex; flex-direction:column; gap:6px; position:sticky; top:0; height:100vh; overflow-y:auto;}
+@media(max-width:899px){
+  .sidebar{position:fixed; left:0; top:0; bottom:0; width:270px; transform:translateX(-100%); transition:transform .3s var(--ease); z-index:100; box-shadow:var(--shadow-lg); padding-top:calc(20px + env(safe-area-inset-top));}
+  .sidebar.open{transform:translateX(0);}
+}
+.sidebar-backdrop{display:none; position:fixed; inset:0; background:rgba(0,0,0,.4); z-index:99; opacity:0; transition:opacity .3s var(--ease);}
+.sidebar-backdrop.show{display:block; opacity:1;}
+@media(min-width:900px){.sidebar-backdrop{display:none !important;}}
+
+.brand{display:flex; align-items:center; gap:10px; padding:4px 6px 16px; border-bottom:1px solid var(--line); margin-bottom:12px;}
+.brand-logo{width:38px; height:38px; border-radius:10px; flex-shrink:0; background:linear-gradient(135deg, var(--accent), #d8734c); display:grid; place-items:center; color:#fff; font-size:18px; box-shadow:0 4px 12px rgba(181,80,47,.3);}
+.brand-text b{display:block; font-size:.95rem;}
+.brand-text span{display:block; font-size:.68rem; color:var(--sub);}
+
+.nav-section{padding:14px 0 4px; font-size:.68rem; text-transform:uppercase; letter-spacing:.08em; color:var(--sub); font-weight:700; padding-left:10px;}
+.nav-item{display:flex; align-items:center; gap:10px; padding:9px 12px; border-radius:var(--radius-sm); color:var(--sub); font-size:.86rem; font-weight:500; cursor:pointer; transition:all .15s var(--ease); width:100%; text-align:left;}
+.nav-item:hover{background:var(--card); color:var(--ink);}
+.nav-item.active{background:var(--card); color:var(--ink); font-weight:600; box-shadow:var(--shadow-sm);}
+.nav-item .icon{width:18px; text-align:center; font-size:1rem;}
+.nav-item .badge{margin-left:auto; font-size:.65rem; background:var(--accent); color:#fff; padding:1px 7px; border-radius:20px; font-weight:700;}
+
+/* DISCIPLINE SCORE CARD */
+.discipline-card{
+  background:linear-gradient(135deg, var(--accent), #d8734c);
+  color:#fff; border-radius:var(--radius); padding:16px; margin-bottom:16px;
+  box-shadow:0 8px 24px rgba(181,80,47,.3); position:relative; overflow:hidden;
+}
+.discipline-card::before{
+  content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px;
+  border-radius:50%; background:rgba(255,255,255,.1);
+}
+.discipline-card::after{
+  content:''; position:absolute; bottom:-40px; right:20px; width:80px; height:80px;
+  border-radius:50%; background:rgba(255,255,255,.08);
+}
+.discipline-card .dc-head{display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1;}
+.discipline-card .dc-label{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; opacity:.9; font-weight:600;}
+.discipline-card .dc-score{font-size:2.6rem; font-weight:800; line-height:1; margin:8px 0 4px; letter-spacing:-.03em;}
+.discipline-card .dc-level{font-size:.82rem; opacity:.95; font-weight:500;}
+.discipline-card .dc-ring{
+  width:60px; height:60px; border-radius:50%;
+  background:conic-gradient(rgba(255,255,255,.4) 0%, rgba(255,255,255,.15) var(--p, 0%), transparent 0%);
+  display:grid; place-items:center; font-size:1.4rem; position:relative;
+}
+.discipline-card .dc-ring::after{
+  content:''; position:absolute; inset:6px; border-radius:50%; background:var(--accent);
+}
+.discipline-card .dc-ring span{position:relative; z-index:1;}
+
+.main{padding:20px; min-width:0;}
+@media(max-width:899px){.main{padding:14px;}}
+.topbar{display:flex; align-items:center; gap:12px; margin-bottom:20px; flex-wrap:wrap;}
+.menu-btn{display:none; width:40px; height:40px; border-radius:10px; background:var(--card); border:1px solid var(--line); font-size:1.2rem; place-items:center;}
+@media(max-width:899px){.menu-btn{display:grid;}}
+.page-title{flex:1; min-width:0;}
+.page-title h1{font-size:1.5rem; font-weight:700; letter-spacing:-.02em; margin:0; line-height:1.2;}
+.page-title p{margin:2px 0 0; color:var(--sub); font-size:.85rem;}
+.topbar-actions{display:flex; gap:8px; align-items:center;}
+.icon-round{width:40px; height:40px; border-radius:50%; background:var(--card); border:1px solid var(--line); display:grid; place-items:center; font-size:1rem; transition:all .15s var(--ease); box-shadow:var(--shadow-sm);}
+.icon-round:hover{transform:translateY(-1px); box-shadow:var(--shadow-md);}
+.icon-round.active{background:var(--ok); color:#fff; border-color:var(--ok);}
+
+.section-title{font-size:1.05rem; font-weight:700; margin:0 0 12px; display:flex; align-items:center; gap:8px;}
+
+.btn-primary{padding:11px 20px; background:var(--accent); color:#fff; border-radius:var(--radius-sm); font-weight:600; font-size:.88rem; transition:all .15s var(--ease); box-shadow:0 4px 12px rgba(181,80,47,.25); display:inline-flex; align-items:center; gap:6px; justify-content:center; cursor:pointer; border:none;}
+.btn-primary:hover{transform:translateY(-1px); filter:brightness(1.05);}
+.btn-secondary{padding:10px 18px; border-radius:var(--radius-sm); background:var(--bg); border:1px solid var(--line); font-weight:500; font-size:.86rem; transition:all .15s var(--ease);}
+.btn-secondary:hover{background:var(--bg2);}
+.btn-ghost{padding:8px 14px; border-radius:var(--radius-sm); background:transparent; color:var(--sub); font-size:.82rem; font-weight:500;}
+.btn-ghost:hover{background:var(--bg2); color:var(--ink);}
+.btn-danger{background:var(--danger); color:#fff; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:.86rem;}
+.btn-danger:hover{filter:brightness(1.05);}
+.btn-ok{background:var(--ok); color:#fff; padding:10px 18px; border-radius:var(--radius-sm); font-weight:600; font-size:.86rem;}
+.btn-ok:hover{filter:brightness(1.05);}
+
+.card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; margin-bottom:16px; box-shadow:var(--shadow-sm);}
+.card h3{margin:0 0 12px; font-size:.95rem; font-weight:600;}
+
+.stats{display:grid; gap:12px; margin-bottom:20px; grid-template-columns:repeat(2, 1fr);}
+@media(min-width:600px){.stats{grid-template-columns:repeat(4, 1fr);}}
+.stat{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; box-shadow:var(--shadow-sm); transition:transform .15s var(--ease);}
+.stat:hover{transform:translateY(-2px); box-shadow:var(--shadow-md);}
+.stat .label{font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--sub); font-weight:600;}
+.stat .value{font-size:1.5rem; font-weight:700; margin-top:4px; letter-spacing:-.02em; line-height:1.1;}
+.stat .delta{font-size:.7rem; color:var(--sub); margin-top:2px;}
+.stat.high .value{color:var(--accent);}
+.stat.ok .value{color:var(--ok);}
+.stat.gold .value{color:var(--gold);}
+
+.template-grid{display:grid; gap:12px; grid-template-columns:1fr;}
+@media(min-width:600px){.template-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1000px){.template-grid{grid-template-columns:repeat(3,1fr);}}
+.template-card{background:var(--card); border:2px solid var(--line); border-radius:var(--radius); padding:16px; cursor:pointer; transition:all .2s var(--ease);}
+.template-card:hover{border-color:var(--accent); transform:translateY(-3px); box-shadow:var(--shadow-md);}
+.template-card .tc-emoji{font-size:2rem; margin-bottom:8px;}
+.template-card .tc-name{font-weight:700; font-size:1rem; margin-bottom:4px;}
+.template-card .tc-desc{font-size:.78rem; color:var(--sub); line-height:1.4;}
+.template-card .tc-count{font-size:.7rem; color:var(--accent); font-weight:600; margin-top:8px;}
+
+.routine-grid{display:grid; gap:12px; grid-template-columns:1fr;}
+@media(min-width:600px){.routine-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1000px){.routine-grid{grid-template-columns:repeat(4,1fr);}}
+@media(min-width:1300px){.routine-grid{grid-template-columns:repeat(7,1fr);}}
+.day-card{background:var(--card); border:2px solid var(--line); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow-sm); display:flex; flex-direction:column; min-height:180px;}
+.day-card.today{border-color:var(--accent); box-shadow:0 4px 16px rgba(181,80,47,.15);}
+.day-card.today .day-name{color:var(--accent);}
+.day-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;}
+.day-name{font-weight:700; font-size:.9rem;}
+.day-date{font-size:.68rem; color:var(--sub);}
+.day-body{flex:1; display:flex; flex-direction:column; gap:6px; margin-bottom:10px;}
+.routine-item{background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:7px 9px; font-size:.76rem; display:flex; align-items:center; gap:8px; transition:all .15s var(--ease);}
+.routine-item:hover{border-color:var(--accent); transform:translateX(2px);}
+.routine-item .time{font-weight:700; color:var(--accent); font-size:.68rem; background:var(--accent-soft); padding:1px 6px; border-radius:6px; flex-shrink:0;}
+.routine-item .r-text{flex:1; line-height:1.25; word-break:break-word;}
+.routine-item .r-del,.routine-item .r-cal,.routine-item .r-mail{color:var(--sub); font-size:.7rem; padding:2px 5px; border-radius:5px; opacity:0; transition:all .15s var(--ease);}
+.routine-item:hover .r-del,.routine-item:hover .r-cal,.routine-item:hover .r-mail{opacity:1;}
+.routine-item .r-del:hover{background:var(--danger); color:#fff;}
+.routine-item .r-cal{color:var(--ok);}
+.routine-item .r-cal:hover{background:var(--ok); color:#fff;}
+.routine-item .r-mail{color:var(--accent);}
+.routine-item .r-mail:hover{background:var(--accent); color:#fff;}
+.day-add{width:100%; padding:8px; border-radius:8px; background:var(--bg); border:1px dashed var(--line); color:var(--sub); font-size:.76rem; font-weight:500; transition:all .15s var(--ease);}
+.day-add:hover{border-color:var(--accent); color:var(--accent); background:var(--accent-soft);}
+.day-mail{width:100%; padding:6px; margin-bottom:6px; border-radius:8px; background:var(--bg); border:1px solid var(--line); color:var(--sub); font-size:.72rem; font-weight:500; cursor:pointer; transition:all .15s var(--ease);}
+.day-mail:hover{background:var(--accent-soft); border-color:var(--accent); color:var(--accent);}
+
+.board{display:grid; gap:14px; grid-template-columns:1fr;}
+@media(min-width:700px){.board{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1100px){.board{grid-template-columns:repeat(4,1fr);}}
+.col{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:14px; box-shadow:var(--shadow-sm); min-height:100px;}
+.col-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:12px; padding:0 4px;}
+.col-head h2{font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; color:var(--sub); font-weight:600; margin:0; display:flex; align-items:center; gap:8px;}
+.col-head .count{background:var(--bg2); padding:2px 9px; border-radius:20px; font-weight:600; font-size:.68rem; color:var(--sub);}
+.col-head .dot-cat{width:8px; height:8px; border-radius:50%; background:var(--accent);}
+.task{background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); padding:11px 12px; margin-bottom:8px; font-size:.86rem; transition:all .15s var(--ease);}
+.task:hover{border-color:var(--accent);}
+.task .top{display:flex; justify-content:space-between; gap:8px; align-items:flex-start;}
+.task .top .text{word-break:break-word; flex:1;}
+.task .top .remove{color:var(--sub); font-size:.82rem; padding:2px 6px; border-radius:6px; opacity:0; transition:all .15s var(--ease);}
+.task:hover .top .remove{opacity:1;}
+.task .meta{color:var(--sub); font-size:.68rem; margin-top:8px; display:flex; flex-wrap:wrap; gap:6px; align-items:center;}
+.task .tag{padding:2px 8px; border-radius:20px; font-size:.62rem; font-weight:600;}
+.task .tag.high{background:var(--accent-soft); color:var(--accent);}
+.task .tag.medium{background:var(--warn-soft); color:var(--warn);}
+.task .tag.low{background:var(--bg2); color:var(--sub);}
+.empty{color:var(--sub); font-size:.78rem; padding:14px 8px; text-align:center; font-style:italic; border:1px dashed var(--line); border-radius:var(--radius-sm);}
+
+.analytics-grid{display:grid; gap:12px; grid-template-columns:1fr;}
+@media(min-width:600px){.analytics-grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:1000px){.analytics-grid{grid-template-columns:repeat(3,1fr);}}
+.analytics-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:16px; box-shadow:var(--shadow-sm);}
+.analytics-card h4{margin:0 0 12px; font-size:.9rem; font-weight:600; color:var(--sub);}
+.bar-row{display:flex; align-items:center; gap:10px; margin-bottom:8px; font-size:.78rem;}
+.bar-row .br-label{width:70px; flex-shrink:0; color:var(--sub);}
+.bar-row .br-bar-wrap{flex:1; height:16px; background:var(--bg); border-radius:8px; overflow:hidden;}
+.bar-row .br-bar{height:100%; background:linear-gradient(90deg, var(--accent), #d8734c); border-radius:8px; transition:width .5s var(--ease);}
+.bar-row .br-value{width:44px; text-align:right; font-weight:600; color:var(--ink);}
+.heat-grid{display:grid; grid-template-columns:repeat(7, 1fr); gap:3px;}
+.heat-cell{aspect-ratio:1; border-radius:3px; background:var(--bg);}
+.heat-cell[data-level="1"]{background:var(--accent-soft);}
+.heat-cell[data-level="2"]{background:rgba(181,80,47,.4);}
+.heat-cell[data-level="3"]{background:rgba(181,80,47,.7);}
+.heat-cell[data-level="4"]{background:var(--accent);}
+.streak-big{font-size:2.6rem; font-weight:800; letter-spacing:-.03em; line-height:1; color:var(--accent);}
+.streak-label{font-size:.78rem; color:var(--sub); margin-top:6px;}
+.insight{background:linear-gradient(135deg, var(--accent-soft), var(--card)); border:1px solid var(--accent); border-radius:var(--radius); padding:14px; margin-bottom:12px; display:flex; gap:12px; align-items:flex-start;}
+.insight .ic-icon{font-size:1.6rem; flex-shrink:0;}
+.insight .ic-body{flex:1;}
+.insight .ic-title{font-weight:700; font-size:.88rem; margin-bottom:4px;}
+.insight .ic-text{font-size:.8rem; color:var(--sub); line-height:1.5;}
+.forecast-list{display:flex; flex-direction:column; gap:8px;}
+.forecast-day{display:flex; align-items:center; gap:12px; padding:10px 12px; background:var(--bg); border:1px solid var(--line); border-radius:var(--radius-sm); font-size:.82rem;}
+.forecast-day .fd-name{width:70px; font-weight:600; flex-shrink:0;}
+.forecast-day .fd-items{flex:1; color:var(--sub); font-size:.76rem;}
+.forecast-day .fd-load{font-size:.7rem; padding:2px 8px; border-radius:20px; font-weight:600;}
+.fd-load.light{background:var(--ok-soft); color:var(--ok);}
+.fd-load.normal{background:var(--warn-soft); color:var(--warn);}
+.fd-load.heavy{background:var(--accent-soft); color:var(--accent);}
+.theme-picker{display:grid; grid-template-columns:repeat(auto-fill, minmax(90px, 1fr)); gap:10px;}
+.theme-swatch{aspect-ratio:1; border-radius:12px; border:3px solid var(--line); cursor:pointer; transition:all .15s var(--ease); display:flex; align-items:flex-end; justify-content:center; padding:8px; color:#fff; font-size:.7rem; font-weight:600; text-shadow:0 1px 3px rgba(0,0,0,.4);}
+.theme-swatch:hover{transform:scale(1.05);}
+.theme-swatch.active{border-color:var(--ink); transform:scale(1.02);}
+.theme-swatch[data-t="light"]{background:linear-gradient(135deg, #ffffff 50%, #f5f4f0 50%); color:#1a1916; text-shadow:none;}
+.theme-swatch[data-t="dark"]{background:linear-gradient(135deg, #211f1a, #14130f);}
+.theme-swatch[data-t="ocean"]{background:linear-gradient(135deg, #0d7ea3, #dce9ef);}
+.theme-swatch[data-t="forest"]{background:linear-gradient(135deg, #3a7d44, #dfe9d8);}
+.theme-swatch[data-t="sunset"]{background:linear-gradient(135deg, #d6502f, #f4e0d6);}
+.theme-swatch[data-t="purple"]{background:linear-gradient(135deg, #7c3aed, #e8e0f2);}
+
+.field{margin-bottom:12px;}
+.field label{display:block; font-size:.72rem; font-weight:600; margin-bottom:6px; color:var(--sub); text-transform:uppercase; letter-spacing:.04em;}
+.field input,.field select,.field textarea{width:100%; padding:11px 14px; border-radius:var(--radius-sm); border:1px solid var(--line); background:var(--bg); outline:none; transition:all .15s var(--ease); font-size:.88rem;}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent); background:var(--card); box-shadow:0 0 0 3px var(--accent-soft);}
+.field-row{display:grid; gap:10px; grid-template-columns:1fr;}
+@media(min-width:600px){.field-row{grid-template-columns:1fr 1fr;}}
+.check-row{display:flex; align-items:center; gap:10px; padding:10px 0; cursor:pointer; font-size:.86rem;}
+.check-row input{width:auto;}
+
+.toast-container{position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); right:20px; display:flex; flex-direction:column; gap:8px; z-index:200; pointer-events:none;}
+.toast{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-sm); padding:12px 16px; box-shadow:var(--shadow-lg); font-size:.85rem; display:flex; align-items:center; gap:10px; min-width:240px; max-width:340px; animation:slideIn .3s var(--ease); pointer-events:auto; border-left:4px solid var(--accent);}
+.toast.ok{border-left-color:var(--ok);}
+.toast.err{border-left-color:var(--danger);}
+.toast.gold{border-left-color:var(--gold);}
+@keyframes slideIn{from{opacity:0; transform:translateX(30px);} to{opacity:1; transform:translateX(0);}}
+.toast.out{animation:slideOut .3s var(--ease) forwards;}
+@keyframes slideOut{to{opacity:0; transform:translateX(30px);}}
+
+.modal-backdrop{position:fixed; inset:0; background:rgba(20,18,12,.5); backdrop-filter:blur(4px); z-index:150; display:none; place-items:center; padding:20px; opacity:0; transition:opacity .2s var(--ease);}
+.modal-backdrop.show{display:grid; opacity:1;}
+.modal{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); padding:24px; width:100%; max-width:560px; box-shadow:var(--shadow-lg); transform:scale(.95); transition:transform .2s var(--ease); max-height:calc(100vh - 40px); overflow-y:auto;}
+.modal-backdrop.show .modal{transform:scale(1);}
+.modal h2{margin:0 0 6px; font-size:1.15rem;}
+.modal p{margin:0 0 16px; color:var(--sub); font-size:.85rem;}
+.modal-actions{display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap;}
+
+/* CHECK-IN ALERT — full screen takeover */
+.checkin-overlay{
+  position:fixed; inset:0; background:rgba(20,18,12,.6); backdrop-filter:blur(6px);
+  z-index:400; display:none; place-items:center; padding:20px;
+  animation:fadeIn .3s var(--ease);
+}
+.checkin-overlay.show{display:grid;}
+@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
+.checkin-card{
+  background:var(--card); border:1px solid var(--line);
+  border-radius:var(--radius-lg); padding:28px 24px;
+  max-width:460px; width:100%; text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.3);
+  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
+}
+@keyframes popIn{from{opacity:0; transform:scale(.85);} to{opacity:1; transform:scale(1);}}
+.checkin-icon{font-size:3.5rem; margin-bottom:12px; animation:bounce 1s infinite;}
+@keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.checkin-title{font-size:1.4rem; font-weight:800; margin-bottom:6px; letter-spacing:-.02em;}
+.checkin-sub{font-size:.88rem; color:var(--sub); margin-bottom:16px; line-height:1.5;}
+.checkin-task{
+  background:var(--accent-soft); border:1px solid var(--accent);
+  border-radius:12px; padding:14px; margin-bottom:18px;
+}
+.checkin-task .ct-time{font-size:.75rem; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:.05em;}
+.checkin-task .ct-text{font-size:1.1rem; font-weight:700; margin-top:4px; color:var(--ink);}
+.checkin-actions{display:grid; gap:10px;}
+.checkin-btn{
+  padding:14px 18px; border-radius:12px; font-weight:700; font-size:.95rem;
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  transition:all .15s var(--ease); border:2px solid transparent;
+}
+.checkin-btn.start{background:var(--ok); color:#fff;}
+.checkin-btn.start:hover{filter:brightness(1.08); transform:translateY(-2px);}
+.checkin-btn.snooze{background:var(--warn-soft); color:var(--warn); border-color:var(--warn);}
+.checkin-btn.snooze:hover{background:var(--warn); color:#fff;}
+.checkin-btn.skip{background:var(--danger-soft); color:var(--danger); border-color:var(--danger);}
+.checkin-btn.skip:hover{background:var(--danger); color:#fff;}
+.checkin-timer{font-size:.75rem; color:var(--sub); margin-top:14px;}
+
+/* WELCOME OVERLAY */
+.welcome-overlay{
+  position:fixed; inset:0; background:linear-gradient(135deg, var(--accent), #d8734c);
+  z-index:500; display:none; place-items:center; padding:20px;
+  animation:fadeIn .4s var(--ease);
+}
+.welcome-overlay.show{display:grid;}
+.welcome-card{
+  background:var(--card); border-radius:var(--radius-lg); padding:32px 24px;
+  max-width:440px; width:100%; text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.35);
+  animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
+}
+.welcome-emoji{font-size:4rem; margin-bottom:10px;}
+.welcome-title{font-size:1.5rem; font-weight:800; margin-bottom:8px; letter-spacing:-.02em;}
+.welcome-msg{font-size:.9rem; color:var(--sub); line-height:1.6; margin-bottom:20px;}
+.welcome-stats{
+  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;
+}
+.welcome-stat{background:var(--bg); border-radius:10px; padding:12px; text-align:center;}
+.welcome-stat .ws-val{font-size:1.5rem; font-weight:800; color:var(--accent);}
+.welcome-stat .ws-lbl{font-size:.7rem; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
+
+.sleep-indicator{position:fixed; top:calc(env(safe-area-inset-top) + 12px); right:16px; background:var(--card); border:1px solid var(--line); border-radius:20px; padding:5px 12px; font-size:.72rem; font-weight:600; color:var(--sub); display:none; align-items:center; gap:6px; box-shadow:var(--shadow-md); z-index:80;}
+.sleep-indicator.show{display:flex;}
+.sleep-indicator.active{background:var(--ink); color:var(--bg);}
+
+.pwa-install-banner{display:none; position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); left:20px; right:20px; background:var(--card); border:2px solid var(--accent); border-radius:16px; padding:16px; box-shadow:0 12px 40px rgba(0,0,0,.2); z-index:250; align-items:center; gap:12px; max-width:520px; margin:0 auto;}
+.pwa-install-banner.show{display:flex;}
+</style>
+</head>
+<body>
+
+<div class="sleep-indicator" id="sleepIndicator">🌙 স্লিপ মোড</div>
+
+<div class="pwa-install-banner" id="pwaInstallBanner">
+  <span style="font-size:1.8rem;">📲</span>
+  <div style="flex:1;">
+    <div style="font-weight:700; font-size:.95rem;">অ্যাপটি ইনস্টল করুন</div>
+    <div style="font-size:.78rem; color:var(--sub);">হোম স্ক্রিনে যোগ করুন — দ্রুত ও অফলাইনে চলবে</div>
+  </div>
+  <button id="pwaInstallBtn" style="background:var(--accent); color:#fff; padding:8px 16px; border-radius:10px; font-weight:600; font-size:.85rem; border:none; cursor:pointer;">ইনস্টল</button>
+  <button id="pwaDismissBtn" style="background:none; color:var(--sub); padding:6px; font-size:1.1rem; border:none; cursor:pointer;">✕</button>
+</div>
+
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="brand-logo">🤖</div>
+      <div class="brand-text"><b>Admin Agent AI</b><span>স্মার্ট সহকারী</span></div>
+    </div>
+
+    <div class="nav-section">প্রধান</div>
+    <button class="nav-item active" data-view="dashboard"><span class="icon">🏠</span><span class="label">ড্যাশবোর্ড</span></button>
+    <button class="nav-item" data-view="routine"><span class="icon">📅</span><span class="label">৭ দিনের রুটিন</span></button>
+    <button class="nav-item" data-view="tasks"><span class="icon">📋</span><span class="label">টাস্ক বোর্ড</span></button>
+
+    <div class="nav-section">AI এজেন্ট</div>
+    <button class="nav-item" data-view="discipline"><span class="icon">🏆</span><span class="label">নিয়মানুবর্তিতা</span></button>
+    <button class="nav-item" data-view="analytics"><span class="icon">📈</span><span class="label">অগ্রগতি</span></button>
+    <button class="nav-item" data-view="insights"><span class="icon">💡</span><span class="label">AI পরামর্শ</span></button>
+    <button class="nav-item" data-view="forecast"><span class="icon">🔮</span><span class="label">সাপ্তাহিক পূর্বাভাস</span></button>
+
+    <div class="nav-section">টুলস</div>
+    <button class="nav-item" data-view="templates"><span class="icon">📝</span><span class="label">রুটিন টেমপ্লেট</span></button>
+    <button class="nav-item" data-view="settings"><span class="icon">⚙️</span><span class="label">সেটিংস</span></button>
+    <button class="nav-item" data-view="integrations"><span class="icon">🔌</span><span class="label">ডিভাইস সিঙ্ক</span></button>
+
+    <div class="nav-section">শেয়ার</div>
+    <button class="nav-item" id="btnEmailShare"><span class="icon">📧</span><span class="label">Email-এ পাঠান</span></button>
+    <button class="nav-item" id="btnWhatsAppShare"><span class="icon">📤</span><span class="label">WhatsApp শেয়ার</span></button>
+  </aside>
+
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+  <main class="main">
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn">☰</button>
+      <div class="page-title">
+        <h1 id="pageTitle">ড্যাশবোর্ড</h1>
+        <p id="pageSub">সবকিছু এক নজরে।</p>
+      </div>
+      <div class="topbar-actions">
+        <button class="icon-round" id="soundToggle" title="সাউন্ড">🔔</button>
+        <button class="icon-round" id="themeToggle" title="থিম">🌙</button>
+      </div>
+    </div>
+
+    <div id="viewContainer"></div>
+  </main>
+</div>
+
+<!-- CHECK-IN OVERLAY (full screen confirmation) -->
+<div class="checkin-overlay" id="checkinOverlay">
+  <div class="checkin-card">
+    <div class="checkin-icon" id="ciIcon">⏰</div>
+    <div class="checkin-title" id="ciTitle">সময় হয়েছে!</div>
+    <div class="checkin-sub" id="ciSub">আপনি কি এখন কাজ শুরু করছেন?</div>
+    <div class="checkin-task">
+      <div class="ct-time" id="ciTime">--:--</div>
+      <div class="ct-text" id="ciText">কাজের নাম</div>
+    </div>
+    <div class="checkin-actions">
+      <button class="checkin-btn start" id="ciStart">✅ শুরু করছি</button>
+      <button class="checkin-btn snooze" id="ciSnooze">⏱️ ১০ মিনিট পরে</button>
+      <button class="checkin-btn skip" id="ciSkip">⏭️ এই কাজ বাদ</button>
+    </div>
+    <div class="checkin-timer" id="ciTimer">কনফার্ম না করলে ২ মিনিট পরে auto-skip</div>
+  </div>
+</div>
+
+<!-- WELCOME OVERLAY (daily morning greeting) -->
+<div class="welcome-overlay" id="welcomeOverlay">
+  <div class="welcome-card">
+    <div class="welcome-emoji" id="wcEmoji">🌅</div>
+    <div class="welcome-title" id="wcTitle">শুভ সকাল!</div>
+    <div class="welcome-msg" id="wcMsg">আজকের দিনটি দুর্দান্ত হোক।</div>
+    <div class="welcome-stats" id="wcStats"></div>
+    <button class="btn-primary" id="wcContinue" style="width:100%; padding:14px; font-size:.95rem;">শুরু করি →</button>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+<div class="modal-backdrop" id="modalBackdrop"><div class="modal" id="modal"></div></div>
+<input type="file" id="importFile" accept="application/json" style="display:none">
+
+<script>
+/* =========================================================
+   PERSONAL ADMIN AGENT · AI EDITION v3
+   Check-in Confirmation + Discipline Scoring
+   ========================================================= */
+
+const KEYS = {
+  routine: "aa_routine_v3",
+  tasks: "aa_tasks_v3",
+  settings: "aa_settings_v3",
+  theme: "aa_theme_v3",
+  history: "aa_history_v3",
+  insights: "aa_insights_v3",
+  checkins: "aa_checkins_v3",
+  welcome: "aa_welcome_v3"
+};
+
+const DAYS = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
+const DAYS_SHORT = ["রবি","সোম","মঙ্গল","বুধ","বৃহঃ","শুক্র","শনি"];
+const COLS = ["Today","This Week","Waiting","Study","Family","Money","Later"];
+const ICS_DAY = ["SU","MO","TU","WE","TH","FR","SA"];
+
+let routine = {};
+let tasks = [];
+let history = {};
+let checkins = {};      // { "YYYY-MM-DD": { routineId: { status, timestamp, responseMs } } }
+let settings = {
+  sound: true, voice: true, notif: true, volume: 0.7,
+  sleepEnabled: false, sleepStart: "23:00", sleepEnd: "06:00",
+  checkinEnabled: true, welcomeEnabled: true,
+  autoSkipMinutes: 2
+};
+let insights = [];
+let currentView = "dashboard";
+let audioCtx = null;
+let activeAlert = null;
+let activeCheckin = null;
+let checkinTimer = null;
+let snoozeUntil = {};
+let lastFired = {};
+let welcomeShown = "";
+
+/* STORAGE */
+function loadState(){
+  try{ routine = JSON.parse(localStorage.getItem(KEYS.routine)) || {}; }catch(e){ routine = {}; }
+  try{ tasks = JSON.parse(localStorage.getItem(KEYS.tasks)) || []; }catch(e){ tasks = []; }
+  try{ settings = Object.assign(settings, JSON.parse(localStorage.getItem(KEYS.settings)) || {}); }catch(e){}
+  try{ history = JSON.parse(localStorage.getItem(KEYS.history)) || {}; }catch(e){ history = {}; }
+  try{ checkins = JSON.parse(localStorage.getItem(KEYS.checkins)) || {}; }catch(e){ checkins = {}; }
+  try{ insights = JSON.parse(localStorage.getItem(KEYS.insights)) || []; }catch(e){ insights = []; }
+  welcomeShown = localStorage.getItem(KEYS.welcome) || "";
+}
+function saveRoutine(){ try{ localStorage.setItem(KEYS.routine, JSON.stringify(routine)); }catch(e){} }
+function saveTasks(){ try{ localStorage.setItem(KEYS.tasks, JSON.stringify(tasks)); }catch(e){} }
+function saveSettings(){ try{ localStorage.setItem(KEYS.settings, JSON.stringify(settings)); }catch(e){} }
+function saveHistory(){ try{ localStorage.setItem(KEYS.history, JSON.stringify(history)); }catch(e){} }
+function saveCheckins(){ try{ localStorage.setItem(KEYS.checkins, JSON.stringify(checkins)); }catch(e){} }
+function saveInsights(){ try{ localStorage.setItem(KEYS.insights, JSON.stringify(insights)); }catch(e){} }
+
+/* HELPERS */
+function pad2(n){ return String(n).padStart(2,"0"); }
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+function $(id){ return document.getElementById(id); }
+
+function toast(msg, type="info", icon){
+  const el = document.createElement("div");
+  el.className = "toast" + (type === "ok" ? " ok" : type === "err" ? " err" : type === "gold" ? " gold" : "");
+  el.innerHTML = `<span style="font-size:1.1rem;">${icon || (type==="ok"?"✅":type==="err"?"⚠️":type==="gold"?"🏆":"ℹ️")}</span><span>${escapeHtml(msg)}</span>`;
+  $("toastContainer").appendChild(el);
+  setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>el.remove(), 300); }, 3500);
+}
+
+function closeModal(){ $("modalBackdrop").classList.remove("show"); }
+window.closeModal = closeModal;
+
+/* =========================================================
+   THEME
+   ========================================================= */
+const THEMES = [
+  { id:"light", name:"লাইট", icon:"☀️" },
+  { id:"dark", name:"ডার্ক", icon:"🌙" },
+  { id:"ocean", name:"ওশান", icon:"🌊" },
+  { id:"forest", name:"ফরেস্ট", icon:"🌲" },
+  { id:"sunset", name:"সানসেট", icon:"🌅" },
+  { id:"purple", name:"পার্পল", icon:"💜" }
+];
+function initTheme(){
+  const saved = localStorage.getItem(KEYS.theme);
+  if(saved) document.documentElement.setAttribute("data-theme", saved);
+  else if(window.matchMedia("(prefers-color-scheme: dark)").matches)
+    document.documentElement.setAttribute("data-theme","dark");
+  updateThemeIcon();
+}
+function setTheme(id){
+  document.documentElement.setAttribute("data-theme", id);
+  localStorage.setItem(KEYS.theme, id);
+  updateThemeIcon();
+  toast(`থিম: ${(THEMES.find(t=>t.id===id)||{}).name || id}`, "ok", "🎨");
+}
+window.setTheme = setTheme;
+function toggleTheme(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const idx = THEMES.findIndex(t => t.id === cur);
+  const next = THEMES[(idx + 1) % THEMES.length];
+  setTheme(next.id);
+}
+function updateThemeIcon(){
+  const cur = document.documentElement.getAttribute("data-theme");
+  const t = THEMES.find(x => x.id === cur) || THEMES[1];
+  const btn = $("themeToggle");
+  if(btn) btn.textContent = t.icon;
+}
+
+/* =========================================================
+   AUDIO + SPEECH
+   ========================================================= */
+function ensureAudio(){
+  if(!audioCtx){
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return null;
+    audioCtx = new Ctx();
+  }
+  if(audioCtx.state === "suspended") audioCtx.resume();
+  return audioCtx;
+}
+function playBeep(duration = 0.6, freqStart = 880, freqEnd = 660){
+  const ctx = ensureAudio();
+  if(!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = "sine";
+  osc.frequency.setValueAtTime(freqStart, now);
+  osc.frequency.exponentialRampToValueAtTime(freqEnd, now + duration);
+  gain.gain.setValueAtTime(0, now);
+  gain.gain.linearRampToValueAtTime(settings.volume * 0.5, now + 0.05);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(now); osc.stop(now + duration + 0.05);
+}
+function playAlertSound(){
+  if(!settings.sound) return;
+  playBeep(0.18, 880, 880);
+  setTimeout(()=>playBeep(0.18, 880, 880), 220);
+  setTimeout(()=>playBeep(0.45, 1200, 700), 440);
+}
+function playSuccessSound(){
+  if(!settings.sound) return;
+  playBeep(0.12, 660, 880);
+  setTimeout(()=>playBeep(0.12, 880, 1100), 140);
+  setTimeout(()=>playBeep(0.20, 1100, 1320), 290);
+}
+function speak(text){
+  if(!settings.voice) return;
+  if(!("speechSynthesis" in window)) return;
+  try{
+    window.speechSynthesis.cancel();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = /[\u0980-\u09FF]/.test(text) ? "bn-BD" : "en-US";
+    u.rate = 0.95;
+    u.volume = settings.volume;
+    window.speechSynthesis.speak(u);
+  }catch(e){}
+}
+
+/* SLEEP MODE */
+function isSleepTime(){
+  if(!settings.sleepEnabled) return false;
+  const now = new Date();
+  const cur = now.getHours()*60 + now.getMinutes();
+  const [sh, sm] = settings.sleepStart.split(":").map(Number);
+  const [eh, em] = settings.sleepEnd.split(":").map(Number);
+  const start = sh*60 + sm, end = eh*60 + em;
+  if(start <= end) return cur >= start && cur < end;
+  return cur >= start || cur < end;
+}
+function updateSleepIndicator(){
+  const el = $("sleepIndicator");
+  if(!el) return;
+  if(!settings.sleepEnabled){ el.classList.remove("show","active"); return; }
+  el.classList.add("show");
+  if(isSleepTime()){
+    el.classList.add("active");
+    el.textContent = `🌙 স্লিপ মোড · ${settings.sleepEnd} পর্যন্ত`;
+  } else {
+    el.classList.remove("active");
+    el.textContent = `🌙 স্লিপ: ${settings.sleepStart}–${settings.sleepEnd}`;
+  }
+}
+
+/* NOTIFICATIONS */
+async function requestNotifPermission(){
+  if(!("Notification" in window)){
+    toast("এই ব্রাউজারে সাপোর্ট নেই", "err");
+    return;
+  }
+  try{
+    const perm = await Notification.requestPermission();
+    if(perm === "granted"){
+      toast("নোটিফিকেশন চালু হয়েছে", "ok", "🔔");
+      new Notification("Admin Agent AI", { body: "নোটিফিকেশন কাজ করছে!" });
+    }
+  }catch(e){}
+}
+function showSystemNotification(title, body){
+  if(!settings.notif) return;
+  if(!("Notification" in window) || Notification.permission !== "granted") return;
+  try{
+    const n = new Notification(title, {
+      body, tag: "aa-alert", requireInteraction: true,
+      silent: !settings.sound
+    });
+    n.onclick = () => { window.focus(); n.close(); };
+  }catch(e){}
+}
+
+/* =========================================================
+   DISCIPLINE SCORE ENGINE
+   =========================================================
+   Score = weighted combination of:
+   - Confirmation rate (50%)
+   - Response speed (20%)
+   - Consistency streak (20%)
+   - Volume completion (10%)
+   ========================================================= */
+function getTodayCheckins(){
+  return checkins[todayKey()] || {};
+}
+function getWeekCheckins(daysBack = 7){
+  const all = {};
+  const today = new Date();
+  for(let i = 0; i < daysBack; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    if(checkins[key]) all[key] = checkins[key];
+  }
+  return all;
+}
+function getDisciplineStats(){
+  const week = getWeekCheckins(7);
+  let total = 0, started = 0, snoozed = 0, skipped = 0;
+  let totalResponseMs = 0, responseCount = 0;
+
+  const today = new Date();
+  for(let i = 0; i < 7; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    total += items.length;
+
+    const dayCheckins = week[key] || {};
+    items.forEach(r => {
+      const c = dayCheckins[r.id];
+      if(!c) return;
+      if(c.status === "started") started++;
+      else if(c.status === "snoozed") snoozed++;
+      else if(c.status === "skipped") skipped++;
+      if(c.responseMs && c.responseMs < 300000){
+        totalResponseMs += c.responseMs;
+        responseCount++;
+      }
+    });
+  }
+
+  // Rate calculation
+  const confirmationRate = total > 0 ? (started / total) : 0;
+  const avgResponseMs = responseCount > 0 ? totalResponseMs / responseCount : 120000;
+  // Faster response = higher score. 0s = 1.0, 5min = 0.3
+  const speedScore = Math.max(0, Math.min(1, 1 - (avgResponseMs / 300000) * 0.7));
+  const streak = getDisciplineStreak();
+  const streakScore = Math.min(1, streak / 14); // 14 days = full
+  const volumeScore = Math.min(1, total / 30); // 30 tasks/week = full
+
+  const score = Math.round(
+    confirmationRate * 50 +
+    speedScore * 20 +
+    streakScore * 20 +
+    volumeScore * 10
+  );
+
+  return {
+    score: Math.max(0, Math.min(100, score)),
+    total, started, snoozed, skipped,
+    confirmationRate: Math.round(confirmationRate * 100),
+    avgResponseSec: Math.round(avgResponseMs / 1000),
+    streak, speedScore: Math.round(speedScore * 100)
+  };
+}
+
+function getDisciplineStreak(){
+  let streak = 0;
+  const today = new Date();
+  for(let i = 0; i < 365; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    if(items.length === 0){
+      if(i === 0) continue;
+      break;
+    }
+    const dc = checkins[key] || {};
+    const started = items.filter(r => dc[r.id]?.status === "started").length;
+    // Need at least 60% confirmation for the day to count
+    if(started / items.length >= 0.6) streak++;
+    else if(i > 0) break;
+  }
+  return streak;
+}
+
+function getDisciplineLevel(score){
+  if(score >= 90) return { name: "মাস্টার", icon: "👑", color: "gold", msg: "আপনি অভূতপূর্ব! এই ধারা ধরে রাখুন।" };
+  if(score >= 75) return { name: "সুশৃঙ্খল", icon: "🏆", color: "ok", msg: "আপনি খুব ভালো করছেন! শীর্ষে পৌঁছাতে আরও একটু চেষ্টা।" };
+  if(score >= 60) return { name: "নিয়মিত", icon: "⭐", color: "ok", msg: "ভালো চলছে। কিছুটা উন্নতির সুযোগ আছে।" };
+  if(score >= 40) return { name: "শিক্ষানবিস", icon: "🌱", color: "warn", msg: "শুরুটা ভালো। চেক-ইন বাড়ান, স্কোর বাড়বে।" };
+  return { name: "নতুন শুরু", icon: "🎯", color: "accent", msg: "সময় হয়েছে নতুন করে শুরু করার। আজ থেকেই চেক-ইন করুন।" };
+}
+
+/* =========================================================
+   CHECK-IN SYSTEM
+   =========================================================
+   When a routine time arrives:
+   1. Show sound + notification
+   2. Open check-in overlay with 3 options
+   3. User confirms: started / snoozed / skipped
+   4. Log to checkins with response time
+   5. Update discipline score
+   ========================================================= */
+function openCheckin(item, dayIdx){
+  if(!settings.checkinEnabled){ fireAlert(item, item.time, dayIdx); return; }
+  activeCheckin = {
+    routineId: item.id,
+    item, dayIdx,
+    openedAt: Date.now()
+  };
+  $("ciIcon").textContent = "⏰";
+  $("ciTitle").textContent = "সময় হয়েছে!";
+  $("ciSub").textContent = "আপনি কি এখন কাজ শুরু করছেন? কনফার্ম করলে নিয়মানুবর্তিতা স্কোরে যোগ হবে।";
+  $("ciTime").textContent = `${item.time} · ${DAYS[dayIdx]}`;
+  $("ciText").textContent = item.text;
+  $("checkinOverlay").classList.add("show");
+
+  // Play sound + voice
+  playAlertSound();
+  setTimeout(() => speak(`সময় হয়েছে। ${item.text}। শুরু করছেন?`), 900);
+
+  // System notification
+  showSystemNotification("⏰ " + item.text, `কনফার্ম করুন — ${item.time}`);
+
+  // Auto-skip after N minutes
+  clearTimeout(checkinTimer);
+  const autoMs = (settings.autoSkipMinutes || 2) * 60000;
+  checkinTimer = setTimeout(() => {
+    if(activeCheckin && activeCheckin.routineId === item.id){
+      autoSkipCheckin();
+    }
+  }, autoMs);
+
+  // Update timer display
+  updateCheckinTimer(autoMs);
+}
+
+function updateCheckinTimer(ms){
+  const el = $("ciTimer");
+  if(!el) return;
+  let left = Math.floor(ms / 1000);
+  const interval = setInterval(() => {
+    if(!activeCheckin){ clearInterval(interval); return; }
+    left--;
+    if(left <= 0){ clearInterval(interval); return; }
+    const m = Math.floor(left / 60), s = left % 60;
+    el.textContent = `কনফার্ম না করলে ${m}:${pad2(s)} পরে auto-skip`;
+  }, 1000);
+}
+
+function recordCheckin(routineId, status){
+  const key = todayKey();
+  if(!checkins[key]) checkins[key] = {};
+  const responseMs = activeCheckin ? (Date.now() - activeCheckin.openedAt) : 0;
+  checkins[key][routineId] = {
+    status,
+    timestamp: Date.now(),
+    responseMs
+  };
+  // Also update history for backwards compat
+  if(!history[key]) history[key] = {};
+  history[key][routineId] = status === "started" ? "done" : status === "snoozed" ? "pending" : "skipped";
+  saveCheckins();
+  saveHistory();
+}
+
+function closeCheckin(){
+  activeCheckin = null;
+  clearTimeout(checkinTimer);
+  $("checkinOverlay").classList.remove("show");
+}
+
+function startCheckin(){
+  if(!activeCheckin) return;
+  recordCheckin(activeCheckin.routineId, "started");
+  playSuccessSound();
+  speak("দুর্দান্ত! শুভকামনা।");
+  const stats = getDisciplineStats();
+  const level = getDisciplineLevel(stats.score);
+  toast(`✅ শুরু! স্কোর: ${stats.score} · ${level.icon} ${level.name}`, "ok", "🎯");
+  closeCheckin();
+  // Redirect to dashboard to see updated score
+  if(currentView === "dashboard" || currentView === "discipline"){
+    setTimeout(renderView, 300);
+  }
+}
+
+function snoozeCheckin(){
+  if(!activeCheckin) return;
+  recordCheckin(activeCheckin.routineId, "snoozed");
+  snoozeUntil[activeCheckin.routineId] = Date.now() + 10*60000;
+  toast("১০ মিনিট পরে আবার মনে করাব", "info", "⏱️");
+  closeCheckin();
+}
+
+function skipCheckin(){
+  if(!activeCheckin) return;
+  recordCheckin(activeCheckin.routineId, "skipped");
+  toast("কাজটি বাদ দেওয়া হলো", "info", "⏭️");
+  closeCheckin();
+}
+
+function autoSkipCheckin(){
+  if(!activeCheckin) return;
+  recordCheckin(activeCheckin.routineId, "skipped");
+  toast("সময় শেষ — auto-skip হয়েছে", "err", "⏰");
+  closeCheckin();
+}
+
+window.startCheckin = startCheckin;
+window.snoozeCheckin = snoozeCheckin;
+window.skipCheckin = skipCheckin;
+
+/* =========================================================
+   WELCOME OVERLAY (daily greeting)
+   ========================================================= */
+function getGreeting(){
+  const h = new Date().getHours();
+  if(h < 5) return { emoji: "🌙", title: "শুভ রাত্রি!", msg: "এখনো জেগে আছেন? বিশ্রাম নিন।" };
+  if(h < 12) return { emoji: "🌅", title: "শুভ সকাল!", msg: "আজকের দিনটি দুর্দান্ত হোক।" };
+  if(h < 17) return { emoji: "☀️", title: "শুভ দুপুর!", msg: "দিনের বাকি অংশ কাজে লাগান।" };
+  if(h < 20) return { emoji: "🌤️", title: "শুভ সন্ধ্যা!", msg: "সন্ধ্যার কাজ শুরু করুন।" };
+  return { emoji: "🌆", title: "শুভ রাত্রি!", msg: "আজকের অগ্রগতি রিভিউ করুন।" };
+}
+
+function showWelcome(){
+  const h = new Date().getHours();
+  // Only show between 5am and 11am, once per day
+  if(h < 5 || h >= 12) return;
+  if(welcomeShown === todayKey()) return;
+  if(!settings.welcomeEnabled) return;
+
+  const greeting = getGreeting();
+  const stats = getDisciplineStats();
+  const level = getDisciplineLevel(stats.score);
+  const todayIdx = new Date().getDay();
+  const todayItems = (routine[todayIdx]||[]).filter(r=>r.enabled).length;
+
+  $("wcEmoji").textContent = greeting.emoji;
+  $("wcTitle").textContent = greeting.title;
+  $("wcMsg").textContent = greeting.msg + " " + level.msg;
+  $("wcStats").innerHTML = `
+    <div class="welcome-stat">
+      <div class="ws-val">${stats.score}</div>
+      <div class="ws-lbl">নিয়মানুবর্তিতা</div>
+    </div>
+    <div class="welcome-stat">
+      <div class="ws-val">${todayItems}</div>
+      <div class="ws-lbl">আজকের কাজ</div>
+    </div>
+    <div class="welcome-stat">
+      <div class="ws-val">${stats.streak}🔥</div>
+      <div class="ws-lbl">দিন স্ট্রিক</div>
+    </div>
+    <div class="welcome-stat">
+      <div class="ws-val">${level.icon}</div>
+      <div class="ws-lbl">${level.name}</div>
+    </div>`;
+
+  $("welcomeOverlay").classList.add("show");
+  localStorage.setItem(KEYS.welcome, todayKey());
+
+  // Play a gentle welcome
+  setTimeout(() => speak(`${greeting.title} আজকের আপনার নিয়মানুবর্তিতা স্কোর ${stats.score}`), 400);
+}
+
+window.dismissWelcome = function(){
+  $("welcomeOverlay").classList.remove("show");
+};
+
+/* =========================================================
+   ROUTINE CRUD
+   ========================================================= */
+function addRoutineItem(dayIndex){
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>➕ ${DAYS[dayIndex]} — নতুন রুটিন</h2>
+    <p>সময় ও কাজের নাম দিন।</p>
+    <div class="field"><label>সময়</label><input type="time" id="rTime" value="09:00" required></div>
+    <div class="field"><label>কাজের নাম</label><input id="rText" placeholder="যেমন: পড়া, ব্যায়াম, মিটিং" required></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      <button class="btn-primary" id="rSaveBtn">যোগ করুন</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  setTimeout(()=>$("rText").focus(), 100);
+  $("rSaveBtn").onclick = () => {
+    const time = $("rTime").value;
+    const text = $("rText").value.trim();
+    if(!time || !text){ toast("সময় ও নাম দিন", "err"); return; }
+    if(!routine[dayIndex]) routine[dayIndex] = [];
+    routine[dayIndex].push({
+      id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+      time, text, enabled: true,
+      createdAt: new Date().toISOString()
+    });
+    routine[dayIndex].sort((a,b) => a.time.localeCompare(b.time));
+    saveRoutine(); renderView(); closeModal();
+    toast("রুটিন যোগ হয়েছে", "ok", "✅");
+  };
+}
+function deleteRoutineItem(dayIndex, id){
+  if(!routine[dayIndex]) return;
+  routine[dayIndex] = routine[dayIndex].filter(r => r.id !== id);
+  saveRoutine(); renderView();
+  toast("মুছে ফেলা হয়েছে", "info", "🗑️");
+}
+function toggleRoutineItem(dayIndex, id){
+  const item = (routine[dayIndex]||[]).find(r => r.id === id);
+  if(!item) return;
+  item.enabled = !item.enabled;
+  saveRoutine(); renderView();
+}
+window.addRoutineItem = addRoutineItem;
+window.deleteRoutineItem = deleteRoutineItem;
+window.toggleRoutineItem = toggleRoutineItem;
+
+/* =========================================================
+   TASKS
+   ========================================================= */
+function addTask(e){
+  if(e) e.preventDefault();
+  const text = $("text").value.trim();
+  if(!text) return;
+  tasks.push({
+    id: "t_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+    text,
+    category: $("category").value,
+    priority: $("priority").value,
+    deadline: $("deadline").value,
+    createdAt: new Date().toISOString()
+  });
+  saveTasks(); renderView();
+  e.target.reset();
+  toast("টাস্ক যোগ হয়েছে", "ok", "✅");
+}
+window.addTask = addTask;
+window.removeTask = function(id){
+  tasks = tasks.filter(t => t.id !== id);
+  saveTasks(); renderView();
+  toast("মুছে ফেলা হয়েছে", "info", "🗑️");
+};
+
+/* =========================================================
+   TEMPLATES
+   ========================================================= */
+const TEMPLATES = {
+  student: {
+    name: "ছাত্র/ছাত্রী", icon: "📚",
+    desc: "পড়াশোনার জন্য সাজানো ৭ দিনের রুটিন",
+    data: {
+      6: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"10:00", text:"গণিত চর্চা" },
+        { time:"13:00", text:"দুপুরের খাবার + বিশ্রাম" },
+        { time:"16:00", text:"ইংরেজি পড়া" },
+        { time:"18:00", text:"সন্ধ্যার পড়া" },
+        { time:"21:00", text:"রাতের খাবার" },
+        { time:"22:00", text:"আজকের রিভিশন" }
+      ],
+      0: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"10:00", text:"ক্লাস প্রস্তুতি" },
+        { time:"14:00", text:"দুপুরের খাবার" },
+        { time:"16:00", text:"টিউশন" },
+        { time:"19:00", text:"হোমওয়ার্ক" },
+        { time:"22:00", text:"আজকের রিভিশন" }
+      ],
+      1: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"10:00", text:"ক্লাস" },
+        { time:"14:00", text:"দুপুরের খাবার" },
+        { time:"16:00", text:"টিউশন" },
+        { time:"19:00", text:"হোমওয়ার্ক" },
+        { time:"22:00", text:"রিভিশন" }
+      ],
+      2: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"10:00", text:"ক্লাস" },
+        { time:"14:00", text:"দুপুরের খাবার" },
+        { time:"19:00", text:"হোমওয়ার্ক" },
+        { time:"22:00", text:"রিভিশন" }
+      ],
+      3: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"10:00", text:"ক্লাস" },
+        { time:"14:00", text:"দুপুরের খাবার" },
+        { time:"19:00", text:"হোমওয়ার্ক" }
+      ],
+      4: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"10:00", text:"ক্লাস" },
+        { time:"14:00", text:"দুপুরের খাবার" },
+        { time:"19:00", text:"হোমওয়ার্ক" }
+      ],
+      5: [
+        { time:"06:00", text:"ফজরের নামাজ" },
+        { time:"07:00", text:"সকালের পড়া" },
+        { time:"09:00", text:"ব্রেকফাস্ট" },
+        { time:"13:00", text:"জুমার নামাজ" },
+        { time:"15:00", text:"পরিবারের সাথে সময়" },
+        { time:"19:00", text:"বন্ধুদের সাথে দেখা" }
+      ]
+    }
+  },
+  professional: {
+    name: "চাকরিজীবী", icon: "💼",
+    desc: "অফিস ও পারিবারিক ভারসাম্যের রুটিন",
+    data: {
+      0: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
+        { time:"07:30", text:"নাস্তা" },
+        { time:"08:30", text:"অফিসের জন্য বের হওয়া" },
+        { time:"09:30", text:"অফিস শুরু" },
+        { time:"13:00", text:"লাঞ্চ ব্রেক" },
+        { time:"14:00", text:"অফিস পুনরায়" },
+        { time:"18:00", text:"অফিস শেষ" },
+        { time:"19:30", text:"পরিবারের সাথে সময়" },
+        { time:"21:00", text:"রাতের খাবার" },
+        { time:"22:00", text:"আগামীকালের প্রস্তুতি" }
+      ],
+      1: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
+        { time:"07:30", text:"নাস্তা" },
+        { time:"08:30", text:"অফিসের জন্য বের হওয়া" },
+        { time:"09:30", text:"অফিস শুরু" },
+        { time:"13:00", text:"লাঞ্চ ব্রেক" },
+        { time:"18:00", text:"অফিস শেষ" },
+        { time:"21:00", text:"রাতের খাবার" }
+      ],
+      2: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
+        { time:"07:30", text:"নাস্তা" },
+        { time:"09:30", text:"অফিস শুরু" },
+        { time:"18:00", text:"অফিস শেষ" },
+        { time:"21:00", text:"রাতের খাবার" }
+      ],
+      3: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
+        { time:"09:30", text:"অফিস শুরু" },
+        { time:"18:00", text:"অফিস শেষ" },
+        { time:"21:00", text:"রাতের খাবার" }
+      ],
+      4: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
+        { time:"09:30", text:"অফিস শুরু" },
+        { time:"18:00", text:"অফিস শেষ" },
+        { time:"21:00", text:"রাতের খাবার" }
+      ],
+      5: [
+        { time:"07:00", text:"জুমার প্রস্তুতি" },
+        { time:"08:00", text:"পরিবারের সাথে সময়" },
+        { time:"13:00", text:"জুমার নামাজ" },
+        { time:"15:00", text:"বিশ্রাম" },
+        { time:"19:00", text:"বন্ধুদের সাথে দেখা" }
+      ],
+      6: [
+        { time:"07:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"11:00", text:"ব্যক্তিগত কাজ" },
+        { time:"15:00", text:"বিশ্রাম" },
+        { time:"19:00", text:"পরিবারের সাথে সময়" }
+      ]
+    }
+  },
+  business: {
+    name: "ব্যবসায়ী", icon: "🏪",
+    desc: "ব্যবসা পরিচালনার জন্য রুটিন",
+    data: {
+      0: [
+        { time:"05:30", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"07:00", text:"সকালের নাস্তা" },
+        { time:"08:00", text:"দোকান/অফিস খোলা" },
+        { time:"10:00", text:"কাস্টমার কল" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"14:00", text:"স্টক চেক" },
+        { time:"17:00", text:"বিক্রয় রিপোর্ট" },
+        { time:"20:00", text:"দোকান বন্ধ" },
+        { time:"21:00", text:"রাতের খাবার" },
+        { time:"22:00", text:"হিসাব-নিকাশ" }
+      ],
+      1: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"20:00", text:"দোকান বন্ধ" },
+        { time:"22:00", text:"হিসাব-নিকাশ" }
+      ],
+      2: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"20:00", text:"দোকান বন্ধ" },
+        { time:"22:00", text:"হিসাব-নিকাশ" }
+      ],
+      3: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"20:00", text:"দোকান বন্ধ" },
+        { time:"22:00", text:"হিসাব-নিকাশ" }
+      ],
+      4: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"20:00", text:"দোকান বন্ধ" },
+        { time:"22:00", text:"হিসাব-নিকাশ" }
+      ],
+      5: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"জুমার নামাজ" },
+        { time:"16:00", text:"ব্যবসার পরিকল্পনা" },
+        { time:"20:00", text:"দোকান বন্ধ" }
+      ],
+      6: [
+        { time:"06:00", text:"ঘুম থেকে ওঠা" },
+        { time:"08:00", text:"দোকান খোলা" },
+        { time:"13:00", text:"দুপুরের খাবার" },
+        { time:"17:00", text:"সাপ্তাহিক পর্যালোচনা" },
+        { time:"20:00", text:"দোকান বন্ধ" }
+      ]
+    }
+  },
+  islamic: {
+    name: "ইসলামিক রুটিন", icon: "🕌",
+    desc: "নামাজ ও দ্বীনি কাজের রুটিন",
+    data: {
+      0: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"09:00", text:"সকালের যিকর" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"18:30", text:"মাগরিবের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" },
+        { time:"22:00", text:"রাতের দুআ" }
+      ],
+      1: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"18:30", text:"মাগরিবের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ],
+      2: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"18:30", text:"মাগরিবের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ],
+      3: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"18:30", text:"মাগরিবের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ],
+      4: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"18:30", text:"মাগরিবের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ],
+      5: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"11:00", text:"জুমার প্রস্তুতি" },
+        { time:"13:00", text:"জুমার নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ],
+      6: [
+        { time:"04:30", text:"ফজরের নামাজ" },
+        { time:"06:00", text:"কুরআন তিলাওয়াত" },
+        { time:"09:00", text:"দ্বীনি কিতাব অধ্যয়ন" },
+        { time:"13:00", text:"যোহরের নামাজ" },
+        { time:"17:00", text:"আসরের নামাজ" },
+        { time:"20:00", text:"ইশার নামাজ" }
+      ]
+    }
+  },
+  fitness: {
+    name: "ফিটনেস", icon: "💪",
+    desc: "স্বাস্থ্য ও ব্যায়ামের রুটিন",
+    data: {
+      0: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"07:00", text:"স্ট্রেচিং" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"জিম/ব্যায়াম" },
+        { time:"19:00", text:"হালকা যোগব্যায়াম" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      1: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"কার্ডিও" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      2: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"স্ট্রেংথ ট্রেনিং" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      3: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"কার্ডিও" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      4: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"স্ট্রেংথ ট্রেনিং" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      5: [
+        { time:"06:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"17:00", text:"হালকা ব্যায়াম" },
+        { time:"22:00", text:"ঘুম" }
+      ],
+      6: [
+        { time:"07:00", text:"সকালের হাঁটা" },
+        { time:"09:00", text:"নাস্তা" },
+        { time:"11:00", text:"যোগব্যায়াম" },
+        { time:"22:00", text:"ঘুম" }
+      ]
+    }
+  }
+};
+
+function applyTemplate(key){
+  const t = TEMPLATES[key];
+  if(!t) return;
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>${t.icon} ${t.name} টেমপ্লেট লোড করবেন?</h2>
+    <p>${t.desc}</p>
+    <div style="background:var(--bg); border-radius:10px; padding:12px; margin-bottom:14px; font-size:.8rem; color:var(--sub);">
+      <b>${Object.values(t.data).reduce((sum,arr)=>sum+arr.length,0)}টি রুটিন</b> যোগ হবে।
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      <button class="btn-secondary" id="replaceTpl" style="background:var(--danger); color:#fff; border-color:transparent;">প্রতিস্থাপন</button>
+      <button class="btn-primary" id="mergeTpl">যোগ করুন</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  $("mergeTpl").onclick = () => {
+    for(const dayIdx in t.data){
+      const i = parseInt(dayIdx);
+      if(!routine[i]) routine[i] = [];
+      t.data[dayIdx].forEach(item => {
+        routine[i].push({
+          id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+          time: item.time, text: item.text, enabled: true,
+          template: key, createdAt: new Date().toISOString()
+        });
+      });
+      routine[i].sort((a,b) => a.time.localeCompare(b.time));
+    }
+    saveRoutine(); renderView(); closeModal();
+    toast(`${t.name} টেমপ্লেট যোগ হয়েছে`, "ok", t.icon);
+  };
+  $("replaceTpl").onclick = () => {
+    if(!confirm("আপনার বর্তমান সব রুটিন মুছে যাবে। নিশ্চিত?")) return;
+    routine = {};
+    for(const dayIdx in t.data){
+      const i = parseInt(dayIdx);
+      routine[i] = t.data[dayIdx].map(item => ({
+        id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+        time: item.time, text: item.text, enabled: true,
+        template: key, createdAt: new Date().toISOString()
+      }));
+    }
+    saveRoutine(); renderView(); closeModal();
+    toast(`${t.name} টেমপ্লেট লোড হয়েছে`, "ok", t.icon);
+  };
+}
+window.applyTemplate = applyTemplate;
+
+/* =========================================================
+   ICS EXPORT
+   ========================================================= */
+function escapeICS(s){
+  return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+}
+function icsTS(){
+  const d = new Date();
+  return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`;
+}
+function routineToVEvent(item, dayIdx){
+  const [h, m] = item.time.split(":").map(Number);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const offset = (dayIdx - today.getDay() + 7) % 7;
+  const start = new Date(today); start.setDate(start.getDate() + offset); start.setHours(h, m, 0, 0);
+  const end = new Date(start.getTime() + 30*60000);
+  const fmt = d => `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
+  return [
+    "BEGIN:VEVENT",
+    `UID:routine-${dayIdx}-${item.id}@admin-agent.local`,
+    `DTSTAMP:${icsTS()}`,
+    `DTSTART:${fmt(start)}`,
+    `DTEND:${fmt(end)}`,
+    `RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]};COUNT=520`,
+    `SUMMARY:${escapeICS(item.text)}`,
+    `DESCRIPTION:${escapeICS("Admin Agent · " + item.time)}`,
+    "STATUS:CONFIRMED",
+    "BEGIN:VALARM","TRIGGER:-PT10M","ACTION:DISPLAY",
+    `DESCRIPTION:${escapeICS("আসছে: " + item.text)}`,"END:VALARM",
+    "BEGIN:VALARM","TRIGGER:PT0M","ACTION:DISPLAY",
+    `DESCRIPTION:${escapeICS(item.text)}`,"END:VALARM",
+    "END:VEVENT"
+  ].join("\r\n");
+}
+function buildWeeklyICS(){
+  const lines = [
+    "BEGIN:VCALENDAR","VERSION:2.0",
+    "PRODID:-//Admin Agent AI//Weekly//BN","CALSCALE:GREGORIAN","METHOD:PUBLISH",
+    "X-WR-CALNAME:Admin Agent সাপ্তাহিক রুটিন",
+    "X-WR-TIMEZONE:" + (Intl.DateTimeFormat().resolvedOptions().timeZone || "Asia/Dhaka")
+  ];
+  for(let d=0; d<7; d++){
+    (routine[d]||[]).filter(r=>r.enabled).forEach(item => lines.push(routineToVEvent(item, d)));
+  }
+  lines.push("END:VCALENDAR");
+  return lines.join("\r\n");
+}
+function downloadFile(name, content, mime){
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(url); a.remove(); }, 500);
+}
+function syncToCalendar(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
+  downloadFile(`admin-agent-weekly-${todayKey()}.ics`, buildWeeklyICS(), "text/calendar;charset=utf-8");
+  toast(`ICS ডাউনলোড — Google Calendar-এ import করুন`, "ok", "📅");
+}
+window.syncToCalendar = syncToCalendar;
+
+/* =========================================================
+   CALENDAR IMPORT
+   ========================================================= */
+function importFromCalendar(){
+  const input = document.createElement("input");
+  input.type = "file"; input.accept = ".ics,text/calendar";
+  input.onchange = e => {
+    const f = e.target.files[0]; if(!f) return;
+    const reader = new FileReader();
+    reader.onload = () => parseICS(reader.result);
+    reader.readAsText(f);
+  };
+  input.click();
+}
+function parseICS(text){
+  const events = [];
+  const blocks = text.split("BEGIN:VEVENT");
+  for(let i=1; i<blocks.length; i++){
+    const block = blocks[i].split("END:VEVENT")[0];
+    const get = key => {
+      const re = new RegExp("^" + key + "[^:]*:(.*)$", "mi");
+      const m = block.match(re); return m ? m[1].trim() : "";
+    };
+    const summary = get("SUMMARY").replace(/\\,/g,",").replace(/\\;/g,";").replace(/\\n/g,"\n");
+    const dtStart = get("DTSTART");
+    if(!summary) continue;
+    let deadline = "";
+    if(dtStart){
+      const iso = dtStart.slice(0,8);
+      if(iso.length === 8) deadline = `${iso.slice(0,4)}-${iso.slice(4,6)}-${iso.slice(6,8)}`;
+    }
+    events.push({ summary, deadline });
+  }
+  if(events.length === 0){ toast("কোনো ইভেন্ট পাওয়া যায়নি", "err"); return; }
+  let added = 0;
+  events.forEach(ev => {
+    if(tasks.some(t => t.text === ev.summary && t.fromCalendar)) return;
+    tasks.push({
+      id: "cal_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+      text: ev.summary, category: "This Week", priority: "Medium",
+      deadline: ev.deadline, fromCalendar: true,
+      createdAt: new Date().toISOString()
+    });
+    added++;
+  });
+  saveTasks(); renderView();
+  toast(`Calendar থেকে ${added}টি ইভেন্ট যোগ হয়েছে`, "ok", "🔁");
+}
+window.importFromCalendar = importFromCalendar;
+
+/* =========================================================
+   EMAIL SHARE
+   ========================================================= */
+function buildItemEmailBody(item, dayIdx){
+  return `আসসালামু আলাইকুম,\n\nআমার একটি কাজের রিমাইন্ডার:\n\n📌 কাজ: ${item.text}\n⏰ সময়: ${item.time}\n📅 দিন: ${DAYS[dayIdx]}\n\n— Admin Agent AI`;
+}
+function buildDayEmailBody(dayIdx){
+  const items = (routine[dayIdx] || []).filter(r => r.enabled);
+  if(items.length === 0) return `আসসালামু আলাইকুম,\n\n${DAYS[dayIdx]}-এ আমার কোনো কাজ নেই।\n\n— Admin Agent AI`;
+  let body = `আসসালামু আলাইকুম,\n\n📅 ${DAYS[dayIdx]}-এর আমার রুটিন:\n\n`;
+  items.forEach((r, i) => { body += `${i+1}. ${r.time} — ${r.text}\n`; });
+  body += `\nমোট ${items.length}টি কাজ।\n\n— Admin Agent AI`;
+  return body;
+}
+function buildWeekEmailBody(){
+  let total = 0;
+  for(let i=0; i<7; i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0) return null;
+  let body = `আসসালামু আলাইকুম,\n\n📅 আমার সাপ্তাহিক রুটিন:\n\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+  for(let d = 0; d < 7; d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    body += `\n📌 ${DAYS[d]}\n━━━━━━━━━━━━━━━━━━━━━━\n`;
+    items.forEach(r => { body += `  ${r.time}  ·  ${r.text}\n`; });
+  }
+  body += `\n━━━━━━━━━━━━━━━━━━━━━━\nমোট: ${total}টি রুটিন আইটেম\n\n— Admin Agent AI`;
+  return body;
+}
+function buildWeekEmailHTML(){
+  let total = 0;
+  for(let i=0; i<7; i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0) return null;
+  let html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#1a1916;max-width:600px;margin:0 auto;padding:20px;">
+    <h2 style="color:#b5502f;border-bottom:2px solid #b5502f;padding-bottom:8px;">📅 আমার সাপ্তাহিক রুটিন</h2>`;
+  for(let d = 0; d < 7; d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    html += `<h3 style="color:#b5502f;margin-top:24px;margin-bottom:10px;">${DAYS[d]}</h3>
+      <table style="width:100%;border-collapse:collapse;font-size:14px;">`;
+    items.forEach(r => {
+      html += `<tr><td style="padding:6px 10px;border-bottom:1px solid #e2e0d8;color:#b5502f;font-weight:700;width:70px;">${r.time}</td>
+        <td style="padding:6px 10px;border-bottom:1px solid #e2e0d8;">${escapeHtml(r.text)}</td></tr>`;
+    });
+    html += `</table>`;
+  }
+  html += `<p style="margin-top:30px;padding-top:16px;border-top:1px solid #e2e0d8;color:#6f6e67;font-size:12px;">
+    মোট: ${total}টি রুটিন আইটেম · Admin Agent AI</p></body></html>`;
+  return html;
+}
+
+function openEmailModal(opts){
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>📧 Email পাঠান</h2>
+    <p>প্রাপক, বিষয় ও বার্তা দেখে পাঠান।</p>
+    <div class="field"><label>প্রাপক (To)</label><input type="email" id="emailTo" placeholder="example@gmail.com" value="${opts.recipients || ""}"></div>
+    <div class="field"><label>বিষয় (Subject)</label><input id="emailSubject" value="${escapeHtml(opts.subject || "")}"></div>
+    <div class="field"><label>বার্তা (Body)</label><textarea id="emailBody" rows="12" style="font-family:monospace;font-size:.82rem;resize:vertical;">${escapeHtml(opts.body || "")}</textarea></div>
+    <div style="background:var(--bg); border-radius:10px; padding:12px; margin-bottom:14px; font-size:.78rem; color:var(--sub);">
+      💡 ডিফল্ট mail app খুলবে। To ফিল্ড খালি রাখলে mail app-এ পূরণ করতে পারবেন।
+    </div>
+    <div class="modal-actions" style="flex-wrap:wrap; gap:8px;">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      <button class="btn-secondary" id="emailCopyBtn">📋 কপি</button>
+      ${navigator.share ? '<button class="btn-secondary" id="emailShareBtn">📤 শেয়ার</button>' : ''}
+      ${opts.htmlBody ? '<button class="btn-secondary" id="emailHtmlBtn">🎨 HTML</button>' : ''}
+      <button class="btn-primary" id="emailSendBtn">✉️ Mail app খুলুন</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+
+  $("emailSendBtn").onclick = () => {
+    const to = $("emailTo").value.trim();
+    const subject = $("emailSubject").value.trim();
+    const body = $("emailBody").value;
+    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    toast("Mail app খোলা হচ্ছে...", "info", "✉️");
+    setTimeout(closeModal, 800);
+  };
+  $("emailCopyBtn").onclick = async () => {
+    try{
+      await navigator.clipboard.writeText(`To: ${$("emailTo").value}\nSubject: ${$("emailSubject").value}\n\n${$("emailBody").value}`);
+      toast("কপি হয়েছে", "ok", "📋");
+    }catch(e){ toast("কপি ব্যর্থ", "err"); }
+  };
+  const shareBtn = $("emailShareBtn");
+  if(shareBtn){
+    shareBtn.onclick = async () => {
+      try{
+        await navigator.share({ title: $("emailSubject").value, text: $("emailBody").value });
+        toast("শেয়ার হয়েছে", "ok", "📤"); closeModal();
+      }catch(e){}
+    };
+  }
+  const htmlBtn = $("emailHtmlBtn");
+  if(htmlBtn){
+    htmlBtn.onclick = () => {
+      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent($("emailTo").value)}&su=${encodeURIComponent($("emailSubject").value)}&body=${encodeURIComponent($("emailBody").value)}`;
+      window.open(gmailUrl, "_blank");
+      toast("Gmail খোলা হচ্ছে", "info", "🎨");
+      setTimeout(closeModal, 600);
+    };
+  }
+}
+window.openEmailModal = openEmailModal;
+
+function emailFullWeek(){
+  let total = 0;
+  for(let i=0; i<7; i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
+  openEmailModal({
+    subject: `📅 আমার সাপ্তাহিক রুটিন · ${new Date().toLocaleDateString("bn-BD")}`,
+    body: buildWeekEmailBody(),
+    htmlBody: buildWeekEmailHTML()
+  });
+}
+window.emailFullWeek = emailFullWeek;
+function emailDay(dayIdx){
+  const items = (routine[dayIdx] || []).filter(r => r.enabled);
+  if(items.length === 0){ toast(`${DAYS[dayIdx]}-এ কোনো কাজ নেই`, "err"); return; }
+  openEmailModal({
+    subject: `📅 ${DAYS[dayIdx]}-এর রুটিন · ${items.length}টি কাজ`,
+    body: buildDayEmailBody(dayIdx)
+  });
+}
+window.emailDay = emailDay;
+function emailRoutineItem(dayIdx, routineId){
+  const item = (routine[dayIdx]||[]).find(r => r.id === routineId);
+  if(!item) return;
+  openEmailModal({
+    subject: `⏰ রিমাইন্ডার: ${item.text}`,
+    body: buildItemEmailBody(item, dayIdx)
+  });
+}
+window.emailRoutineItem = emailRoutineItem;
+function emailDigest(){ emailFullWeek(); }
+window.emailDigest = emailDigest;
+
+/* WHATSAPP */
+function shareToWhatsApp(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
+  let msg = "📅 *আমার সাপ্তাহিক রুটিন*\n\n";
+  for(let d=0; d<7; d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    msg += `*${DAYS[d]}*\n`;
+    items.forEach(r => { msg += `  ${r.time} — ${r.text}\n`; });
+    msg += "\n";
+  }
+  msg += "— Admin Agent AI";
+  if(navigator.share){
+    navigator.share({ title: "আমার সাপ্তাহিক রুটিন", text: msg })
+      .then(() => toast("শেয়ার হয়েছে", "ok", "📤")).catch(() => {});
+    return;
+  }
+  window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
+  toast("WhatsApp খোলা হচ্ছে...", "info", "📤");
+}
+window.shareToWhatsApp = shareToWhatsApp;
+function shareViaDevice(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
+  let msg = "📅 আমার সাপ্তাহিক রুটিন\n\n";
+  for(let d=0; d<7; d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    msg += `${DAYS[d]}\n`;
+    items.forEach(r => { msg += `  ${r.time} — ${r.text}\n`; });
+    msg += "\n";
+  }
+  if(navigator.share){
+    navigator.share({ title: "আমার সাপ্তাহিক রুটিন", text: msg })
+      .then(() => toast("শেয়ার হয়েছে", "ok", "📤")).catch(()=>{});
+  } else {
+    navigator.clipboard.writeText(msg).then(() => toast("কপি হয়েছে", "ok", "📋"));
+  }
+}
+window.shareViaDevice = shareViaDevice;
+
+/* =========================================================
+   SCHEDULER
+   ========================================================= */
+function checkSchedule(){
+  if(isSleepTime()) return;
+  const now = new Date();
+  const dayIdx = now.getDay();
+  const timeNow = `${pad2(now.getHours())}:${pad2(now.getMinutes())}`;
+  const today = now.toISOString().slice(0,10);
+  const items = routine[dayIdx] || [];
+  items.forEach(r => {
+    if(!r.enabled) return;
+    if(r.time !== timeNow) return;
+    const key = `${today}_${r.id}_${r.time}`;
+    if(lastFired[key]) return;
+    if(snoozeUntil[r.id] && Date.now() < snoozeUntil[r.id]) return;
+    delete snoozeUntil[r.id];
+    lastFired[key] = true;
+    openCheckin(r, dayIdx);
+  });
+  const cutoff = new Date(Date.now() - 2*86400000).toISOString().slice(0,10);
+  Object.keys(lastFired).forEach(k => { if(k.slice(0,10) < cutoff) delete lastFired[k]; });
+}
+
+function fireAlert(item, timeLabel, dayIdx){
+  playAlertSound();
+  setTimeout(() => speak(item.text), 800);
+  showSystemNotification("⏰ " + item.text, `${DAYS[dayIdx]} · ${timeLabel}`);
+  showAlertPopup(item.text, `${DAYS[dayIdx]} · ${timeLabel}`, item.id);
+}
+
+/* =========================================================
+   ANALYTICS
+   ========================================================= */
+function getCategoryStats(){
+  const stats = {};
+  COLS.forEach(c => stats[c] = 0);
+  tasks.forEach(t => { if(stats[t.category] !== undefined) stats[t.category]++; });
+  return stats;
+}
+function getCompletionRate(daysBack = 7){
+  let scheduled = 0, done = 0;
+  const today = new Date();
+  for(let i = 0; i < daysBack; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    scheduled += items.length;
+    const h = history[key] || {};
+    items.forEach(r => { if(h[r.id] === "done") done++; });
+  }
+  return scheduled > 0 ? Math.round((done / scheduled) * 100) : 0;
+}
+function getStreak(){
+  let streak = 0;
+  const today = new Date();
+  for(let i = 0; i < 365; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const h = history[key] || {};
+    const doneCount = items.filter(r => h[r.id] === "done").length;
+    if(items.length > 0 && doneCount > 0) streak++;
+    else if(i > 0) break;
+  }
+  return streak;
+}
+function getDayLoad(){
+  const loads = [];
+  for(let d=0; d<7; d++) loads.push((routine[d]||[]).filter(r=>r.enabled).length);
+  return loads;
+}
+
+/* =========================================================
+   RENDER ANALYTICS
+   ========================================================= */
+function renderAnalytics(){
+  const catStats = getCategoryStats();
+  const rate = getCompletionRate(7);
+  const streak = getStreak();
+  const loads = getDayLoad();
+  const maxLoad = Math.max(...loads, 1);
+  const heat = [];
+  const today = new Date();
+  for(let i = 27; i >= 0; i--){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const h = history[key] || {};
+    const doneCount = items.filter(r => h[r.id] === "done").length;
+    const ratio = items.length > 0 ? doneCount / items.length : 0;
+    let level = 0;
+    if(ratio > 0 && ratio <= 0.3) level = 1;
+    else if(ratio > 0.3 && ratio <= 0.6) level = 2;
+    else if(ratio > 0.6 && ratio <= 0.9) level = 3;
+    else if(ratio > 0.9) level = 4;
+    heat.push({ key, level });
+  }
+  const todayIdx = new Date().getDay();
+  return `
+    <h2 class="section-title">📈 অগ্রগতি ও পরিসংখ্যান</h2>
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <h4>🎯 এই সপ্তাহের সম্পন্নতার হার</h4>
+        <div class="streak-big">${rate}%</div>
+        <div class="streak-label">গত ৭ দিনের গড়</div>
+      </div>
+      <div class="analytics-card">
+        <h4>🔥 একটানা সম্পন্ন</h4>
+        <div class="streak-big">${streak}</div>
+        <div class="streak-label">দিন স্ট্রিক</div>
+      </div>
+      <div class="analytics-card">
+        <h4>📋 মোট টাস্ক</h4>
+        <div class="streak-big">${tasks.length}</div>
+        <div class="streak-label">টাস্ক বোর্ডে</div>
+      </div>
+    </div>
+    <div class="card" style="margin-top:16px;">
+      <h3>📊 ক্যাটাগরি অনুযায়ী টাস্ক</h3>
+      ${Object.entries(catStats).map(([cat, n]) => {
+        const max = Math.max(...Object.values(catStats), 1);
+        return `<div class="bar-row">
+          <span class="br-label">${cat}</span>
+          <div class="br-bar-wrap"><div class="br-bar" style="width:${(n/max)*100}%"></div></div>
+          <span class="br-value">${n}</span>
+        </div>`;
+      }).join("")}
+    </div>
+    <div class="card">
+      <h3>🔥 শেষ ২৮ দিনের কার্যক্রম</h3>
+      <div class="heat-grid">${heat.map(h => `<div class="heat-cell" data-level="${h.level}" title="${h.key}"></div>`).join("")}</div>
+    </div>
+    <div class="card">
+      <h3>📅 সাপ্তাহিক লোড ব্যালান্স</h3>
+      ${loads.map((n, i) => `<div class="bar-row">
+        <span class="br-label">${DAYS_SHORT[i]}</span>
+        <div class="br-bar-wrap"><div class="br-bar" style="width:${(n/maxLoad)*100}%"></div></div>
+        <span class="br-value">${n}</span>
+      </div>`).join("")}
+    </div>
+    <div class="card">
+      <h3>✅ আজকের কাজ চিহ্নিত করুন</h3>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${(routine[todayIdx]||[]).filter(r=>r.enabled).map(r => {
+          const c = (checkins[todayKey()]||{})[r.id] || {};
+          const status = c.status || "pending";
+          return `<div style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--bg); border-radius:8px; font-size:.82rem;">
+            <span style="font-weight:700; color:var(--accent); font-size:.75rem;">${r.time}</span>
+            <span style="flex:1;">${escapeHtml(r.text)}</span>
+            <button class="btn-ghost" onclick="manualCheckin('${r.id}','started')" style="${status==='started'?'background:var(--ok);color:#fff;':''}">✓</button>
+            <button class="btn-ghost" onclick="manualCheckin('${r.id}','skipped')" style="${status==='skipped'?'background:var(--danger);color:#fff;':''}">✕</button>
+          </div>`;
+        }).join("") || '<div class="empty">আজকের জন্য কোনো রুটিন নেই</div>'}
+      </div>
+    </div>`;
+}
+
+window.manualCheckin = function(routineId, status){
+  const key = todayKey();
+  if(!checkins[key]) checkins[key] = {};
+  checkins[key][routineId] = {
+    status, timestamp: Date.now(), responseMs: 0, manual: true
+  };
+  if(!history[key]) history[key] = {};
+  history[key][routineId] = status === "started" ? "done" : "skipped";
+  saveCheckins(); saveHistory(); renderView();
+  toast(status === "started" ? "সম্পন্ন" : "বাদ", "ok", status === "started" ? "✅" : "✕");
+};
+
+/* =========================================================
+   DISCIPLINE VIEW (NEW)
+   ========================================================= */
+function renderDiscipline(){
+  const stats = getDisciplineStats();
+  const level = getDisciplineLevel(stats.score);
+  const week = getWeekCheckins(7);
+
+  // 7-day mini trend
+  const trend = [];
+  const today = new Date();
+  for(let i = 6; i >= 0; i--){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const dc = week[key] || {};
+    const started = items.filter(r => dc[r.id]?.status === "started").length;
+    const pct = items.length > 0 ? Math.round(started / items.length * 100) : 0;
+    trend.push({ date: key, day: DAYS_SHORT[dayIdx], pct, total: items.length, started });
+  }
+
+  // Advice based on score
+  let advice = "";
+  let adviceIcon = "💡";
+  if(stats.score >= 90){
+    advice = "আপনি অসাধারণ করছেন! এই নিয়মানুবর্তিতাই আপনাকে সফলতার শিখরে পৌঁছে দেবে। অন্যকেও অনুপ্রাণিত করুন।";
+    adviceIcon = "👑";
+  } else if(stats.score >= 75){
+    advice = "আপনি খুব ভালো করছেন! মাত্র কয়েকটি চেক-ইন মিস করলে মাস্টার লেভেলে পৌঁছে যাবেন। আরেকটু মনোযোগ দিন।";
+    adviceIcon = "🏆";
+  } else if(stats.score >= 60){
+    advice = "ভালো চলছে। চেক-ইনের প্রতি দ্রুত সাড়া দিলে স্কোর আরও বাড়বে। সকালের check-in বিশেষভাবে গুরুত্বপূর্ণ।";
+    adviceIcon = "⭐";
+  } else if(stats.score >= 40){
+    advice = "আপনি শিক্ষানবিস পর্যায়ে আছেন। প্রতিদিন সকালে ওঠে প্রথম কাজটি চেক-ইন করার চেষ্টা করুন — এটাই অভ্যাস তৈরির মূল চাবিকাঠি।";
+    adviceIcon = "🌱";
+  } else {
+    advice = "শুরুটা এখনো হয়নি। আজ থেকেই একটি ছোট রুটিন দিয়ে শুরু করুন — শুধু ২টি কাজ। ছোট শুরু, বড় পরিবর্তন।";
+    adviceIcon = "🎯";
+  }
+
+  return `
+    <h2 class="section-title">🏆 নিয়মানুবর্তিতা স্কোর</h2>
+
+    <div class="discipline-card">
+      <div class="dc-head">
+        <div>
+          <div class="dc-label">আপনার স্কোর</div>
+          <div class="dc-score">${stats.score}<span style="font-size:1.2rem; opacity:.6;">/100</span></div>
+          <div class="dc-level">${level.icon} ${level.name}</div>
+        </div>
+        <div class="dc-ring" style="--p:${stats.score}%">
+          <span>${level.icon}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="analytics-grid">
+      <div class="analytics-card">
+        <h4>✅ কনফার্মেশন রেট</h4>
+        <div class="streak-big">${stats.confirmationRate}%</div>
+        <div class="streak-label">${stats.started} / ${stats.total} কাজ</div>
+      </div>
+      <div class="analytics-card">
+        <h4>⚡ গড় সাড়া সময়</h4>
+        <div class="streak-big">${stats.avgResponseSec}s</div>
+        <div class="streak-label">দ্রুত সাড়া = বেশি স্কোর</div>
+      </div>
+      <div class="analytics-card">
+        <h4>🔥 স্ট্রিক</h4>
+        <div class="streak-big">${stats.streak}</div>
+        <div class="streak-label">দিন একটানা</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px;">
+      <h3>${adviceIcon} পরামর্শ</h3>
+      <p style="font-size:.85rem; line-height:1.7; color:var(--ink);">${advice}</p>
+    </div>
+
+    <div class="card">
+      <h3>📊 শেষ ৭ দিনের কনফার্মেশন</h3>
+      ${trend.map(t => `
+        <div class="bar-row">
+          <span class="br-label">${t.day}</span>
+          <div class="br-bar-wrap"><div class="br-bar" style="width:${t.pct}%; background:${t.pct >= 75 ? 'linear-gradient(90deg, var(--ok), #5fa585)' : t.pct >= 40 ? 'linear-gradient(90deg, var(--warn), #e0b06a)' : 'linear-gradient(90deg, var(--danger), #e57366)'}"></div></div>
+          <span class="br-value">${t.pct}%</span>
+        </div>
+      `).join("")}
+      <div style="font-size:.7rem; color:var(--sub); margin-top:10px;">প্রতিটি দিনে কত শতাংশ কাজ কনফার্ম করেছেন</div>
+    </div>
+
+    <div class="card">
+      <h3>🎯 কীভাবে স্কোর বাড়াবেন</h3>
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:.82rem; line-height:1.6;">
+        <div style="display:flex; gap:10px;">
+          <span>1️⃣</span>
+          <span><b>দ্রুত সাড়া দিন</b> — নোটিফিকেশন আসার সাথে সাথেই "শুরু করছি" চাপুন। ৩০ সেকেন্ডের মধ্যে সাড়া দিলে সর্বোচ্চ নম্বর।</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span>2️⃣</span>
+          <span><b>সকালে শুরু করুন</b> — প্রথম কাজ কনফার্ম করা মানে বাকি দিনটা সহজ।</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span>3️⃣</span>
+          <span><b>একটানা চালিয়ে যান</b> — ৭ দিনের বেশি স্ট্রিক হলে বোনাস স্কোর।</span>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <span>4️⃣</span>
+          <span><b>কাজ বাদ দিলে সৎ থাকুন</b> — মিথ্যা "শুরু" চাপলে স্ট্রিক ভাঙবে।</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📋 আজকের কনফার্মেশন লগ</h3>
+      ${(() => {
+        const dc = checkins[todayKey()] || {};
+        const entries = Object.entries(dc);
+        if(entries.length === 0){
+          return '<div class="empty">আজ এখনো কোনো কনফার্মেশন হয়নি</div>';
+        }
+        return entries.map(([rid, c]) => {
+          let itemText = "—";
+          let itemTime = "—";
+          for(let d = 0; d < 7; d++){
+            const it = (routine[d]||[]).find(r => r.id === rid);
+            if(it){ itemText = it.text; itemTime = it.time; break; }
+          }
+          const icon = c.status === "started" ? "✅" : c.status === "snoozed" ? "⏱️" : "⏭️";
+          const bg = c.status === "started" ? "var(--ok-soft)" : c.status === "snoozed" ? "var(--warn-soft)" : "var(--danger-soft)";
+          const respSec = c.responseMs ? Math.round(c.responseMs / 1000) : 0;
+          return `<div style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:${bg}; border-radius:8px; margin-bottom:6px; font-size:.82rem;">
+            <span style="font-size:1.1rem;">${icon}</span>
+            <span style="font-weight:700; color:var(--accent); font-size:.75rem;">${itemTime}</span>
+            <span style="flex:1;">${escapeHtml(itemText)}</span>
+            <span style="font-size:.7rem; color:var(--sub);">${respSec}s</span>
+          </div>`;
+        }).join("");
+      })()}
+    </div>`;
+}
+
+/* =========================================================
+   INSIGHTS (enhanced with discipline)
+   ========================================================= */
+function generateInsights(){
+  const list = [];
+  const loads = getDayLoad();
+  const avgLoad = loads.reduce((a,b)=>a+b,0) / 7;
+  const stats = getDisciplineStats();
+
+  // Discipline-based insights
+  if(stats.score >= 75){
+    list.push({
+      icon: "🏆",
+      title: `নিয়মানুবর্তিতা স্কোর: ${stats.score}`,
+      text: "আপনি খুব ভালো করছেন! ${stats.streak} দিনের স্ট্রিক আছে। এই ধারা বজায় রাখলে মাস্টার লেভেলে পৌঁছাবেন।"
+    });
+  } else if(stats.score < 40 && stats.total > 0){
+    list.push({
+      icon: "🎯",
+      title: `নিয়মানুবর্তিতা স্কোর: ${stats.score}`,
+      text: "চেক-ইন কম করছেন। প্রতিটি নোটিফিকেশনে দ্রুত সাড়া দিলে স্কোর বাড়বে। একটি দিন দিয়ে আবার শুরু করুন।"
+    });
+  }
+
+  // Response time insight
+  if(stats.avgResponseSec > 120 && stats.started > 3){
+    list.push({
+      icon: "⚡",
+      title: "সাড়া দিতে দেরি করছেন",
+      text: `গড়ে ${stats.avgResponseSec} সেকেন্ড সময় নিচ্ছেন। ৩০ সেকেন্ডের মধ্যে সাড়া দিলে সর্বোচ্চ স্কোর পাবেন। ফোন কাছে রাখুন।`
+    });
+  }
+
+  // Load insights
+  loads.forEach((n, i) => {
+    if(n > avgLoad * 1.5 && n >= 5){
+      list.push({
+        icon: "⚖️",
+        title: `${DAYS[i]} খুব ব্যস্ত`,
+        text: `আপনার ${DAYS[i]}-এ ${n}টি কাজ আছে। কিছু কাজ অন্য দিনে সরিয়ে নিন।`
+      });
+    }
+  });
+  loads.forEach((n, i) => {
+    if(n === 0){
+      list.push({
+        icon: "💤",
+        title: `${DAYS[i]} সম্পূর্ণ ফাঁকা`,
+        text: `এই দিনে কোনো কাজ নেই। একটি হালকা রুটিন যোগ করতে পারেন।`
+      });
+    }
+  });
+
+  // Completion rate
+  const rate = getCompletionRate(7);
+  if(rate > 0 && rate < 40){
+    list.push({
+      icon: "📉",
+      title: "সম্পন্নতার হার কম",
+      text: `শেষ ৭ দিনে ${rate}% কাজ সম্পন্ন। রুটিন কমানোর চেষ্টা করুন।`
+    });
+  } else if(rate >= 70){
+    list.push({
+      icon: "🌟",
+      title: "দুর্দান্ত সম্পন্নতা",
+      text: `শেষ ৭ দিনে ${rate}% কাজ সম্পন্ন করেছেন।`
+    });
+  }
+
+  // Best hour
+  const timeBuckets = {};
+  for(const date in checkins){
+    for(const rid in checkins[date]){
+      if(checkins[date][rid].status !== "started") continue;
+      for(let d=0; d<7; d++){
+        const item = (routine[d]||[]).find(r => r.id === rid);
+        if(item){
+          const hour = item.time.slice(0,2);
+          timeBuckets[hour] = (timeBuckets[hour] || 0) + 1;
+        }
+      }
+    }
+  }
+  const bestHour = Object.entries(timeBuckets).sort((a,b)=>b[1]-a[1])[0];
+  if(bestHour && bestHour[1] >= 3){
+    list.push({
+      icon: "⏰",
+      title: `সবচেয়ে কার্যকর সময়: ${bestHour[0]}:00`,
+      text: `এই সময়ে আপনি সবচেয়ে বেশি কাজ কনফার্ম করেন। গুরুত্বপূর্ণ কাজ এই সময়ে রাখুন।`
+    });
+  }
+
+  // Sleep mode
+  if(!settings.sleepEnabled){
+    list.push({
+      icon: "🌙",
+      title: "স্লিপ মোড চালু করুন",
+      text: "রাতে অ্যালার্ট বন্ধ রাখতে সেটিংসে স্লিপ মোড চালু করুন।"
+    });
+  }
+
+  // Overdue tasks
+  const overdue = tasks.filter(t => t.deadline && new Date(t.deadline) < new Date());
+  if(overdue.length > 0){
+    list.push({
+      icon: "⚠️",
+      title: `${overdue.length}টি টাস্কের সময় শেষ`,
+      text: `কিছু টাস্কের deadline পেরিয়ে গেছে। এখনই সম্পন্ন করুন বা deadline বাড়ান।`
+    });
+  }
+
+  insights = list;
+  saveInsights();
+  return list;
+}
+window.generateInsights = generateInsights;
+
+function renderInsights(){
+  if(insights.length === 0) generateInsights();
+  if(insights.length === 0){
+    return `<h2 class="section-title">💡 AI পরামর্শ</h2>
+      <div class="empty" style="padding:40px;">আরও ডেটা লাগবে — কিছুদিন রুটিন ব্যবহার করুন।</div>`;
+  }
+  let html = `<h2 class="section-title">💡 AI পরামর্শ (${insights.length})</h2>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:.78rem; color:var(--sub);">আপনার ডেটা বিশ্লেষণ করে তৈরি</span>
+      <button class="btn-ghost" onclick="generateInsights();renderView();">🔄 আবার বিশ্লেষণ</button>
+    </div>`;
+  insights.forEach(i => {
+    html += `<div class="insight">
+      <div class="ic-icon">${i.icon}</div>
+      <div class="ic-body">
+        <div class="ic-title">${escapeHtml(i.title)}</div>
+        <div class="ic-text">${escapeHtml(i.text)}</div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+/* FORECAST */
+function renderForecast(){
+  let html = `<h2 class="section-title">🔮 আগামী ৭ দিনের পূর্বাভাস</h2>`;
+  html += `<div class="card"><div class="forecast-list">`;
+  const today = new Date();
+  for(let i = 0; i < 7; i++){
+    const d = new Date(today); d.setDate(d.getDate() + i);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const load = items.length;
+    let level = "light", label = "হালকা";
+    if(load > 6){ level = "heavy"; label = "ব্যস্ত"; }
+    else if(load > 3){ level = "normal"; label = "স্বাভাবিক"; }
+    const itemText = items.slice(0, 3).map(r => `${r.time} ${r.text}`).join(" · ");
+    html += `<div class="forecast-day">
+      <span class="fd-name">${i === 0 ? "আজ" : DAYS_SHORT[dayIdx]}</span>
+      <span class="fd-items">${escapeHtml(itemText) || "কোনো কাজ নেই"}</span>
+      <span class="fd-load ${level}">${label} (${load})</span>
+    </div>`;
+  }
+  html += `</div></div>`;
+  html += `<div class="card">
+    <h3>🎯 AI সাজেশন</h3>
+    <p style="font-size:.82rem; color:var(--sub); line-height:1.6;">${getWeeklyAdvice()}</p>
+  </div>`;
+  return html;
+}
+function getWeeklyAdvice(){
+  const loads = getDayLoad();
+  const maxIdx = loads.indexOf(Math.max(...loads));
+  const minIdx = loads.indexOf(Math.min(...loads));
+  const avg = loads.reduce((a,b)=>a+b,0) / 7;
+  if(avg === 0) return "এখনো কোনো রুটিন যোগ করা হয়নি। টেমপ্লেট থেকে শুরু করুন।";
+  if(loads[maxIdx] > avg * 1.8) return `${DAYS[maxIdx]}-এ অনেক বেশি কাজ। কিছু কাজ ${DAYS[minIdx]}-এ সরিয়ে নিন।`;
+  return "আপনার সাপ্তাহিক লোড ভালোভাবে ব্যালান্সড। এভাবেই চালিয়ে যান।";
+}
+
+/* VIEWS */
+function renderDashboard(){
+  const todayIdx = new Date().getDay();
+  const todayItems = (routine[todayIdx]||[]).filter(r=>r.enabled);
+  const todayCheckins = checkins[todayKey()] || {};
+  const doneToday = todayItems.filter(r => todayCheckins[r.id]?.status === "started").length;
+  const rate = getCompletionRate(7);
+  const stats = getDisciplineStats();
+  const level = getDisciplineLevel(stats.score);
+
+  let html = `
+    <div class="discipline-card">
+      <div class="dc-head">
+        <div>
+          <div class="dc-label">নিয়মানুবর্তিতা স্কোর</div>
+          <div class="dc-score">${stats.score}</div>
+          <div class="dc-level">${level.icon} ${level.name} · ${stats.streak}🔥 স্ট্রিক</div>
+        </div>
+        <div class="dc-ring" style="--p:${stats.score}%">
+          <span>${level.icon}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat high"><div class="label">আজকের কাজ</div><div class="value">${todayItems.length}</div><div class="delta">${doneToday}টি কনফার্ম</div></div>
+      <div class="stat ok"><div class="label">স্ট্রিক</div><div class="value">${stats.streak}</div><div class="delta">দিন</div></div>
+      <div class="stat"><div class="label">সাপ্তাহিক গড়</div><div class="value">${rate}%</div><div class="delta">সম্পন্নতা</div></div>
+      <div class="stat gold"><div class="label">লেভেল</div><div class="value" style="font-size:1.1rem;">${level.name}</div><div class="delta">${stats.confirmationRate}% কনফার্মেশন</div></div>
+    </div>
+
+    <div class="card">
+      <h3>📌 আজকের রুটিন (${DAYS[todayIdx]})</h3>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${todayItems.length ? todayItems.map(r => {
+          const c = todayCheckins[r.id] || {};
+          const status = c.status;
+          const icon = status === "started" ? "✅" : status === "snoozed" ? "⏱️" : status === "skipped" ? "⏭️" : "";
+          return `<div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg); border:1px solid var(--line); border-radius:10px;">
+            <span style="font-weight:700; color:var(--accent); font-size:.75rem; min-width:45px;">${r.time}</span>
+            <span style="flex:1; font-size:.86rem;">${escapeHtml(r.text)}</span>
+            ${icon ? `<span style="font-size:1.1rem;">${icon}</span>` : `<button class="btn-ghost" onclick="manualCheckin('${r.id}','started')" style="padding:4px 10px; font-size:.72rem;">কনফার্ম</button>`}
+          </div>`;
+        }).join("") : '<div class="empty">আজকের জন্য কোনো রুটিন নেই</div>'}
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>⚡ দ্রুত কাজ</h3>
+      <div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));">
+        <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
+        <button class="btn-secondary" onclick="syncToCalendar()">📅 Calendar সিঙ্ক</button>
+        <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp শেয়ার</button>
+        <button class="btn-secondary" onclick="testAlert()">🔊 টেস্ট সাউন্ড</button>
+        <button class="btn-secondary" onclick="testCheckin()">🎯 টেস্ট Check-in</button>
+        <button class="btn-secondary" onclick="switchView('discipline')">🏆 স্কোর দেখুন</button>
+      </div>
+    </div>`;
+
+  if(insights.length === 0) generateInsights();
+  if(insights.length > 0){
+    const top = insights[0];
+    html += `<div class="insight">
+      <div class="ic-icon">${top.icon}</div>
+      <div class="ic-body">
+        <div class="ic-title">💡 ${escapeHtml(top.title)}</div>
+        <div class="ic-text">${escapeHtml(top.text)}</div>
+        <button class="btn-ghost" onclick="switchView('insights')" style="margin-top:8px; padding:4px 0;">সব পরামর্শ দেখুন →</button>
+      </div>
+    </div>`;
+  }
+  return html;
+}
+
+window.testCheckin = function(){
+  const todayIdx = new Date().getDay();
+  const items = (routine[todayIdx]||[]).filter(r=>r.enabled);
+  const item = items[0] || { id: "test", time: "এখন", text: "টেস্ট কাজ" };
+  openCheckin(item, todayIdx);
+};
+
+function renderRoutineView(){
+  const todayIdx = new Date().getDay();
+  let html = `<h2 class="section-title">📅 সাপ্তাহিক রুটিন</h2>
+    <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+      <button class="btn-primary" onclick="syncToCalendar()">📅 Calendar-এ সিঙ্ক</button>
+      <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp শেয়ার</button>
+      <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
+    </div>
+    <div class="routine-grid">`;
+
+  for(let i=0; i<7; i++){
+    const items = (routine[i]||[]);
+    const today = new Date();
+    const diff = i - todayIdx;
+    const d = new Date(today); d.setDate(today.getDate() + diff);
+    const dateLabel = d.toLocaleDateString("bn-BD", { day:"numeric", month:"short" });
+    const dc = checkins[todayKey()] || {};
+
+    html += `<div class="day-card ${i === todayIdx ? "today" : ""}">
+      <div class="day-head">
+        <div>
+          <div class="day-name">${DAYS[i]}</div>
+          <div class="day-date">${dateLabel}${i === todayIdx ? " · আজ" : ""}</div>
+        </div>
+        <span style="background:var(--bg2); padding:2px 8px; border-radius:20px; font-size:.68rem; color:var(--sub); font-weight:600;">${items.filter(r=>r.enabled).length}</span>
+      </div>
+      <div class="day-body">
+        ${items.length ? items.map(r => {
+          const c = i === todayIdx ? dc[r.id] : null;
+          const statusIcon = c?.status === "started" ? "✅" : c?.status === "snoozed" ? "⏱️" : c?.status === "skipped" ? "⏭️" : "";
+          return `
+          <div class="routine-item" style="${r.enabled ? "" : "opacity:.45;"}">
+            <span class="time">${r.time}</span>
+            <span class="r-text" onclick="toggleRoutineItem(${i},'${r.id}')" style="cursor:pointer;">${escapeHtml(r.text)}</span>
+            ${statusIcon ? `<span style="font-size:.9rem;">${statusIcon}</span>` : ""}
+            <button class="r-cal" onclick="event.stopPropagation();quickAddToGoogleCalendar(${i},'${r.id}')" title="Calendar">📅</button>
+            <button class="r-mail" onclick="event.stopPropagation();emailRoutineItem(${i},'${r.id}')" title="Email">✉️</button>
+            <button class="r-del" onclick="event.stopPropagation();deleteRoutineItem(${i},'${r.id}')">✕</button>
+          </div>`;
+        }).join("") : `<div style="font-size:.72rem; color:var(--sub); font-style:italic; padding:8px 0;">কোনো কাজ নেই</div>`}
+      </div>
+      <button class="day-mail" onclick="emailDay(${i})">✉️ এই দিন email</button>
+      <button class="day-add" onclick="addRoutineItem(${i})">+ কাজ যোগ করুন</button>
+    </div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+window.quickAddToGoogleCalendar = function(dayIdx, routineId){
+  const item = (routine[dayIdx]||[]).find(r => r.id === routineId);
+  if(!item) return;
+  const [h, m] = item.time.split(":").map(Number);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const offset = (dayIdx - today.getDay() + 7) % 7;
+  const start = new Date(today); start.setDate(start.getDate() + offset); start.setHours(h, m, 0, 0);
+  const end = new Date(start.getTime() + 30*60000);
+  const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
+  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`;
+  window.open(url, "_blank");
+  toast("Google Calendar-এ খোলা হচ্ছে", "info", "📅");
+};
+
+function renderTasksView(){
+  const byCol = {};
+  COLS.forEach(c => byCol[c] = []);
+  tasks.forEach(t => { if(byCol[t.category]) byCol[t.category].push(t); });
+  let html = `<h2 class="section-title">📋 টাস্ক বোর্ড</h2>
+    <div class="card">
+      <h3>➕ নতুন টাস্ক</h3>
+      <form id="addForm" onsubmit="addTask(event)">
+        <div class="field-row">
+          <div class="field"><label>টাস্ক</label><input id="text" placeholder="কাজের নাম" required></div>
+          <div class="field"><label>ক্যাটাগরি</label><select id="category">${COLS.map(c=>`<option>${c}</option>`).join("")}</select></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label>প্রায়োরিটি</label><select id="priority"><option>High</option><option selected>Medium</option><option>Low</option></select></div>
+          <div class="field"><label>Deadline</label><input id="deadline" type="date"></div>
+        </div>
+        <button type="submit" class="btn-primary">যোগ করুন</button>
+      </form>
+    </div>
+    <div class="board">`;
+  COLS.forEach(col => {
+    html += `<div class="col">
+      <div class="col-head">
+        <h2><span class="dot-cat"></span>${col}</h2>
+        <span class="count">${byCol[col].length}</span>
+      </div>
+      ${byCol[col].length ? byCol[col].map(t => `
+        <div class="task">
+          <div class="top">
+            <span class="text">${escapeHtml(t.text)}</span>
+            <button class="remove" onclick="removeTask('${t.id}')">✕</button>
+          </div>
+          <div class="meta">
+            <span class="tag ${t.priority.toLowerCase()}">${t.priority}</span>
+            ${t.deadline ? `<span>📅 ${t.deadline}</span>` : ""}
+            ${t.fromCalendar ? `<span style="color:var(--ok);">📅 cal</span>` : ""}
+          </div>
+        </div>
+      `).join("") : `<div class="empty">কোনো টাস্ক নেই</div>`}
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderTemplates(){
+  let html = `<h2 class="section-title">📝 রুটিন টেমপ্লেট</h2>
+    <p style="color:var(--sub); font-size:.85rem; margin-bottom:16px;">এক ক্লিকে সাপ্তাহিক রুটিন লোড করুন।</p>
+    <div class="template-grid">`;
+  Object.entries(TEMPLATES).forEach(([key, t]) => {
+    const count = Object.values(t.data).reduce((s,a)=>s+a.length,0);
+    html += `<div class="template-card" onclick="applyTemplate('${key}')">
+      <div class="tc-emoji">${t.icon}</div>
+      <div class="tc-name">${t.name}</div>
+      <div class="tc-desc">${t.desc}</div>
+      <div class="tc-count">${count}টি রুটিন আইটেম</div>
+    </div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function renderSettings(){
+  let html = `<h2 class="section-title">⚙️ সেটিংস</h2>`;
+
+  html += `<div class="card">
+    <h3>🎨 থিম</h3>
+    <div class="theme-picker">
+      ${THEMES.map(t => {
+        const cur = document.documentElement.getAttribute("data-theme") || "light";
+        return `<div class="theme-swatch ${t.id === cur ? 'active' : ''}" data-t="${t.id}" onclick="setTheme('${t.id}')">${t.icon}</div>`;
+      }).join("")}
+    </div>
+  </div>`;
+
+  html += `<div class="card">
+    <h3>🎯 Check-in কনফার্মেশন</h3>
+    <p style="font-size:.78rem; color:var(--sub); margin-bottom:12px;">প্রতিটি কাজের সময়ে "শুরু করছি" কনফার্ম চাওয়া হবে — এতে নিয়মানুবর্তিতা মাপা যায়।</p>
+    <label class="check-row"><input type="checkbox" ${settings.checkinEnabled?"checked":""} onchange="window._updateSetting('checkinEnabled',this.checked)"> <span>Check-in কনফার্মেশন চালু</span></label>
+    <label class="check-row"><input type="checkbox" ${settings.welcomeEnabled?"checked":""} onchange="window._updateSetting('welcomeEnabled',this.checked)"> <span>সকালের স্বাগত বার্তা চালু</span></label>
+    <div class="field" style="margin-top:8px;">
+      <label>Auto-skip সময় (মিনিট): <span id="skipVal">${settings.autoSkipMinutes}</span></label>
+      <input type="range" min="1" max="10" step="1" value="${settings.autoSkipMinutes}" oninput="window._updateSetting('autoSkipMinutes',parseInt(this.value));document.getElementById('skipVal').textContent=this.value">
+    </div>
+  </div>`;
+
+  html += `<div class="card">
+    <h3>🔔 অ্যালার্ট</h3>
+    <label class="check-row"><input type="checkbox" ${settings.sound?"checked":""} onchange="window._updateSetting('sound',this.checked)"> <span>সাউন্ড</span></label>
+    <label class="check-row"><input type="checkbox" ${settings.voice?"checked":""} onchange="window._updateSetting('voice',this.checked)"> <span>ভয়েস অ্যানাউন্সমেন্ট</span></label>
+    <label class="check-row"><input type="checkbox" ${settings.notif?"checked":""} onchange="window._updateSetting('notif',this.checked)"> <span>ব্রাউজার নোটিফিকেশন</span></label>
+    <div class="field" style="margin-top:12px;">
+      <label>ভলিউম: <span id="volVal">${Math.round(settings.volume*100)}</span>%</label>
+      <input type="range" min="0" max="1" step="0.05" value="${settings.volume}" oninput="window._updateSetting('volume',parseFloat(this.value));document.getElementById('volVal').textContent=Math.round(this.value*100)">
+    </div>
+    <button class="btn-secondary" onclick="testAlert()" style="margin-top:8px;">🔊 টেস্ট করুন</button>
+  </div>`;
+
+  html += `<div class="card">
+    <h3>🌙 স্লিপ মোড</h3>
+    <label class="check-row"><input type="checkbox" ${settings.sleepEnabled?"checked":""} onchange="window._updateSetting('sleepEnabled',this.checked);updateSleepIndicator()"> <span>স্লিপ মোড চালু</span></label>
+    <div class="field-row" style="margin-top:8px;">
+      <div class="field"><label>শুরু</label><input type="time" value="${settings.sleepStart}" onchange="window._updateSetting('sleepStart',this.value);updateSleepIndicator()"></div>
+      <div class="field"><label>শেষ</label><input type="time" value="${settings.sleepEnd}" onchange="window._updateSetting('sleepEnd',this.value);updateSleepIndicator()"></div>
+    </div>
+  </div>`;
+
+  html += `<div class="card">
+    <h3>💾 ডেটা</h3>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn-secondary" onclick="exportBackup()">⬇ ব্যাকআপ</button>
+      <button class="btn-secondary" onclick="document.getElementById('importFile').click()">⬆ রিস্টোর</button>
+      <button class="btn-danger" onclick="if(confirm('সব ডেটা মুছে ফেলবেন?')){localStorage.clear();location.reload();}">🗑️ সব রিসেট</button>
+    </div>
+  </div>`;
+
+  html += `<div class="card">
+    <h3>ℹ️ সম্পর্কে</h3>
+    <p style="font-size:.8rem; color:var(--sub); line-height:1.6;">
+      Admin Agent AI · সম্পূর্ণ ডিভাইসে সংরক্ষিত · কোনো সার্ভারে ডেটা যায় না।<br>
+      Check-in কনফার্মেশন দিয়ে আপনার নিয়মানুবর্তিতা স্কোরিং করা হয়।
+    </p>
+  </div>`;
+  return html;
+}
+
+function renderIntegrations(){
+  return `<h2 class="section-title">🔌 ডিভাইস সিঙ্ক</h2>
+    <div class="card">
+      <h3>📅 Google Calendar</h3>
+      <p style="font-size:.82rem; color:var(--sub); line-height:1.6;">রুটিনকে সাপ্তাহিক recurring event হিসেবে export করুন। একবার import করলেই Google নিজেই reminder পাঠাবে।</p>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn-primary" onclick="syncToCalendar()">📥 ICS ডাউনলোড</button>
+        <button class="btn-secondary" onclick="importFromCalendar()">🔁 Calendar থেকে আনা</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📤 WhatsApp / Messenger</h3>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn-primary" onclick="shareToWhatsApp()">WhatsApp-এ শেয়ার</button>
+        <button class="btn-secondary" onclick="shareViaDevice()">অন্য অ্যাপে শেয়ার</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>✉️ Email</h3>
+      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <button class="btn-primary" onclick="emailDigest()">📧 Email digest</button>
+      </div>
+    </div>`;
+}
+
+/* BACKUP */
+function exportBackup(){
+  const payload = {
+    version: 3, exportedAt: new Date().toISOString(),
+    routine, tasks, settings, history, checkins, insights
+  };
+  downloadFile(`admin-agent-backup-${todayKey()}.json`, JSON.stringify(payload, null, 2), "application/json");
+  toast("ব্যাকআপ ডাউনলোড", "ok", "⬇");
+}
+window.exportBackup = exportBackup;
+
+function importBackup(file){
+  const reader = new FileReader();
+  reader.onload = () => {
+    try{
+      const data = JSON.parse(reader.result);
+      if(data.routine) routine = data.routine;
+      if(Array.isArray(data.tasks)) tasks = data.tasks;
+      if(data.settings) settings = Object.assign(settings, data.settings);
+      if(data.history) history = data.history;
+      if(data.checkins) checkins = data.checkins;
+      if(data.insights) insights = data.insights;
+      saveRoutine(); saveTasks(); saveSettings(); saveHistory(); saveCheckins(); saveInsights();
+      renderView(); updateSleepIndicator(); updateSoundIcon();
+      toast("রিস্টোর সফল", "ok", "⬆");
+    }catch(e){ toast("ফাইল পড়া যায়নি", "err"); }
+  };
+  reader.readAsText(file);
+}
+
+/* VIEW ROUTER */
+function switchView(view){
+  currentView = view;
+  document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  renderView();
+  closeSidebarMobile();
+}
+window.switchView = switchView;
+
+const VIEW_TITLES = {
+  dashboard: ["ড্যাশবোর্ড", "সবকিছু এক নজরে।"],
+  routine: ["৭ দিনের রুটিন", "সাপ্তাহিক কাজ ব্যবস্থাপনা।"],
+  tasks: ["টাস্ক বোর্ড", "আপনার সব টাস্ক।"],
+  discipline: ["নিয়মানুবর্তিতা", "আপনার কনফার্মেশন ও স্কোর।"],
+  analytics: ["অগ্রগতি", "আপনার অগ্রগতির পরিসংখ্যান।"],
+  insights: ["AI পরামর্শ", "আপনার ডেটা বিশ্লেষণ করে পরামর্শ।"],
+  forecast: ["সাপ্তাহিক পূর্বাভাস", "আগামী ৭ দিনের পরিকল্পনা।"],
+  templates: ["রুটিন টেমপ্লেট", "এক ক্লিকে রুটিন লোড।"],
+  settings: ["সেটিংস", "অ্যাপ কাস্টমাইজ করুন।"],
+  integrations: ["ডিভাইস সিঙ্ক", "Calendar, WhatsApp, Email।"]
+};
+
+function renderView(){
+  const el = $("viewContainer");
+  const [title, sub] = VIEW_TITLES[currentView] || ["—",""];
+  $("pageTitle").textContent = title;
+  $("pageSub").textContent = sub;
+  let html = "";
+  switch(currentView){
+    case "dashboard": html = renderDashboard(); break;
+    case "routine": html = renderRoutineView(); break;
+    case "tasks": html = renderTasksView(); break;
+    case "discipline": html = renderDiscipline(); break;
+    case "analytics": html = renderAnalytics(); break;
+    case "insights": generateInsights(); html = renderInsights(); break;
+    case "forecast": html = renderForecast(); break;
+    case "templates": html = renderTemplates(); break;
+    case "settings": html = renderSettings(); break;
+    case "integrations": html = renderIntegrations(); break;
+    default: html = renderDashboard();
+  }
+  el.innerHTML = html;
+}
+
+function openSidebarMobile(){ $("sidebar").classList.add("open"); $("sidebarBackdrop").classList.add("show"); }
+function closeSidebarMobile(){ $("sidebar").classList.remove("open"); $("sidebarBackdrop").classList.remove("show"); }
+
+function testAlert(){
+  playAlertSound();
+  setTimeout(() => speak("এটি একটি টেস্ট অ্যালার্ট"), 800);
+  showSystemNotification("⏰ টেস্ট অ্যালার্ট", "সাউন্ড ও নোটিফিকেশন কাজ করছে");
+  toast("টেস্ট সাউন্ড বাজছে", "ok", "🔊");
+}
+window.testAlert = testAlert;
+
+function updateSoundIcon(){
+  const btn = $("soundToggle");
+  if(!btn) return;
+  btn.textContent = settings.sound ? "🔔" : "🔕";
+  btn.classList.toggle("active", settings.sound);
+}
+
+window._updateSetting = function(key, val){
+  settings[key] = val;
+  saveSettings();
+  if(key === "sound") updateSoundIcon();
+  toast("সেটিং সেভ", "ok", "💾");
+};
+
+/* PWA */
+if("serviceWorker" in navigator){
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("sw.js")
+      .then(reg => console.log("SW registered:", reg.scope))
+      .catch(err => console.warn("SW failed:", err));
+  });
+}
+let deferredPrompt = null;
+window.addEventListener("beforeinstallprompt", e => {
+  e.preventDefault();
+  deferredPrompt = e;
+  $("pwaInstallBanner").classList.add("show");
+});
+const installBtn = $("pwaInstallBtn");
+if(installBtn){
+  installBtn.addEventListener("click", async () => {
+    if(!deferredPrompt) return;
+    deferredPrompt.prompt();
+    await deferredPrompt.userChoice;
+    deferredPrompt = null;
+    $("pwaInstallBanner").classList.remove("show");
+  });
+}
+const dismissBtn = $("pwaDismissBtn");
+if(dismissBtn){
+  dismissBtn.addEventListener("click", () => {
+    $("pwaInstallBanner").classList.remove("show");
+    localStorage.setItem("pwa_dismissed", Date.now().toString());
+  });
+}
+if(window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone){
+  const banner = $("pwaInstallBanner");
+  if(banner) banner.style.display = "none";
+}
+
+/* INIT */
+function init(){
+  initTheme();
+  loadState();
+
+  document.querySelectorAll(".nav-item[data-view]").forEach(b => {
+    b.addEventListener("click", () => switchView(b.dataset.view));
+  });
+  $("menuBtn").addEventListener("click", openSidebarMobile);
+  $("sidebarBackdrop").addEventListener("click", closeSidebarMobile);
+  $("themeToggle").addEventListener("click", toggleTheme);
+  $("soundToggle").addEventListener("click", () => {
+    settings.sound = !settings.sound; saveSettings(); updateSoundIcon();
+    toast(settings.sound ? "সাউন্ড চালু" : "সাউন্ড বন্ধ", "info", settings.sound?"🔔":"🔕");
+  });
+  $("modalBackdrop").addEventListener("click", e => { if(e.target.id === "modalBackdrop") closeModal(); });
+  $("importFile").addEventListener("change", e => { if(e.target.files[0]) importBackup(e.target.files[0]); });
+
+  // Email & WhatsApp sidebar buttons
+  const emailBtn = $("btnEmailShare");
+  if(emailBtn) emailBtn.addEventListener("click", () => { emailFullWeek(); closeSidebarMobile(); });
+  const waBtn = $("btnWhatsAppShare");
+  if(waBtn) waBtn.addEventListener("click", () => { shareToWhatsApp(); closeSidebarMobile(); });
+
+  // Check-in overlay buttons
+  $("ciStart").addEventListener("click", startCheckin);
+  $("ciSnooze").addEventListener("click", snoozeCheckin);
+  $("ciSkip").addEventListener("click", skipCheckin);
+
+  // Welcome overlay
+  $("wcContinue").addEventListener("click", () => {
+    $("welcomeOverlay").classList.remove("show");
+  });
+
+  const firstClick = () => {
+    if("Notification" in window && Notification.permission === "default"){
+      requestNotifPermission();
+    }
+    ensureAudio();
+    document.removeEventListener("click", firstClick);
+  };
+  document.addEventListener("click", firstClick, { once: true });
+
+  renderView();
+  updateSoundIcon();
+  updateSleepIndicator();
+
+  // Show welcome after short delay
+  setTimeout(showWelcome, 1500);
+
+  setInterval(() => { checkSchedule(); updateSleepIndicator(); }, 20000);
+  checkSchedule();
+  setInterval(generateInsights, 3600000);
+}
+
+document.addEventListener("DOMContentLoaded", init);
+</script>
+</body>
+</html>

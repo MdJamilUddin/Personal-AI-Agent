@@ -1,0 +1,23 @@
+{
+  "name": "Personal Admin Agent AI",
+  "short_name": "Admin Agent",
+  "description": "৭ দিনের রুটিন, Check-in কনফার্মেশন ও নিয়মানুবর্তিতা স্কোরিং সহ স্মার্ট সহকারী",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f4f0",
+  "theme_color": "#b5502f",
+  "lang": "bn-BD",
+  "dir": "ltr",
+  "categories": ["productivity", "utilities", "lifestyle"],
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "৭ দিনের রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
+    { "name": "নিয়মানুবর্তিতা", "short_name": "স্কোর", "url": "./index.html?view=discipline" }
+  ]
+}
