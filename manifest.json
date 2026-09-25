@@ -1,7 +1,7 @@
 {
   "name": "Personal Admin Agent AI",
   "short_name": "Admin Agent",
-  "description": "৭ দিনের রুটিন, Check-in, হ্যাবিট ট্র্যাকার, রিপোর্ট সহ স্মার্ট সহকারী",
+  "description": "৭ দিনের রুটিন, Check-in, হ্যাবিট, রিপোর্ট",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
