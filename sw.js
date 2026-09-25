@@ -1,5 +1,5 @@
-/* Service Worker · Admin Agent AI */
-const CACHE = "admin-agent-v3";
+/* Service Worker · Admin Agent AI v4 */
+const CACHE = "admin-agent-v4";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
