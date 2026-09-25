@@ -1,7 +1,7 @@
 {
   "name": "Personal Admin Agent AI",
   "short_name": "Admin Agent",
-  "description": "রুটিন, হ্যাবিট, ঘুম, পানি, জার্নাল, Exam, Admission Hub, Cloud Sync",
+  "description": "রুটিন, হ্যাবিট, স্বাস্থ্য, Exam, Admission Hub, Cloud Sync",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -18,7 +18,7 @@
   ],
   "shortcuts": [
     { "name": "Admission Hub", "short_name": "Admission", "url": "./index.html?view=admission" },
-    { "name": "Exam Schedule", "short_name": "Exam", "url": "./index.html?view=exams" },
+    { "name": "Exam", "short_name": "Exam", "url": "./index.html?view=exams" },
     { "name": "Crash Course", "short_name": "Crash", "url": "./index.html?view=crash" },
     { "name": "রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
     { "name": "Cloud Sync", "short_name": "Cloud", "url": "./index.html?view=cloud" }
