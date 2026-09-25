@@ -95,35 +95,6 @@ input,select,textarea{font:inherit; color:inherit;}
 .nav-item:hover{background:var(--card); color:var(--ink);}
 .nav-item.active{background:var(--card); color:var(--ink); font-weight:600; box-shadow:var(--shadow-sm);}
 .nav-item .icon{width:18px; text-align:center; font-size:1rem;}
-.nav-item .badge{margin-left:auto; font-size:.65rem; background:var(--accent); color:#fff; padding:1px 7px; border-radius:20px; font-weight:700;}
-
-/* DISCIPLINE SCORE CARD */
-.discipline-card{
-  background:linear-gradient(135deg, var(--accent), #d8734c);
-  color:#fff; border-radius:var(--radius); padding:16px; margin-bottom:16px;
-  box-shadow:0 8px 24px rgba(181,80,47,.3); position:relative; overflow:hidden;
-}
-.discipline-card::before{
-  content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px;
-  border-radius:50%; background:rgba(255,255,255,.1);
-}
-.discipline-card::after{
-  content:''; position:absolute; bottom:-40px; right:20px; width:80px; height:80px;
-  border-radius:50%; background:rgba(255,255,255,.08);
-}
-.discipline-card .dc-head{display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1;}
-.discipline-card .dc-label{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; opacity:.9; font-weight:600;}
-.discipline-card .dc-score{font-size:2.6rem; font-weight:800; line-height:1; margin:8px 0 4px; letter-spacing:-.03em;}
-.discipline-card .dc-level{font-size:.82rem; opacity:.95; font-weight:500;}
-.discipline-card .dc-ring{
-  width:60px; height:60px; border-radius:50%;
-  background:conic-gradient(rgba(255,255,255,.4) 0%, rgba(255,255,255,.15) var(--p, 0%), transparent 0%);
-  display:grid; place-items:center; font-size:1.4rem; position:relative;
-}
-.discipline-card .dc-ring::after{
-  content:''; position:absolute; inset:6px; border-radius:50%; background:var(--accent);
-}
-.discipline-card .dc-ring span{position:relative; z-index:1;}
 
 .main{padding:20px; min-width:0;}
 @media(max-width:899px){.main{padding:14px;}}
@@ -137,6 +108,25 @@ input,select,textarea{font:inherit; color:inherit;}
 .icon-round{width:40px; height:40px; border-radius:50%; background:var(--card); border:1px solid var(--line); display:grid; place-items:center; font-size:1rem; transition:all .15s var(--ease); box-shadow:var(--shadow-sm);}
 .icon-round:hover{transform:translateY(-1px); box-shadow:var(--shadow-md);}
 .icon-round.active{background:var(--ok); color:#fff; border-color:var(--ok);}
+
+.discipline-card{
+  background:linear-gradient(135deg, var(--accent), #d8734c);
+  color:#fff; border-radius:var(--radius); padding:16px; margin-bottom:16px;
+  box-shadow:0 8px 24px rgba(181,80,47,.3); position:relative; overflow:hidden;
+}
+.discipline-card::before{content:''; position:absolute; top:-30px; right:-30px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,.1);}
+.discipline-card::after{content:''; position:absolute; bottom:-40px; right:20px; width:80px; height:80px; border-radius:50%; background:rgba(255,255,255,.08);}
+.discipline-card .dc-head{display:flex; justify-content:space-between; align-items:flex-start; position:relative; z-index:1;}
+.discipline-card .dc-label{font-size:.7rem; text-transform:uppercase; letter-spacing:.08em; opacity:.9; font-weight:600;}
+.discipline-card .dc-score{font-size:2.6rem; font-weight:800; line-height:1; margin:8px 0 4px; letter-spacing:-.03em;}
+.discipline-card .dc-level{font-size:.82rem; opacity:.95; font-weight:500;}
+.discipline-card .dc-ring{
+  width:60px; height:60px; border-radius:50%;
+  background:conic-gradient(rgba(255,255,255,.4) 0%, rgba(255,255,255,.15) var(--p, 0%), transparent 0%);
+  display:grid; place-items:center; font-size:1.4rem; position:relative;
+}
+.discipline-card .dc-ring::after{content:''; position:absolute; inset:6px; border-radius:50%; background:var(--accent);}
+.discipline-card .dc-ring span{position:relative; z-index:1;}
 
 .section-title{font-size:1.05rem; font-weight:700; margin:0 0 12px; display:flex; align-items:center; gap:8px;}
 
@@ -291,38 +281,19 @@ input,select,textarea{font:inherit; color:inherit;}
 .modal p{margin:0 0 16px; color:var(--sub); font-size:.85rem;}
 .modal-actions{display:flex; gap:10px; justify-content:flex-end; margin-top:20px; flex-wrap:wrap;}
 
-/* CHECK-IN ALERT — full screen takeover */
-.checkin-overlay{
-  position:fixed; inset:0; background:rgba(20,18,12,.6); backdrop-filter:blur(6px);
-  z-index:400; display:none; place-items:center; padding:20px;
-  animation:fadeIn .3s var(--ease);
-}
+.checkin-overlay{position:fixed; inset:0; background:rgba(20,18,12,.6); backdrop-filter:blur(6px); z-index:400; display:none; place-items:center; padding:20px;}
 .checkin-overlay.show{display:grid;}
-@keyframes fadeIn{from{opacity:0;} to{opacity:1;}}
-.checkin-card{
-  background:var(--card); border:1px solid var(--line);
-  border-radius:var(--radius-lg); padding:28px 24px;
-  max-width:460px; width:100%; text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.3);
-  animation:popIn .4s cubic-bezier(.34,1.56,.64,1);
-}
+.checkin-card{background:var(--card); border:1px solid var(--line); border-radius:var(--radius-lg); padding:28px 24px; max-width:460px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.3); animation:popIn .4s cubic-bezier(.34,1.56,.64,1);}
 @keyframes popIn{from{opacity:0; transform:scale(.85);} to{opacity:1; transform:scale(1);}}
 .checkin-icon{font-size:3.5rem; margin-bottom:12px; animation:bounce 1s infinite;}
 @keyframes bounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
 .checkin-title{font-size:1.4rem; font-weight:800; margin-bottom:6px; letter-spacing:-.02em;}
 .checkin-sub{font-size:.88rem; color:var(--sub); margin-bottom:16px; line-height:1.5;}
-.checkin-task{
-  background:var(--accent-soft); border:1px solid var(--accent);
-  border-radius:12px; padding:14px; margin-bottom:18px;
-}
+.checkin-task{background:var(--accent-soft); border:1px solid var(--accent); border-radius:12px; padding:14px; margin-bottom:18px;}
 .checkin-task .ct-time{font-size:.75rem; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:.05em;}
 .checkin-task .ct-text{font-size:1.1rem; font-weight:700; margin-top:4px; color:var(--ink);}
 .checkin-actions{display:grid; gap:10px;}
-.checkin-btn{
-  padding:14px 18px; border-radius:12px; font-weight:700; font-size:.95rem;
-  display:flex; align-items:center; justify-content:center; gap:10px;
-  transition:all .15s var(--ease); border:2px solid transparent;
-}
+.checkin-btn{padding:14px 18px; border-radius:12px; font-weight:700; font-size:.95rem; display:flex; align-items:center; justify-content:center; gap:10px; transition:all .15s var(--ease); border:2px solid transparent; cursor:pointer;}
 .checkin-btn.start{background:var(--ok); color:#fff;}
 .checkin-btn.start:hover{filter:brightness(1.08); transform:translateY(-2px);}
 .checkin-btn.snooze{background:var(--warn-soft); color:var(--warn); border-color:var(--warn);}
@@ -331,25 +302,13 @@ input,select,textarea{font:inherit; color:inherit;}
 .checkin-btn.skip:hover{background:var(--danger); color:#fff;}
 .checkin-timer{font-size:.75rem; color:var(--sub); margin-top:14px;}
 
-/* WELCOME OVERLAY */
-.welcome-overlay{
-  position:fixed; inset:0; background:linear-gradient(135deg, var(--accent), #d8734c);
-  z-index:500; display:none; place-items:center; padding:20px;
-  animation:fadeIn .4s var(--ease);
-}
+.welcome-overlay{position:fixed; inset:0; background:linear-gradient(135deg, var(--accent), #d8734c); z-index:500; display:none; place-items:center; padding:20px;}
 .welcome-overlay.show{display:grid;}
-.welcome-card{
-  background:var(--card); border-radius:var(--radius-lg); padding:32px 24px;
-  max-width:440px; width:100%; text-align:center;
-  box-shadow:0 20px 60px rgba(0,0,0,.35);
-  animation:popIn .5s cubic-bezier(.34,1.56,.64,1);
-}
+.welcome-card{background:var(--card); border-radius:var(--radius-lg); padding:32px 24px; max-width:440px; width:100%; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,.35); animation:popIn .5s cubic-bezier(.34,1.56,.64,1);}
 .welcome-emoji{font-size:4rem; margin-bottom:10px;}
 .welcome-title{font-size:1.5rem; font-weight:800; margin-bottom:8px; letter-spacing:-.02em;}
 .welcome-msg{font-size:.9rem; color:var(--sub); line-height:1.6; margin-bottom:20px;}
-.welcome-stats{
-  display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;
-}
+.welcome-stats{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:20px;}
 .welcome-stat{background:var(--bg); border-radius:10px; padding:12px; text-align:center;}
 .welcome-stat .ws-val{font-size:1.5rem; font-weight:800; color:var(--accent);}
 .welcome-stat .ws-lbl{font-size:.7rem; color:var(--sub); text-transform:uppercase; letter-spacing:.05em;}
@@ -360,6 +319,13 @@ input,select,textarea{font:inherit; color:inherit;}
 
 .pwa-install-banner{display:none; position:fixed; bottom:calc(20px + env(safe-area-inset-bottom)); left:20px; right:20px; background:var(--card); border:2px solid var(--accent); border-radius:16px; padding:16px; box-shadow:0 12px 40px rgba(0,0,0,.2); z-index:250; align-items:center; gap:12px; max-width:520px; margin:0 auto;}
 .pwa-install-banner.show{display:flex;}
+
+/* HABIT GRID */
+.habit-grid{display:grid; gap:12px; grid-template-columns:1fr;}
+@media(min-width:700px){.habit-grid{grid-template-columns:repeat(2,1fr);}}
+
+/* BADGE GRID */
+.badge-grid{display:grid; gap:12px; grid-template-columns:repeat(auto-fill, minmax(140px, 1fr));}
 </style>
 </head>
 <body>
@@ -390,12 +356,16 @@ input,select,textarea{font:inherit; color:inherit;}
 
     <div class="nav-section">AI এজেন্ট</div>
     <button class="nav-item" data-view="discipline"><span class="icon">🏆</span><span class="label">নিয়মানুবর্তিতা</span></button>
+    <button class="nav-item" data-view="habits"><span class="icon">🎯</span><span class="label">হ্যাবিট ট্র্যাকার</span></button>
     <button class="nav-item" data-view="analytics"><span class="icon">📈</span><span class="label">অগ্রগতি</span></button>
+    <button class="nav-item" data-view="reports"><span class="icon">📊</span><span class="label">রিপোর্ট</span></button>
     <button class="nav-item" data-view="insights"><span class="icon">💡</span><span class="label">AI পরামর্শ</span></button>
     <button class="nav-item" data-view="forecast"><span class="icon">🔮</span><span class="label">সাপ্তাহিক পূর্বাভাস</span></button>
 
     <div class="nav-section">টুলস</div>
     <button class="nav-item" data-view="templates"><span class="icon">📝</span><span class="label">রুটিন টেমপ্লেট</span></button>
+    <button class="nav-item" data-view="family"><span class="icon">👥</span><span class="label">ফ্যামিলি শেয়ার</span></button>
+    <button class="nav-item" data-view="badges"><span class="icon">🎁</span><span class="label">ব্যাজ ও অর্জন</span></button>
     <button class="nav-item" data-view="settings"><span class="icon">⚙️</span><span class="label">সেটিংস</span></button>
     <button class="nav-item" data-view="integrations"><span class="icon">🔌</span><span class="label">ডিভাইস সিঙ্ক</span></button>
 
@@ -423,7 +393,6 @@ input,select,textarea{font:inherit; color:inherit;}
   </main>
 </div>
 
-<!-- CHECK-IN OVERLAY (full screen confirmation) -->
 <div class="checkin-overlay" id="checkinOverlay">
   <div class="checkin-card">
     <div class="checkin-icon" id="ciIcon">⏰</div>
@@ -442,7 +411,6 @@ input,select,textarea{font:inherit; color:inherit;}
   </div>
 </div>
 
-<!-- WELCOME OVERLAY (daily morning greeting) -->
 <div class="welcome-overlay" id="welcomeOverlay">
   <div class="welcome-card">
     <div class="welcome-emoji" id="wcEmoji">🌅</div>
@@ -460,18 +428,20 @@ input,select,textarea{font:inherit; color:inherit;}
 <script>
 /* =========================================================
    PERSONAL ADMIN AGENT · AI EDITION v3
-   Check-in Confirmation + Discipline Scoring
+   Check-in + Habits + Reports + Family Share + Badges
    ========================================================= */
 
 const KEYS = {
-  routine: "aa_routine_v3",
-  tasks: "aa_tasks_v3",
-  settings: "aa_settings_v3",
-  theme: "aa_theme_v3",
-  history: "aa_history_v3",
-  insights: "aa_insights_v3",
-  checkins: "aa_checkins_v3",
-  welcome: "aa_welcome_v3"
+  routine: "aa_routine_v4",
+  tasks: "aa_tasks_v4",
+  settings: "aa_settings_v4",
+  theme: "aa_theme_v4",
+  history: "aa_history_v4",
+  insights: "aa_insights_v4",
+  checkins: "aa_checkins_v4",
+  welcome: "aa_welcome_v4",
+  habits: "aa_habits_v4",
+  habitLog: "aa_habit_log_v4"
 };
 
 const DAYS = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
@@ -482,7 +452,9 @@ const ICS_DAY = ["SU","MO","TU","WE","TH","FR","SA"];
 let routine = {};
 let tasks = [];
 let history = {};
-let checkins = {};      // { "YYYY-MM-DD": { routineId: { status, timestamp, responseMs } } }
+let checkins = {};
+let habits = [];
+let habitLog = {};
 let settings = {
   sound: true, voice: true, notif: true, volume: 0.7,
   sleepEnabled: false, sleepStart: "23:00", sleepEnd: "06:00",
@@ -507,6 +479,8 @@ function loadState(){
   try{ history = JSON.parse(localStorage.getItem(KEYS.history)) || {}; }catch(e){ history = {}; }
   try{ checkins = JSON.parse(localStorage.getItem(KEYS.checkins)) || {}; }catch(e){ checkins = {}; }
   try{ insights = JSON.parse(localStorage.getItem(KEYS.insights)) || []; }catch(e){ insights = []; }
+  try{ habits = JSON.parse(localStorage.getItem(KEYS.habits)) || []; }catch(e){ habits = []; }
+  try{ habitLog = JSON.parse(localStorage.getItem(KEYS.habitLog)) || {}; }catch(e){ habitLog = {}; }
   welcomeShown = localStorage.getItem(KEYS.welcome) || "";
 }
 function saveRoutine(){ try{ localStorage.setItem(KEYS.routine, JSON.stringify(routine)); }catch(e){} }
@@ -515,8 +489,9 @@ function saveSettings(){ try{ localStorage.setItem(KEYS.settings, JSON.stringify
 function saveHistory(){ try{ localStorage.setItem(KEYS.history, JSON.stringify(history)); }catch(e){} }
 function saveCheckins(){ try{ localStorage.setItem(KEYS.checkins, JSON.stringify(checkins)); }catch(e){} }
 function saveInsights(){ try{ localStorage.setItem(KEYS.insights, JSON.stringify(insights)); }catch(e){} }
+function saveHabits(){ try{ localStorage.setItem(KEYS.habits, JSON.stringify(habits)); }catch(e){} }
+function saveHabitLog(){ try{ localStorage.setItem(KEYS.habitLog, JSON.stringify(habitLog)); }catch(e){} }
 
-/* HELPERS */
 function pad2(n){ return String(n).padStart(2,"0"); }
 function todayKey(){ return new Date().toISOString().slice(0,10); }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
@@ -529,13 +504,10 @@ function toast(msg, type="info", icon){
   $("toastContainer").appendChild(el);
   setTimeout(()=>{ el.classList.add("out"); setTimeout(()=>el.remove(), 300); }, 3500);
 }
-
 function closeModal(){ $("modalBackdrop").classList.remove("show"); }
 window.closeModal = closeModal;
 
-/* =========================================================
-   THEME
-   ========================================================= */
+/* THEME */
 const THEMES = [
   { id:"light", name:"লাইট", icon:"☀️" },
   { id:"dark", name:"ডার্ক", icon:"🌙" },
@@ -571,9 +543,7 @@ function updateThemeIcon(){
   if(btn) btn.textContent = t.icon;
 }
 
-/* =========================================================
-   AUDIO + SPEECH
-   ========================================================= */
+/* AUDIO */
 function ensureAudio(){
   if(!audioCtx){
     const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -623,7 +593,7 @@ function speak(text){
   }catch(e){}
 }
 
-/* SLEEP MODE */
+/* SLEEP */
 function isSleepTime(){
   if(!settings.sleepEnabled) return false;
   const now = new Date();
@@ -650,14 +620,11 @@ function updateSleepIndicator(){
 
 /* NOTIFICATIONS */
 async function requestNotifPermission(){
-  if(!("Notification" in window)){
-    toast("এই ব্রাউজারে সাপোর্ট নেই", "err");
-    return;
-  }
+  if(!("Notification" in window)){ toast("সাপোর্ট নেই", "err"); return; }
   try{
     const perm = await Notification.requestPermission();
     if(perm === "granted"){
-      toast("নোটিফিকেশন চালু হয়েছে", "ok", "🔔");
+      toast("নোটিফিকেশন চালু", "ok", "🔔");
       new Notification("Admin Agent AI", { body: "নোটিফিকেশন কাজ করছে!" });
     }
   }catch(e){}
@@ -666,26 +633,12 @@ function showSystemNotification(title, body){
   if(!settings.notif) return;
   if(!("Notification" in window) || Notification.permission !== "granted") return;
   try{
-    const n = new Notification(title, {
-      body, tag: "aa-alert", requireInteraction: true,
-      silent: !settings.sound
-    });
+    const n = new Notification(title, { body, tag: "aa-alert", requireInteraction: true, silent: !settings.sound });
     n.onclick = () => { window.focus(); n.close(); };
   }catch(e){}
 }
 
-/* =========================================================
-   DISCIPLINE SCORE ENGINE
-   =========================================================
-   Score = weighted combination of:
-   - Confirmation rate (50%)
-   - Response speed (20%)
-   - Consistency streak (20%)
-   - Volume completion (10%)
-   ========================================================= */
-function getTodayCheckins(){
-  return checkins[todayKey()] || {};
-}
+/* DISCIPLINE SCORE */
 function getWeekCheckins(daysBack = 7){
   const all = {};
   const today = new Date();
@@ -700,7 +653,6 @@ function getDisciplineStats(){
   const week = getWeekCheckins(7);
   let total = 0, started = 0, snoozed = 0, skipped = 0;
   let totalResponseMs = 0, responseCount = 0;
-
   const today = new Date();
   for(let i = 0; i < 7; i++){
     const d = new Date(today); d.setDate(d.getDate() - i);
@@ -708,7 +660,6 @@ function getDisciplineStats(){
     const dayIdx = d.getDay();
     const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
     total += items.length;
-
     const dayCheckins = week[key] || {};
     items.forEach(r => {
       const c = dayCheckins[r.id];
@@ -722,23 +673,13 @@ function getDisciplineStats(){
       }
     });
   }
-
-  // Rate calculation
   const confirmationRate = total > 0 ? (started / total) : 0;
   const avgResponseMs = responseCount > 0 ? totalResponseMs / responseCount : 120000;
-  // Faster response = higher score. 0s = 1.0, 5min = 0.3
   const speedScore = Math.max(0, Math.min(1, 1 - (avgResponseMs / 300000) * 0.7));
   const streak = getDisciplineStreak();
-  const streakScore = Math.min(1, streak / 14); // 14 days = full
-  const volumeScore = Math.min(1, total / 30); // 30 tasks/week = full
-
-  const score = Math.round(
-    confirmationRate * 50 +
-    speedScore * 20 +
-    streakScore * 20 +
-    volumeScore * 10
-  );
-
+  const streakScore = Math.min(1, streak / 14);
+  const volumeScore = Math.min(1, total / 30);
+  const score = Math.round(confirmationRate * 50 + speedScore * 20 + streakScore * 20 + volumeScore * 10);
   return {
     score: Math.max(0, Math.min(100, score)),
     total, started, snoozed, skipped,
@@ -747,7 +688,6 @@ function getDisciplineStats(){
     streak, speedScore: Math.round(speedScore * 100)
   };
 }
-
 function getDisciplineStreak(){
   let streak = 0;
   const today = new Date();
@@ -756,19 +696,14 @@ function getDisciplineStreak(){
     const key = d.toISOString().slice(0,10);
     const dayIdx = d.getDay();
     const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-    if(items.length === 0){
-      if(i === 0) continue;
-      break;
-    }
+    if(items.length === 0){ if(i === 0) continue; break; }
     const dc = checkins[key] || {};
     const started = items.filter(r => dc[r.id]?.status === "started").length;
-    // Need at least 60% confirmation for the day to count
     if(started / items.length >= 0.6) streak++;
     else if(i > 0) break;
   }
   return streak;
 }
-
 function getDisciplineLevel(score){
   if(score >= 90) return { name: "মাস্টার", icon: "👑", color: "gold", msg: "আপনি অভূতপূর্ব! এই ধারা ধরে রাখুন।" };
   if(score >= 75) return { name: "সুশৃঙ্খল", icon: "🏆", color: "ok", msg: "আপনি খুব ভালো করছেন! শীর্ষে পৌঁছাতে আরও একটু চেষ্টা।" };
@@ -777,50 +712,29 @@ function getDisciplineLevel(score){
   return { name: "নতুন শুরু", icon: "🎯", color: "accent", msg: "সময় হয়েছে নতুন করে শুরু করার। আজ থেকেই চেক-ইন করুন।" };
 }
 
-/* =========================================================
-   CHECK-IN SYSTEM
-   =========================================================
-   When a routine time arrives:
-   1. Show sound + notification
-   2. Open check-in overlay with 3 options
-   3. User confirms: started / snoozed / skipped
-   4. Log to checkins with response time
-   5. Update discipline score
-   ========================================================= */
+/* CHECK-IN */
 function openCheckin(item, dayIdx){
-  if(!settings.checkinEnabled){ fireAlert(item, item.time, dayIdx); return; }
-  activeCheckin = {
-    routineId: item.id,
-    item, dayIdx,
-    openedAt: Date.now()
-  };
+  if(!settings.checkinEnabled){
+    playAlertSound();
+    setTimeout(() => speak(item.text), 800);
+    showSystemNotification("⏰ " + item.text, `${DAYS[dayIdx]} · ${item.time}`);
+    return;
+  }
+  activeCheckin = { routineId: item.id, item, dayIdx, openedAt: Date.now() };
   $("ciIcon").textContent = "⏰";
   $("ciTitle").textContent = "সময় হয়েছে!";
   $("ciSub").textContent = "আপনি কি এখন কাজ শুরু করছেন? কনফার্ম করলে নিয়মানুবর্তিতা স্কোরে যোগ হবে।";
   $("ciTime").textContent = `${item.time} · ${DAYS[dayIdx]}`;
   $("ciText").textContent = item.text;
   $("checkinOverlay").classList.add("show");
-
-  // Play sound + voice
   playAlertSound();
   setTimeout(() => speak(`সময় হয়েছে। ${item.text}। শুরু করছেন?`), 900);
-
-  // System notification
   showSystemNotification("⏰ " + item.text, `কনফার্ম করুন — ${item.time}`);
-
-  // Auto-skip after N minutes
   clearTimeout(checkinTimer);
   const autoMs = (settings.autoSkipMinutes || 2) * 60000;
-  checkinTimer = setTimeout(() => {
-    if(activeCheckin && activeCheckin.routineId === item.id){
-      autoSkipCheckin();
-    }
-  }, autoMs);
-
-  // Update timer display
+  checkinTimer = setTimeout(() => { if(activeCheckin) autoSkipCheckin(); }, autoMs);
   updateCheckinTimer(autoMs);
 }
-
 function updateCheckinTimer(ms){
   const el = $("ciTimer");
   if(!el) return;
@@ -833,29 +747,16 @@ function updateCheckinTimer(ms){
     el.textContent = `কনফার্ম না করলে ${m}:${pad2(s)} পরে auto-skip`;
   }, 1000);
 }
-
 function recordCheckin(routineId, status){
   const key = todayKey();
   if(!checkins[key]) checkins[key] = {};
   const responseMs = activeCheckin ? (Date.now() - activeCheckin.openedAt) : 0;
-  checkins[key][routineId] = {
-    status,
-    timestamp: Date.now(),
-    responseMs
-  };
-  // Also update history for backwards compat
+  checkins[key][routineId] = { status, timestamp: Date.now(), responseMs };
   if(!history[key]) history[key] = {};
   history[key][routineId] = status === "started" ? "done" : status === "snoozed" ? "pending" : "skipped";
-  saveCheckins();
-  saveHistory();
+  saveCheckins(); saveHistory();
 }
-
-function closeCheckin(){
-  activeCheckin = null;
-  clearTimeout(checkinTimer);
-  $("checkinOverlay").classList.remove("show");
-}
-
+function closeCheckin(){ activeCheckin = null; clearTimeout(checkinTimer); $("checkinOverlay").classList.remove("show"); }
 function startCheckin(){
   if(!activeCheckin) return;
   recordCheckin(activeCheckin.routineId, "started");
@@ -865,41 +766,32 @@ function startCheckin(){
   const level = getDisciplineLevel(stats.score);
   toast(`✅ শুরু! স্কোর: ${stats.score} · ${level.icon} ${level.name}`, "ok", "🎯");
   closeCheckin();
-  // Redirect to dashboard to see updated score
-  if(currentView === "dashboard" || currentView === "discipline"){
-    setTimeout(renderView, 300);
-  }
+  if(currentView === "dashboard" || currentView === "discipline") setTimeout(renderView, 300);
 }
-
 function snoozeCheckin(){
   if(!activeCheckin) return;
   recordCheckin(activeCheckin.routineId, "snoozed");
   snoozeUntil[activeCheckin.routineId] = Date.now() + 10*60000;
-  toast("১০ মিনিট পরে আবার মনে করাব", "info", "⏱️");
+  toast("১০ মিনিট পরে আবার", "info", "⏱️");
   closeCheckin();
 }
-
 function skipCheckin(){
   if(!activeCheckin) return;
   recordCheckin(activeCheckin.routineId, "skipped");
-  toast("কাজটি বাদ দেওয়া হলো", "info", "⏭️");
+  toast("কাজটি বাদ", "info", "⏭️");
   closeCheckin();
 }
-
 function autoSkipCheckin(){
   if(!activeCheckin) return;
   recordCheckin(activeCheckin.routineId, "skipped");
-  toast("সময় শেষ — auto-skip হয়েছে", "err", "⏰");
+  toast("সময় শেষ — auto-skip", "err", "⏰");
   closeCheckin();
 }
-
 window.startCheckin = startCheckin;
 window.snoozeCheckin = snoozeCheckin;
 window.skipCheckin = skipCheckin;
 
-/* =========================================================
-   WELCOME OVERLAY (daily greeting)
-   ========================================================= */
+/* WELCOME */
 function getGreeting(){
   const h = new Date().getHours();
   if(h < 5) return { emoji: "🌙", title: "শুভ রাত্রি!", msg: "এখনো জেগে আছেন? বিশ্রাম নিন।" };
@@ -908,62 +800,37 @@ function getGreeting(){
   if(h < 20) return { emoji: "🌤️", title: "শুভ সন্ধ্যা!", msg: "সন্ধ্যার কাজ শুরু করুন।" };
   return { emoji: "🌆", title: "শুভ রাত্রি!", msg: "আজকের অগ্রগতি রিভিউ করুন।" };
 }
-
 function showWelcome(){
   const h = new Date().getHours();
-  // Only show between 5am and 11am, once per day
   if(h < 5 || h >= 12) return;
   if(welcomeShown === todayKey()) return;
   if(!settings.welcomeEnabled) return;
-
   const greeting = getGreeting();
   const stats = getDisciplineStats();
   const level = getDisciplineLevel(stats.score);
   const todayIdx = new Date().getDay();
   const todayItems = (routine[todayIdx]||[]).filter(r=>r.enabled).length;
-
   $("wcEmoji").textContent = greeting.emoji;
   $("wcTitle").textContent = greeting.title;
   $("wcMsg").textContent = greeting.msg + " " + level.msg;
   $("wcStats").innerHTML = `
-    <div class="welcome-stat">
-      <div class="ws-val">${stats.score}</div>
-      <div class="ws-lbl">নিয়মানুবর্তিতা</div>
-    </div>
-    <div class="welcome-stat">
-      <div class="ws-val">${todayItems}</div>
-      <div class="ws-lbl">আজকের কাজ</div>
-    </div>
-    <div class="welcome-stat">
-      <div class="ws-val">${stats.streak}🔥</div>
-      <div class="ws-lbl">দিন স্ট্রিক</div>
-    </div>
-    <div class="welcome-stat">
-      <div class="ws-val">${level.icon}</div>
-      <div class="ws-lbl">${level.name}</div>
-    </div>`;
-
+    <div class="welcome-stat"><div class="ws-val">${stats.score}</div><div class="ws-lbl">নিয়মানুবর্তিতা</div></div>
+    <div class="welcome-stat"><div class="ws-val">${todayItems}</div><div class="ws-lbl">আজকের কাজ</div></div>
+    <div class="welcome-stat"><div class="ws-val">${stats.streak}🔥</div><div class="ws-lbl">স্ট্রিক</div></div>
+    <div class="welcome-stat"><div class="ws-val">${level.icon}</div><div class="ws-lbl">${level.name}</div></div>`;
   $("welcomeOverlay").classList.add("show");
   localStorage.setItem(KEYS.welcome, todayKey());
-
-  // Play a gentle welcome
   setTimeout(() => speak(`${greeting.title} আজকের আপনার নিয়মানুবর্তিতা স্কোর ${stats.score}`), 400);
 }
 
-window.dismissWelcome = function(){
-  $("welcomeOverlay").classList.remove("show");
-};
-
-/* =========================================================
-   ROUTINE CRUD
-   ========================================================= */
+/* ROUTINE CRUD */
 function addRoutineItem(dayIndex){
   const modal = $("modal");
   modal.innerHTML = `
     <h2>➕ ${DAYS[dayIndex]} — নতুন রুটিন</h2>
     <p>সময় ও কাজের নাম দিন।</p>
     <div class="field"><label>সময়</label><input type="time" id="rTime" value="09:00" required></div>
-    <div class="field"><label>কাজের নাম</label><input id="rText" placeholder="যেমন: পড়া, ব্যায়াম, মিটিং" required></div>
+    <div class="field"><label>কাজের নাম</label><input id="rText" placeholder="যেমন: পড়া, ব্যায়াম" required></div>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
       <button class="btn-primary" id="rSaveBtn">যোগ করুন</button>
@@ -977,8 +844,7 @@ function addRoutineItem(dayIndex){
     if(!routine[dayIndex]) routine[dayIndex] = [];
     routine[dayIndex].push({
       id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-      time, text, enabled: true,
-      createdAt: new Date().toISOString()
+      time, text, enabled: true, createdAt: new Date().toISOString()
     });
     routine[dayIndex].sort((a,b) => a.time.localeCompare(b.time));
     saveRoutine(); renderView(); closeModal();
@@ -1001,23 +867,17 @@ window.addRoutineItem = addRoutineItem;
 window.deleteRoutineItem = deleteRoutineItem;
 window.toggleRoutineItem = toggleRoutineItem;
 
-/* =========================================================
-   TASKS
-   ========================================================= */
+/* TASKS */
 function addTask(e){
   if(e) e.preventDefault();
   const text = $("text").value.trim();
   if(!text) return;
   tasks.push({
     id: "t_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-    text,
-    category: $("category").value,
-    priority: $("priority").value,
-    deadline: $("deadline").value,
-    createdAt: new Date().toISOString()
+    text, category: $("category").value, priority: $("priority").value,
+    deadline: $("deadline").value, createdAt: new Date().toISOString()
   });
-  saveTasks(); renderView();
-  e.target.reset();
+  saveTasks(); renderView(); e.target.reset();
   toast("টাস্ক যোগ হয়েছে", "ok", "✅");
 }
 window.addTask = addTask;
@@ -1027,311 +887,66 @@ window.removeTask = function(id){
   toast("মুছে ফেলা হয়েছে", "info", "🗑️");
 };
 
-/* =========================================================
-   TEMPLATES
-   ========================================================= */
+/* TEMPLATES */
 const TEMPLATES = {
   student: {
-    name: "ছাত্র/ছাত্রী", icon: "📚",
-    desc: "পড়াশোনার জন্য সাজানো ৭ দিনের রুটিন",
+    name: "ছাত্র/ছাত্রী", icon: "📚", desc: "পড়াশোনার জন্য সাজানো রুটিন",
     data: {
-      6: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"10:00", text:"গণিত চর্চা" },
-        { time:"13:00", text:"দুপুরের খাবার + বিশ্রাম" },
-        { time:"16:00", text:"ইংরেজি পড়া" },
-        { time:"18:00", text:"সন্ধ্যার পড়া" },
-        { time:"21:00", text:"রাতের খাবার" },
-        { time:"22:00", text:"আজকের রিভিশন" }
-      ],
-      0: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"10:00", text:"ক্লাস প্রস্তুতি" },
-        { time:"14:00", text:"দুপুরের খাবার" },
-        { time:"16:00", text:"টিউশন" },
-        { time:"19:00", text:"হোমওয়ার্ক" },
-        { time:"22:00", text:"আজকের রিভিশন" }
-      ],
-      1: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"10:00", text:"ক্লাস" },
-        { time:"14:00", text:"দুপুরের খাবার" },
-        { time:"16:00", text:"টিউশন" },
-        { time:"19:00", text:"হোমওয়ার্ক" },
-        { time:"22:00", text:"রিভিশন" }
-      ],
-      2: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"10:00", text:"ক্লাস" },
-        { time:"14:00", text:"দুপুরের খাবার" },
-        { time:"19:00", text:"হোমওয়ার্ক" },
-        { time:"22:00", text:"রিভিশন" }
-      ],
-      3: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"10:00", text:"ক্লাস" },
-        { time:"14:00", text:"দুপুরের খাবার" },
-        { time:"19:00", text:"হোমওয়ার্ক" }
-      ],
-      4: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"10:00", text:"ক্লাস" },
-        { time:"14:00", text:"দুপুরের খাবার" },
-        { time:"19:00", text:"হোমওয়ার্ক" }
-      ],
-      5: [
-        { time:"06:00", text:"ফজরের নামাজ" },
-        { time:"07:00", text:"সকালের পড়া" },
-        { time:"09:00", text:"ব্রেকফাস্ট" },
-        { time:"13:00", text:"জুমার নামাজ" },
-        { time:"15:00", text:"পরিবারের সাথে সময়" },
-        { time:"19:00", text:"বন্ধুদের সাথে দেখা" }
-      ]
+      6: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"09:00",text:"ব্রেকফাস্ট"},{time:"10:00",text:"গণিত চর্চা"},{time:"13:00",text:"দুপুরের খাবার"},{time:"16:00",text:"ইংরেজি পড়া"},{time:"18:00",text:"সন্ধ্যার পড়া"},{time:"21:00",text:"রাতের খাবার"},{time:"22:00",text:"আজকের রিভিশন"}],
+      0: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"09:00",text:"ব্রেকফাস্ট"},{time:"10:00",text:"ক্লাস প্রস্তুতি"},{time:"14:00",text:"দুপুরের খাবার"},{time:"16:00",text:"টিউশন"},{time:"19:00",text:"হোমওয়ার্ক"},{time:"22:00",text:"রিভিশন"}],
+      1: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"09:00",text:"ব্রেকফাস্ট"},{time:"10:00",text:"ক্লাস"},{time:"14:00",text:"দুপুরের খাবার"},{time:"16:00",text:"টিউশন"},{time:"19:00",text:"হোমওয়ার্ক"},{time:"22:00",text:"রিভিশন"}],
+      2: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"10:00",text:"ক্লাস"},{time:"14:00",text:"দুপুরের খাবার"},{time:"19:00",text:"হোমওয়ার্ক"},{time:"22:00",text:"রিভিশন"}],
+      3: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"10:00",text:"ক্লাস"},{time:"14:00",text:"দুপুরের খাবার"},{time:"19:00",text:"হোমওয়ার্ক"}],
+      4: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"10:00",text:"ক্লাস"},{time:"14:00",text:"দুপুরের খাবার"},{time:"19:00",text:"হোমওয়ার্ক"}],
+      5: [{time:"06:00",text:"ফজরের নামাজ"},{time:"07:00",text:"সকালের পড়া"},{time:"09:00",text:"ব্রেকফাস্ট"},{time:"13:00",text:"জুমার নামাজ"},{time:"15:00",text:"পরিবারের সাথে সময়"},{time:"19:00",text:"বন্ধুদের সাথে দেখা"}]
     }
   },
   professional: {
-    name: "চাকরিজীবী", icon: "💼",
-    desc: "অফিস ও পারিবারিক ভারসাম্যের রুটিন",
+    name: "চাকরিজীবী", icon: "💼", desc: "অফিস ও পারিবারিক ভারসাম্য",
     data: {
-      0: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
-        { time:"07:30", text:"নাস্তা" },
-        { time:"08:30", text:"অফিসের জন্য বের হওয়া" },
-        { time:"09:30", text:"অফিস শুরু" },
-        { time:"13:00", text:"লাঞ্চ ব্রেক" },
-        { time:"14:00", text:"অফিস পুনরায়" },
-        { time:"18:00", text:"অফিস শেষ" },
-        { time:"19:30", text:"পরিবারের সাথে সময়" },
-        { time:"21:00", text:"রাতের খাবার" },
-        { time:"22:00", text:"আগামীকালের প্রস্তুতি" }
-      ],
-      1: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
-        { time:"07:30", text:"নাস্তা" },
-        { time:"08:30", text:"অফিসের জন্য বের হওয়া" },
-        { time:"09:30", text:"অফিস শুরু" },
-        { time:"13:00", text:"লাঞ্চ ব্রেক" },
-        { time:"18:00", text:"অফিস শেষ" },
-        { time:"21:00", text:"রাতের খাবার" }
-      ],
-      2: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
-        { time:"07:30", text:"নাস্তা" },
-        { time:"09:30", text:"অফিস শুরু" },
-        { time:"18:00", text:"অফিস শেষ" },
-        { time:"21:00", text:"রাতের খাবার" }
-      ],
-      3: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
-        { time:"09:30", text:"অফিস শুরু" },
-        { time:"18:00", text:"অফিস শেষ" },
-        { time:"21:00", text:"রাতের খাবার" }
-      ],
-      4: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + ব্যায়াম" },
-        { time:"09:30", text:"অফিস শুরু" },
-        { time:"18:00", text:"অফিস শেষ" },
-        { time:"21:00", text:"রাতের খাবার" }
-      ],
-      5: [
-        { time:"07:00", text:"জুমার প্রস্তুতি" },
-        { time:"08:00", text:"পরিবারের সাথে সময়" },
-        { time:"13:00", text:"জুমার নামাজ" },
-        { time:"15:00", text:"বিশ্রাম" },
-        { time:"19:00", text:"বন্ধুদের সাথে দেখা" }
-      ],
-      6: [
-        { time:"07:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"11:00", text:"ব্যক্তিগত কাজ" },
-        { time:"15:00", text:"বিশ্রাম" },
-        { time:"19:00", text:"পরিবারের সাথে সময়" }
-      ]
+      0: [{time:"06:00",text:"ঘুম থেকে ওঠা + ব্যায়াম"},{time:"07:30",text:"নাস্তা"},{time:"08:30",text:"অফিসের জন্য বের হওয়া"},{time:"09:30",text:"অফিস শুরু"},{time:"13:00",text:"লাঞ্চ ব্রেক"},{time:"14:00",text:"অফিস পুনরায়"},{time:"18:00",text:"অফিস শেষ"},{time:"19:30",text:"পরিবারের সাথে সময়"},{time:"21:00",text:"রাতের খাবার"},{time:"22:00",text:"আগামীকালের প্রস্তুতি"}],
+      1: [{time:"06:00",text:"ঘুম থেকে ওঠা + ব্যায়াম"},{time:"07:30",text:"নাস্তা"},{time:"09:30",text:"অফিস শুরু"},{time:"13:00",text:"লাঞ্চ"},{time:"18:00",text:"অফিস শেষ"},{time:"21:00",text:"রাতের খাবার"}],
+      2: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"09:30",text:"অফিস শুরু"},{time:"18:00",text:"অফিস শেষ"},{time:"21:00",text:"রাতের খাবার"}],
+      3: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"09:30",text:"অফিস শুরু"},{time:"18:00",text:"অফিস শেষ"},{time:"21:00",text:"রাতের খাবার"}],
+      4: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"09:30",text:"অফিস শুরু"},{time:"18:00",text:"অফিস শেষ"},{time:"21:00",text:"রাতের খাবার"}],
+      5: [{time:"07:00",text:"জুমার প্রস্তুতি"},{time:"13:00",text:"জুমার নামাজ"},{time:"15:00",text:"বিশ্রাম"},{time:"19:00",text:"বন্ধুদের সাথে"}],
+      6: [{time:"07:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"11:00",text:"ব্যক্তিগত কাজ"},{time:"15:00",text:"বিশ্রাম"},{time:"19:00",text:"পরিবারের সাথে"}]
     }
   },
   business: {
-    name: "ব্যবসায়ী", icon: "🏪",
-    desc: "ব্যবসা পরিচালনার জন্য রুটিন",
+    name: "ব্যবসায়ী", icon: "🏪", desc: "ব্যবসা পরিচালনার রুটিন",
     data: {
-      0: [
-        { time:"05:30", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"07:00", text:"সকালের নাস্তা" },
-        { time:"08:00", text:"দোকান/অফিস খোলা" },
-        { time:"10:00", text:"কাস্টমার কল" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"14:00", text:"স্টক চেক" },
-        { time:"17:00", text:"বিক্রয় রিপোর্ট" },
-        { time:"20:00", text:"দোকান বন্ধ" },
-        { time:"21:00", text:"রাতের খাবার" },
-        { time:"22:00", text:"হিসাব-নিকাশ" }
-      ],
-      1: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"20:00", text:"দোকান বন্ধ" },
-        { time:"22:00", text:"হিসাব-নিকাশ" }
-      ],
-      2: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"20:00", text:"দোকান বন্ধ" },
-        { time:"22:00", text:"হিসাব-নিকাশ" }
-      ],
-      3: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"20:00", text:"দোকান বন্ধ" },
-        { time:"22:00", text:"হিসাব-নিকাশ" }
-      ],
-      4: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"20:00", text:"দোকান বন্ধ" },
-        { time:"22:00", text:"হিসাব-নিকাশ" }
-      ],
-      5: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা + নামাজ" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"জুমার নামাজ" },
-        { time:"16:00", text:"ব্যবসার পরিকল্পনা" },
-        { time:"20:00", text:"দোকান বন্ধ" }
-      ],
-      6: [
-        { time:"06:00", text:"ঘুম থেকে ওঠা" },
-        { time:"08:00", text:"দোকান খোলা" },
-        { time:"13:00", text:"দুপুরের খাবার" },
-        { time:"17:00", text:"সাপ্তাহিক পর্যালোচনা" },
-        { time:"20:00", text:"দোকান বন্ধ" }
-      ]
+      0: [{time:"05:30",text:"ঘুম থেকে ওঠা + নামাজ"},{time:"07:00",text:"নাস্তা"},{time:"08:00",text:"দোকান খোলা"},{time:"13:00",text:"দুপুরের খাবার"},{time:"20:00",text:"দোকান বন্ধ"},{time:"22:00",text:"হিসাব-নিকাশ"}],
+      1: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"13:00",text:"দুপুরের খাবার"},{time:"20:00",text:"দোকান বন্ধ"},{time:"22:00",text:"হিসাব-নিকাশ"}],
+      2: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"20:00",text:"দোকান বন্ধ"},{time:"22:00",text:"হিসাব"}],
+      3: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"20:00",text:"দোকান বন্ধ"},{time:"22:00",text:"হিসাব"}],
+      4: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"20:00",text:"দোকান বন্ধ"},{time:"22:00",text:"হিসাব"}],
+      5: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"13:00",text:"জুমার নামাজ"},{time:"16:00",text:"পরিকল্পনা"},{time:"20:00",text:"দোকান বন্ধ"}],
+      6: [{time:"06:00",text:"ঘুম থেকে ওঠা"},{time:"08:00",text:"দোকান খোলা"},{time:"17:00",text:"সাপ্তাহিক পর্যালোচনা"},{time:"20:00",text:"দোকান বন্ধ"}]
     }
   },
   islamic: {
-    name: "ইসলামিক রুটিন", icon: "🕌",
-    desc: "নামাজ ও দ্বীনি কাজের রুটিন",
+    name: "ইসলামিক রুটিন", icon: "🕌", desc: "নামাজ ও দ্বীনি কাজ",
     data: {
-      0: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"09:00", text:"সকালের যিকর" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"18:30", text:"মাগরিবের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" },
-        { time:"22:00", text:"রাতের দুআ" }
-      ],
-      1: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"18:30", text:"মাগরিবের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ],
-      2: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"18:30", text:"মাগরিবের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ],
-      3: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"18:30", text:"মাগরিবের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ],
-      4: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"18:30", text:"মাগরিবের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ],
-      5: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"11:00", text:"জুমার প্রস্তুতি" },
-        { time:"13:00", text:"জুমার নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ],
-      6: [
-        { time:"04:30", text:"ফজরের নামাজ" },
-        { time:"06:00", text:"কুরআন তিলাওয়াত" },
-        { time:"09:00", text:"দ্বীনি কিতাব অধ্যয়ন" },
-        { time:"13:00", text:"যোহরের নামাজ" },
-        { time:"17:00", text:"আসরের নামাজ" },
-        { time:"20:00", text:"ইশার নামাজ" }
-      ]
+      0: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"09:00",text:"সকালের যিকর"},{time:"13:00",text:"যোহরের নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"18:30",text:"মাগরিবের নামাজ"},{time:"20:00",text:"ইশার নামাজ"},{time:"22:00",text:"রাতের দুআ"}],
+      1: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"13:00",text:"যোহরের নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}],
+      2: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"13:00",text:"যোহরের নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}],
+      3: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"13:00",text:"যোহরের নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}],
+      4: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"13:00",text:"যোহরের নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}],
+      5: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"13:00",text:"জুমার নামাজ"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}],
+      6: [{time:"04:30",text:"ফজরের নামাজ"},{time:"06:00",text:"কুরআন তিলাওয়াত"},{time:"09:00",text:"দ্বীনি কিতাব"},{time:"17:00",text:"আসরের নামাজ"},{time:"20:00",text:"ইশার নামাজ"}]
     }
   },
   fitness: {
-    name: "ফিটনেস", icon: "💪",
-    desc: "স্বাস্থ্য ও ব্যায়ামের রুটিন",
+    name: "ফিটনেস", icon: "💪", desc: "স্বাস্থ্য ও ব্যায়াম",
     data: {
-      0: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"07:00", text:"স্ট্রেচিং" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"জিম/ব্যায়াম" },
-        { time:"19:00", text:"হালকা যোগব্যায়াম" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      1: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"কার্ডিও" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      2: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"স্ট্রেংথ ট্রেনিং" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      3: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"কার্ডিও" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      4: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"স্ট্রেংথ ট্রেনিং" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      5: [
-        { time:"06:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"17:00", text:"হালকা ব্যায়াম" },
-        { time:"22:00", text:"ঘুম" }
-      ],
-      6: [
-        { time:"07:00", text:"সকালের হাঁটা" },
-        { time:"09:00", text:"নাস্তা" },
-        { time:"11:00", text:"যোগব্যায়াম" },
-        { time:"22:00", text:"ঘুম" }
-      ]
+      0: [{time:"06:00",text:"সকালের হাঁটা"},{time:"07:00",text:"স্ট্রেচিং"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"জিম/ব্যায়াম"},{time:"19:00",text:"যোগব্যায়াম"},{time:"22:00",text:"ঘুম"}],
+      1: [{time:"06:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"কার্ডিও"},{time:"22:00",text:"ঘুম"}],
+      2: [{time:"06:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"স্ট্রেংথ"},{time:"22:00",text:"ঘুম"}],
+      3: [{time:"06:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"কার্ডিও"},{time:"22:00",text:"ঘুম"}],
+      4: [{time:"06:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"স্ট্রেংথ"},{time:"22:00",text:"ঘুম"}],
+      5: [{time:"06:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"17:00",text:"হালকা ব্যায়াম"},{time:"22:00",text:"ঘুম"}],
+      6: [{time:"07:00",text:"সকালের হাঁটা"},{time:"09:00",text:"নাস্তা"},{time:"11:00",text:"যোগব্যায়াম"},{time:"22:00",text:"ঘুম"}]
     }
   }
 };
@@ -1353,48 +968,43 @@ function applyTemplate(key){
     </div>`;
   $("modalBackdrop").classList.add("show");
   $("mergeTpl").onclick = () => {
+    localStorage.setItem("aa_has_template", "true");
     for(const dayIdx in t.data){
       const i = parseInt(dayIdx);
       if(!routine[i]) routine[i] = [];
       t.data[dayIdx].forEach(item => {
         routine[i].push({
           id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-          time: item.time, text: item.text, enabled: true,
-          template: key, createdAt: new Date().toISOString()
+          time: item.time, text: item.text, enabled: true, template: key,
+          createdAt: new Date().toISOString()
         });
       });
       routine[i].sort((a,b) => a.time.localeCompare(b.time));
     }
     saveRoutine(); renderView(); closeModal();
-    toast(`${t.name} টেমপ্লেট যোগ হয়েছে`, "ok", t.icon);
+    toast(`${t.name} টেমপ্লেট যোগ`, "ok", t.icon);
   };
   $("replaceTpl").onclick = () => {
-    if(!confirm("আপনার বর্তমান সব রুটিন মুছে যাবে। নিশ্চিত?")) return;
+    if(!confirm("বর্তমান সব রুটিন মুছে যাবে। নিশ্চিত?")) return;
+    localStorage.setItem("aa_has_template", "true");
     routine = {};
     for(const dayIdx in t.data){
       const i = parseInt(dayIdx);
       routine[i] = t.data[dayIdx].map(item => ({
         id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-        time: item.time, text: item.text, enabled: true,
-        template: key, createdAt: new Date().toISOString()
+        time: item.time, text: item.text, enabled: true, template: key,
+        createdAt: new Date().toISOString()
       }));
     }
     saveRoutine(); renderView(); closeModal();
-    toast(`${t.name} টেমপ্লেট লোড হয়েছে`, "ok", t.icon);
+    toast(`${t.name} লোড`, "ok", t.icon);
   };
 }
 window.applyTemplate = applyTemplate;
 
-/* =========================================================
-   ICS EXPORT
-   ========================================================= */
-function escapeICS(s){
-  return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
-}
-function icsTS(){
-  const d = new Date();
-  return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`;
-}
+/* ICS */
+function escapeICS(s){ return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
+function icsTS(){ const d = new Date(); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`; }
 function routineToVEvent(item, dayIdx){
   const [h, m] = item.time.split(":").map(Number);
   const today = new Date(); today.setHours(0,0,0,0);
@@ -1403,11 +1013,8 @@ function routineToVEvent(item, dayIdx){
   const end = new Date(start.getTime() + 30*60000);
   const fmt = d => `${d.getFullYear()}${pad2(d.getMonth()+1)}${pad2(d.getDate())}T${pad2(d.getHours())}${pad2(d.getMinutes())}00`;
   return [
-    "BEGIN:VEVENT",
-    `UID:routine-${dayIdx}-${item.id}@admin-agent.local`,
-    `DTSTAMP:${icsTS()}`,
-    `DTSTART:${fmt(start)}`,
-    `DTEND:${fmt(end)}`,
+    "BEGIN:VEVENT", `UID:routine-${dayIdx}-${item.id}@admin-agent.local`,
+    `DTSTAMP:${icsTS()}`, `DTSTART:${fmt(start)}`, `DTEND:${fmt(end)}`,
     `RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]};COUNT=520`,
     `SUMMARY:${escapeICS(item.text)}`,
     `DESCRIPTION:${escapeICS("Admin Agent · " + item.time)}`,
@@ -1449,9 +1056,7 @@ function syncToCalendar(){
 }
 window.syncToCalendar = syncToCalendar;
 
-/* =========================================================
-   CALENDAR IMPORT
-   ========================================================= */
+/* CALENDAR IMPORT */
 function importFromCalendar(){
   const input = document.createElement("input");
   input.type = "file"; input.accept = ".ics,text/calendar";
@@ -1482,33 +1087,30 @@ function parseICS(text){
     }
     events.push({ summary, deadline });
   }
-  if(events.length === 0){ toast("কোনো ইভেন্ট পাওয়া যায়নি", "err"); return; }
+  if(events.length === 0){ toast("ইভেন্ট পাওয়া যায়নি", "err"); return; }
   let added = 0;
   events.forEach(ev => {
     if(tasks.some(t => t.text === ev.summary && t.fromCalendar)) return;
     tasks.push({
       id: "cal_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
       text: ev.summary, category: "This Week", priority: "Medium",
-      deadline: ev.deadline, fromCalendar: true,
-      createdAt: new Date().toISOString()
+      deadline: ev.deadline, fromCalendar: true, createdAt: new Date().toISOString()
     });
     added++;
   });
   saveTasks(); renderView();
-  toast(`Calendar থেকে ${added}টি ইভেন্ট যোগ হয়েছে`, "ok", "🔁");
+  toast(`Calendar থেকে ${added}টি যোগ`, "ok", "🔁");
 }
 window.importFromCalendar = importFromCalendar;
 
-/* =========================================================
-   EMAIL SHARE
-   ========================================================= */
+/* EMAIL SHARE */
 function buildItemEmailBody(item, dayIdx){
   return `আসসালামু আলাইকুম,\n\nআমার একটি কাজের রিমাইন্ডার:\n\n📌 কাজ: ${item.text}\n⏰ সময়: ${item.time}\n📅 দিন: ${DAYS[dayIdx]}\n\n— Admin Agent AI`;
 }
 function buildDayEmailBody(dayIdx){
   const items = (routine[dayIdx] || []).filter(r => r.enabled);
-  if(items.length === 0) return `আসসালামু আলাইকুম,\n\n${DAYS[dayIdx]}-এ আমার কোনো কাজ নেই।\n\n— Admin Agent AI`;
-  let body = `আসসালামু আলাইকুম,\n\n📅 ${DAYS[dayIdx]}-এর আমার রুটিন:\n\n`;
+  if(items.length === 0) return `আসসালামু আলাইকুম,\n\n${DAYS[dayIdx]}-এ কোনো কাজ নেই।`;
+  let body = `আসসালামু আলাইকুম,\n\n📅 ${DAYS[dayIdx]}-এর রুটিন:\n\n`;
   items.forEach((r, i) => { body += `${i+1}. ${r.time} — ${r.text}\n`; });
   body += `\nমোট ${items.length}টি কাজ।\n\n— Admin Agent AI`;
   return body;
@@ -1527,53 +1129,23 @@ function buildWeekEmailBody(){
   body += `\n━━━━━━━━━━━━━━━━━━━━━━\nমোট: ${total}টি রুটিন আইটেম\n\n— Admin Agent AI`;
   return body;
 }
-function buildWeekEmailHTML(){
-  let total = 0;
-  for(let i=0; i<7; i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-  if(total === 0) return null;
-  let html = `<!DOCTYPE html><html><body style="font-family:Arial,sans-serif;color:#1a1916;max-width:600px;margin:0 auto;padding:20px;">
-    <h2 style="color:#b5502f;border-bottom:2px solid #b5502f;padding-bottom:8px;">📅 আমার সাপ্তাহিক রুটিন</h2>`;
-  for(let d = 0; d < 7; d++){
-    const items = (routine[d]||[]).filter(r=>r.enabled);
-    if(items.length === 0) continue;
-    html += `<h3 style="color:#b5502f;margin-top:24px;margin-bottom:10px;">${DAYS[d]}</h3>
-      <table style="width:100%;border-collapse:collapse;font-size:14px;">`;
-    items.forEach(r => {
-      html += `<tr><td style="padding:6px 10px;border-bottom:1px solid #e2e0d8;color:#b5502f;font-weight:700;width:70px;">${r.time}</td>
-        <td style="padding:6px 10px;border-bottom:1px solid #e2e0d8;">${escapeHtml(r.text)}</td></tr>`;
-    });
-    html += `</table>`;
-  }
-  html += `<p style="margin-top:30px;padding-top:16px;border-top:1px solid #e2e0d8;color:#6f6e67;font-size:12px;">
-    মোট: ${total}টি রুটিন আইটেম · Admin Agent AI</p></body></html>`;
-  return html;
-}
-
 function openEmailModal(opts){
   const modal = $("modal");
   modal.innerHTML = `
     <h2>📧 Email পাঠান</h2>
     <p>প্রাপক, বিষয় ও বার্তা দেখে পাঠান।</p>
-    <div class="field"><label>প্রাপক (To)</label><input type="email" id="emailTo" placeholder="example@gmail.com" value="${opts.recipients || ""}"></div>
-    <div class="field"><label>বিষয় (Subject)</label><input id="emailSubject" value="${escapeHtml(opts.subject || "")}"></div>
-    <div class="field"><label>বার্তা (Body)</label><textarea id="emailBody" rows="12" style="font-family:monospace;font-size:.82rem;resize:vertical;">${escapeHtml(opts.body || "")}</textarea></div>
-    <div style="background:var(--bg); border-radius:10px; padding:12px; margin-bottom:14px; font-size:.78rem; color:var(--sub);">
-      💡 ডিফল্ট mail app খুলবে। To ফিল্ড খালি রাখলে mail app-এ পূরণ করতে পারবেন।
-    </div>
+    <div class="field"><label>প্রাপক (To)</label><input type="email" id="emailTo" placeholder="example@gmail.com"></div>
+    <div class="field"><label>বিষয়</label><input id="emailSubject" value="${escapeHtml(opts.subject || "")}"></div>
+    <div class="field"><label>বার্তা</label><textarea id="emailBody" rows="12" style="font-family:monospace;font-size:.82rem;resize:vertical;">${escapeHtml(opts.body || "")}</textarea></div>
     <div class="modal-actions" style="flex-wrap:wrap; gap:8px;">
       <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
       <button class="btn-secondary" id="emailCopyBtn">📋 কপি</button>
       ${navigator.share ? '<button class="btn-secondary" id="emailShareBtn">📤 শেয়ার</button>' : ''}
-      ${opts.htmlBody ? '<button class="btn-secondary" id="emailHtmlBtn">🎨 HTML</button>' : ''}
       <button class="btn-primary" id="emailSendBtn">✉️ Mail app খুলুন</button>
     </div>`;
   $("modalBackdrop").classList.add("show");
-
   $("emailSendBtn").onclick = () => {
-    const to = $("emailTo").value.trim();
-    const subject = $("emailSubject").value.trim();
-    const body = $("emailBody").value;
-    window.location.href = `mailto:${encodeURIComponent(to)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${encodeURIComponent($("emailTo").value.trim())}?subject=${encodeURIComponent($("emailSubject").value)}&body=${encodeURIComponent($("emailBody").value)}`;
     toast("Mail app খোলা হচ্ছে...", "info", "✉️");
     setTimeout(closeModal, 800);
   };
@@ -1592,15 +1164,6 @@ function openEmailModal(opts){
       }catch(e){}
     };
   }
-  const htmlBtn = $("emailHtmlBtn");
-  if(htmlBtn){
-    htmlBtn.onclick = () => {
-      const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent($("emailTo").value)}&su=${encodeURIComponent($("emailSubject").value)}&body=${encodeURIComponent($("emailBody").value)}`;
-      window.open(gmailUrl, "_blank");
-      toast("Gmail খোলা হচ্ছে", "info", "🎨");
-      setTimeout(closeModal, 600);
-    };
-  }
 }
 window.openEmailModal = openEmailModal;
 
@@ -1610,8 +1173,7 @@ function emailFullWeek(){
   if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
   openEmailModal({
     subject: `📅 আমার সাপ্তাহিক রুটিন · ${new Date().toLocaleDateString("bn-BD")}`,
-    body: buildWeekEmailBody(),
-    htmlBody: buildWeekEmailHTML()
+    body: buildWeekEmailBody()
   });
 }
 window.emailFullWeek = emailFullWeek;
@@ -1619,7 +1181,7 @@ function emailDay(dayIdx){
   const items = (routine[dayIdx] || []).filter(r => r.enabled);
   if(items.length === 0){ toast(`${DAYS[dayIdx]}-এ কোনো কাজ নেই`, "err"); return; }
   openEmailModal({
-    subject: `📅 ${DAYS[dayIdx]}-এর রুটিন · ${items.length}টি কাজ`,
+    subject: `📅 ${DAYS[dayIdx]}-এর রুটিন · ${items.length}টি`,
     body: buildDayEmailBody(dayIdx)
   });
 }
@@ -1656,7 +1218,6 @@ function shareToWhatsApp(){
     return;
   }
   window.open("https://wa.me/?text=" + encodeURIComponent(msg), "_blank");
-  toast("WhatsApp খোলা হচ্ছে...", "info", "📤");
 }
 window.shareToWhatsApp = shareToWhatsApp;
 function shareViaDevice(){
@@ -1673,16 +1234,14 @@ function shareViaDevice(){
   }
   if(navigator.share){
     navigator.share({ title: "আমার সাপ্তাহিক রুটিন", text: msg })
-      .then(() => toast("শেয়ার হয়েছে", "ok", "📤")).catch(()=>{});
+      .then(() => toast("শেয়ার", "ok", "📤")).catch(()=>{});
   } else {
     navigator.clipboard.writeText(msg).then(() => toast("কপি হয়েছে", "ok", "📋"));
   }
 }
 window.shareViaDevice = shareViaDevice;
 
-/* =========================================================
-   SCHEDULER
-   ========================================================= */
+/* SCHEDULER */
 function checkSchedule(){
   if(isSleepTime()) return;
   const now = new Date();
@@ -1704,16 +1263,7 @@ function checkSchedule(){
   Object.keys(lastFired).forEach(k => { if(k.slice(0,10) < cutoff) delete lastFired[k]; });
 }
 
-function fireAlert(item, timeLabel, dayIdx){
-  playAlertSound();
-  setTimeout(() => speak(item.text), 800);
-  showSystemNotification("⏰ " + item.text, `${DAYS[dayIdx]} · ${timeLabel}`);
-  showAlertPopup(item.text, `${DAYS[dayIdx]} · ${timeLabel}`, item.id);
-}
-
-/* =========================================================
-   ANALYTICS
-   ========================================================= */
+/* ANALYTICS */
 function getCategoryStats(){
   const stats = {};
   COLS.forEach(c => stats[c] = 0);
@@ -1755,423 +1305,548 @@ function getDayLoad(){
   return loads;
 }
 
-/* =========================================================
-   RENDER ANALYTICS
-   ========================================================= */
-function renderAnalytics(){
-  const catStats = getCategoryStats();
-  const rate = getCompletionRate(7);
-  const streak = getStreak();
-  const loads = getDayLoad();
-  const maxLoad = Math.max(...loads, 1);
-  const heat = [];
-  const today = new Date();
-  for(let i = 27; i >= 0; i--){
-    const d = new Date(today); d.setDate(d.getDate() - i);
-    const key = d.toISOString().slice(0,10);
-    const dayIdx = d.getDay();
-    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-    const h = history[key] || {};
-    const doneCount = items.filter(r => h[r.id] === "done").length;
-    const ratio = items.length > 0 ? doneCount / items.length : 0;
-    let level = 0;
-    if(ratio > 0 && ratio <= 0.3) level = 1;
-    else if(ratio > 0.3 && ratio <= 0.6) level = 2;
-    else if(ratio > 0.6 && ratio <= 0.9) level = 3;
-    else if(ratio > 0.9) level = 4;
-    heat.push({ key, level });
-  }
-  const todayIdx = new Date().getDay();
-  return `
-    <h2 class="section-title">📈 অগ্রগতি ও পরিসংখ্যান</h2>
-    <div class="analytics-grid">
-      <div class="analytics-card">
-        <h4>🎯 এই সপ্তাহের সম্পন্নতার হার</h4>
-        <div class="streak-big">${rate}%</div>
-        <div class="streak-label">গত ৭ দিনের গড়</div>
-      </div>
-      <div class="analytics-card">
-        <h4>🔥 একটানা সম্পন্ন</h4>
-        <div class="streak-big">${streak}</div>
-        <div class="streak-label">দিন স্ট্রিক</div>
-      </div>
-      <div class="analytics-card">
-        <h4>📋 মোট টাস্ক</h4>
-        <div class="streak-big">${tasks.length}</div>
-        <div class="streak-label">টাস্ক বোর্ডে</div>
-      </div>
+/* HABITS */
+function addHabit(){
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>🎯 নতুন হ্যাবিট</h2>
+    <p>নতুন অভ্যাস তৈরি করুন — প্রতিদিন টিক দিন।</p>
+    <div class="field"><label>নাম</label><input id="hbName" placeholder="যেমন: ৩০ মিনিট ব্যায়াম" required></div>
+    <div class="field"><label>আইকন</label>
+      <select id="hbIcon">
+        <option value="🏃">🏃 ব্যায়াম</option>
+        <option value="💧">💧 পানি</option>
+        <option value="📚">📚 পড়া</option>
+        <option value="🧘">🧘 ধ্যান</option>
+        <option value="😴">😴 ঘুম</option>
+        <option value="🥗">🥗 স্বাস্থ্যকর খাবার</option>
+        <option value="🚭">🚭 ধূমপান বর্জন</option>
+        <option value="📝">📝 জার্নাল</option>
+        <option value="🕌">🕌 নামাজ</option>
+        <option value="🎯">🎯 কাস্টম</option>
+      </select>
     </div>
-    <div class="card" style="margin-top:16px;">
-      <h3>📊 ক্যাটাগরি অনুযায়ী টাস্ক</h3>
-      ${Object.entries(catStats).map(([cat, n]) => {
-        const max = Math.max(...Object.values(catStats), 1);
-        return `<div class="bar-row">
-          <span class="br-label">${cat}</span>
-          <div class="br-bar-wrap"><div class="br-bar" style="width:${(n/max)*100}%"></div></div>
-          <span class="br-value">${n}</span>
-        </div>`;
-      }).join("")}
+    <div class="field"><label>লক্ষ্য</label>
+      <select id="hbGoal">
+        <option value="21">২১ দিন</option>
+        <option value="30" selected>৩০ দিন</option>
+        <option value="66">৬৬ দিন</option>
+        <option value="100">১০০ দিন</option>
+      </select>
     </div>
-    <div class="card">
-      <h3>🔥 শেষ ২৮ দিনের কার্যক্রম</h3>
-      <div class="heat-grid">${heat.map(h => `<div class="heat-cell" data-level="${h.level}" title="${h.key}"></div>`).join("")}</div>
-    </div>
-    <div class="card">
-      <h3>📅 সাপ্তাহিক লোড ব্যালান্স</h3>
-      ${loads.map((n, i) => `<div class="bar-row">
-        <span class="br-label">${DAYS_SHORT[i]}</span>
-        <div class="br-bar-wrap"><div class="br-bar" style="width:${(n/maxLoad)*100}%"></div></div>
-        <span class="br-value">${n}</span>
-      </div>`).join("")}
-    </div>
-    <div class="card">
-      <h3>✅ আজকের কাজ চিহ্নিত করুন</h3>
-      <div style="display:flex; flex-direction:column; gap:8px;">
-        ${(routine[todayIdx]||[]).filter(r=>r.enabled).map(r => {
-          const c = (checkins[todayKey()]||{})[r.id] || {};
-          const status = c.status || "pending";
-          return `<div style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:var(--bg); border-radius:8px; font-size:.82rem;">
-            <span style="font-weight:700; color:var(--accent); font-size:.75rem;">${r.time}</span>
-            <span style="flex:1;">${escapeHtml(r.text)}</span>
-            <button class="btn-ghost" onclick="manualCheckin('${r.id}','started')" style="${status==='started'?'background:var(--ok);color:#fff;':''}">✓</button>
-            <button class="btn-ghost" onclick="manualCheckin('${r.id}','skipped')" style="${status==='skipped'?'background:var(--danger);color:#fff;':''}">✕</button>
-          </div>`;
-        }).join("") || '<div class="empty">আজকের জন্য কোনো রুটিন নেই</div>'}
-      </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      <button class="btn-primary" id="hbSave">তৈরি</button>
     </div>`;
-}
-
-window.manualCheckin = function(routineId, status){
-  const key = todayKey();
-  if(!checkins[key]) checkins[key] = {};
-  checkins[key][routineId] = {
-    status, timestamp: Date.now(), responseMs: 0, manual: true
+  $("modalBackdrop").classList.add("show");
+  $("hbSave").onclick = () => {
+    const name = $("hbName").value.trim();
+    if(!name){ toast("নাম দিন", "err"); return; }
+    habits.push({
+      id: "h_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+      name, icon: $("hbIcon").value, goal: parseInt($("hbGoal").value),
+      createdAt: new Date().toISOString()
+    });
+    saveHabits(); renderView(); closeModal();
+    toast("হ্যাবিট তৈরি", "ok", "🎯");
   };
-  if(!history[key]) history[key] = {};
-  history[key][routineId] = status === "started" ? "done" : "skipped";
-  saveCheckins(); saveHistory(); renderView();
-  toast(status === "started" ? "সম্পন্ন" : "বাদ", "ok", status === "started" ? "✅" : "✕");
-};
-
-/* =========================================================
-   DISCIPLINE VIEW (NEW)
-   ========================================================= */
-function renderDiscipline(){
-  const stats = getDisciplineStats();
-  const level = getDisciplineLevel(stats.score);
-  const week = getWeekCheckins(7);
-
-  // 7-day mini trend
-  const trend = [];
+}
+window.addHabit = addHabit;
+function deleteHabit(id){
+  if(!confirm("হ্যাবিটটি মুছবেন? স্ট্রিক রিসেট হবে।")) return;
+  habits = habits.filter(h => h.id !== id);
+  Object.keys(habitLog).forEach(date => { delete habitLog[date][id]; });
+  saveHabits(); saveHabitLog(); renderView();
+  toast("মুছে ফেলা", "info", "🗑️");
+}
+window.deleteHabit = deleteHabit;
+function toggleHabitToday(habitId){
+  const key = todayKey();
+  if(!habitLog[key]) habitLog[key] = {};
+  if(habitLog[key][habitId]) delete habitLog[key][habitId];
+  else { habitLog[key][habitId] = true; playSuccessSound(); }
+  saveHabitLog(); renderView();
+}
+window.toggleHabitToday = toggleHabitToday;
+function getHabitStreak(habitId){
+  let streak = 0;
   const today = new Date();
-  for(let i = 6; i >= 0; i--){
+  for(let i = 0; i < 365; i++){
     const d = new Date(today); d.setDate(d.getDate() - i);
     const key = d.toISOString().slice(0,10);
-    const dayIdx = d.getDay();
-    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-    const dc = week[key] || {};
-    const started = items.filter(r => dc[r.id]?.status === "started").length;
-    const pct = items.length > 0 ? Math.round(started / items.length * 100) : 0;
-    trend.push({ date: key, day: DAYS_SHORT[dayIdx], pct, total: items.length, started });
+    if(habitLog[key] && habitLog[key][habitId]) streak++;
+    else if(i === 0) continue;
+    else break;
   }
-
-  // Advice based on score
-  let advice = "";
-  let adviceIcon = "💡";
-  if(stats.score >= 90){
-    advice = "আপনি অসাধারণ করছেন! এই নিয়মানুবর্তিতাই আপনাকে সফলতার শিখরে পৌঁছে দেবে। অন্যকেও অনুপ্রাণিত করুন।";
-    adviceIcon = "👑";
-  } else if(stats.score >= 75){
-    advice = "আপনি খুব ভালো করছেন! মাত্র কয়েকটি চেক-ইন মিস করলে মাস্টার লেভেলে পৌঁছে যাবেন। আরেকটু মনোযোগ দিন।";
-    adviceIcon = "🏆";
-  } else if(stats.score >= 60){
-    advice = "ভালো চলছে। চেক-ইনের প্রতি দ্রুত সাড়া দিলে স্কোর আরও বাড়বে। সকালের check-in বিশেষভাবে গুরুত্বপূর্ণ।";
-    adviceIcon = "⭐";
-  } else if(stats.score >= 40){
-    advice = "আপনি শিক্ষানবিস পর্যায়ে আছেন। প্রতিদিন সকালে ওঠে প্রথম কাজটি চেক-ইন করার চেষ্টা করুন — এটাই অভ্যাস তৈরির মূল চাবিকাঠি।";
-    adviceIcon = "🌱";
-  } else {
-    advice = "শুরুটা এখনো হয়নি। আজ থেকেই একটি ছোট রুটিন দিয়ে শুরু করুন — শুধু ২টি কাজ। ছোট শুরু, বড় পরিবর্তন।";
-    adviceIcon = "🎯";
-  }
-
-  return `
-    <h2 class="section-title">🏆 নিয়মানুবর্তিতা স্কোর</h2>
-
-    <div class="discipline-card">
-      <div class="dc-head">
-        <div>
-          <div class="dc-label">আপনার স্কোর</div>
-          <div class="dc-score">${stats.score}<span style="font-size:1.2rem; opacity:.6;">/100</span></div>
-          <div class="dc-level">${level.icon} ${level.name}</div>
-        </div>
-        <div class="dc-ring" style="--p:${stats.score}%">
-          <span>${level.icon}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="analytics-grid">
-      <div class="analytics-card">
-        <h4>✅ কনফার্মেশন রেট</h4>
-        <div class="streak-big">${stats.confirmationRate}%</div>
-        <div class="streak-label">${stats.started} / ${stats.total} কাজ</div>
-      </div>
-      <div class="analytics-card">
-        <h4>⚡ গড় সাড়া সময়</h4>
-        <div class="streak-big">${stats.avgResponseSec}s</div>
-        <div class="streak-label">দ্রুত সাড়া = বেশি স্কোর</div>
-      </div>
-      <div class="analytics-card">
-        <h4>🔥 স্ট্রিক</h4>
-        <div class="streak-big">${stats.streak}</div>
-        <div class="streak-label">দিন একটানা</div>
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:16px;">
-      <h3>${adviceIcon} পরামর্শ</h3>
-      <p style="font-size:.85rem; line-height:1.7; color:var(--ink);">${advice}</p>
-    </div>
-
-    <div class="card">
-      <h3>📊 শেষ ৭ দিনের কনফার্মেশন</h3>
-      ${trend.map(t => `
-        <div class="bar-row">
-          <span class="br-label">${t.day}</span>
-          <div class="br-bar-wrap"><div class="br-bar" style="width:${t.pct}%; background:${t.pct >= 75 ? 'linear-gradient(90deg, var(--ok), #5fa585)' : t.pct >= 40 ? 'linear-gradient(90deg, var(--warn), #e0b06a)' : 'linear-gradient(90deg, var(--danger), #e57366)'}"></div></div>
-          <span class="br-value">${t.pct}%</span>
-        </div>
-      `).join("")}
-      <div style="font-size:.7rem; color:var(--sub); margin-top:10px;">প্রতিটি দিনে কত শতাংশ কাজ কনফার্ম করেছেন</div>
-    </div>
-
-    <div class="card">
-      <h3>🎯 কীভাবে স্কোর বাড়াবেন</h3>
-      <div style="display:flex; flex-direction:column; gap:10px; font-size:.82rem; line-height:1.6;">
-        <div style="display:flex; gap:10px;">
-          <span>1️⃣</span>
-          <span><b>দ্রুত সাড়া দিন</b> — নোটিফিকেশন আসার সাথে সাথেই "শুরু করছি" চাপুন। ৩০ সেকেন্ডের মধ্যে সাড়া দিলে সর্বোচ্চ নম্বর।</span>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <span>2️⃣</span>
-          <span><b>সকালে শুরু করুন</b> — প্রথম কাজ কনফার্ম করা মানে বাকি দিনটা সহজ।</span>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <span>3️⃣</span>
-          <span><b>একটানা চালিয়ে যান</b> — ৭ দিনের বেশি স্ট্রিক হলে বোনাস স্কোর।</span>
-        </div>
-        <div style="display:flex; gap:10px;">
-          <span>4️⃣</span>
-          <span><b>কাজ বাদ দিলে সৎ থাকুন</b> — মিথ্যা "শুরু" চাপলে স্ট্রিক ভাঙবে।</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>📋 আজকের কনফার্মেশন লগ</h3>
-      ${(() => {
-        const dc = checkins[todayKey()] || {};
-        const entries = Object.entries(dc);
-        if(entries.length === 0){
-          return '<div class="empty">আজ এখনো কোনো কনফার্মেশন হয়নি</div>';
-        }
-        return entries.map(([rid, c]) => {
-          let itemText = "—";
-          let itemTime = "—";
-          for(let d = 0; d < 7; d++){
-            const it = (routine[d]||[]).find(r => r.id === rid);
-            if(it){ itemText = it.text; itemTime = it.time; break; }
-          }
-          const icon = c.status === "started" ? "✅" : c.status === "snoozed" ? "⏱️" : "⏭️";
-          const bg = c.status === "started" ? "var(--ok-soft)" : c.status === "snoozed" ? "var(--warn-soft)" : "var(--danger-soft)";
-          const respSec = c.responseMs ? Math.round(c.responseMs / 1000) : 0;
-          return `<div style="display:flex; align-items:center; gap:10px; padding:8px 10px; background:${bg}; border-radius:8px; margin-bottom:6px; font-size:.82rem;">
-            <span style="font-size:1.1rem;">${icon}</span>
-            <span style="font-weight:700; color:var(--accent); font-size:.75rem;">${itemTime}</span>
-            <span style="flex:1;">${escapeHtml(itemText)}</span>
-            <span style="font-size:.7rem; color:var(--sub);">${respSec}s</span>
-          </div>`;
-        }).join("");
-      })()}
-    </div>`;
+  return streak;
 }
-
-/* =========================================================
-   INSIGHTS (enhanced with discipline)
-   ========================================================= */
-function generateInsights(){
-  const list = [];
-  const loads = getDayLoad();
-  const avgLoad = loads.reduce((a,b)=>a+b,0) / 7;
-  const stats = getDisciplineStats();
-
-  // Discipline-based insights
-  if(stats.score >= 75){
-    list.push({
-      icon: "🏆",
-      title: `নিয়মানুবর্তিতা স্কোর: ${stats.score}`,
-      text: "আপনি খুব ভালো করছেন! ${stats.streak} দিনের স্ট্রিক আছে। এই ধারা বজায় রাখলে মাস্টার লেভেলে পৌঁছাবেন।"
-    });
-  } else if(stats.score < 40 && stats.total > 0){
-    list.push({
-      icon: "🎯",
-      title: `নিয়মানুবর্তিতা স্কোর: ${stats.score}`,
-      text: "চেক-ইন কম করছেন। প্রতিটি নোটিফিকেশনে দ্রুত সাড়া দিলে স্কোর বাড়বে। একটি দিন দিয়ে আবার শুরু করুন।"
-    });
-  }
-
-  // Response time insight
-  if(stats.avgResponseSec > 120 && stats.started > 3){
-    list.push({
-      icon: "⚡",
-      title: "সাড়া দিতে দেরি করছেন",
-      text: `গড়ে ${stats.avgResponseSec} সেকেন্ড সময় নিচ্ছেন। ৩০ সেকেন্ডের মধ্যে সাড়া দিলে সর্বোচ্চ স্কোর পাবেন। ফোন কাছে রাখুন।`
-    });
-  }
-
-  // Load insights
-  loads.forEach((n, i) => {
-    if(n > avgLoad * 1.5 && n >= 5){
-      list.push({
-        icon: "⚖️",
-        title: `${DAYS[i]} খুব ব্যস্ত`,
-        text: `আপনার ${DAYS[i]}-এ ${n}টি কাজ আছে। কিছু কাজ অন্য দিনে সরিয়ে নিন।`
-      });
-    }
-  });
-  loads.forEach((n, i) => {
-    if(n === 0){
-      list.push({
-        icon: "💤",
-        title: `${DAYS[i]} সম্পূর্ণ ফাঁকা`,
-        text: `এই দিনে কোনো কাজ নেই। একটি হালকা রুটিন যোগ করতে পারেন।`
-      });
-    }
-  });
-
-  // Completion rate
-  const rate = getCompletionRate(7);
-  if(rate > 0 && rate < 40){
-    list.push({
-      icon: "📉",
-      title: "সম্পন্নতার হার কম",
-      text: `শেষ ৭ দিনে ${rate}% কাজ সম্পন্ন। রুটিন কমানোর চেষ্টা করুন।`
-    });
-  } else if(rate >= 70){
-    list.push({
-      icon: "🌟",
-      title: "দুর্দান্ত সম্পন্নতা",
-      text: `শেষ ৭ দিনে ${rate}% কাজ সম্পন্ন করেছেন।`
-    });
-  }
-
-  // Best hour
-  const timeBuckets = {};
-  for(const date in checkins){
-    for(const rid in checkins[date]){
-      if(checkins[date][rid].status !== "started") continue;
-      for(let d=0; d<7; d++){
-        const item = (routine[d]||[]).find(r => r.id === rid);
-        if(item){
-          const hour = item.time.slice(0,2);
-          timeBuckets[hour] = (timeBuckets[hour] || 0) + 1;
-        }
-      }
-    }
-  }
-  const bestHour = Object.entries(timeBuckets).sort((a,b)=>b[1]-a[1])[0];
-  if(bestHour && bestHour[1] >= 3){
-    list.push({
-      icon: "⏰",
-      title: `সবচেয়ে কার্যকর সময়: ${bestHour[0]}:00`,
-      text: `এই সময়ে আপনি সবচেয়ে বেশি কাজ কনফার্ম করেন। গুরুত্বপূর্ণ কাজ এই সময়ে রাখুন।`
-    });
-  }
-
-  // Sleep mode
-  if(!settings.sleepEnabled){
-    list.push({
-      icon: "🌙",
-      title: "স্লিপ মোড চালু করুন",
-      text: "রাতে অ্যালার্ট বন্ধ রাখতে সেটিংসে স্লিপ মোড চালু করুন।"
-    });
-  }
-
-  // Overdue tasks
-  const overdue = tasks.filter(t => t.deadline && new Date(t.deadline) < new Date());
-  if(overdue.length > 0){
-    list.push({
-      icon: "⚠️",
-      title: `${overdue.length}টি টাস্কের সময় শেষ`,
-      text: `কিছু টাস্কের deadline পেরিয়ে গেছে। এখনই সম্পন্ন করুন বা deadline বাড়ান।`
-    });
-  }
-
-  insights = list;
-  saveInsights();
-  return list;
+function getHabitTotalDays(habitId){
+  let count = 0;
+  Object.keys(habitLog).forEach(date => { if(habitLog[date][habitId]) count++; });
+  return count;
 }
-window.generateInsights = generateInsights;
-
-function renderInsights(){
-  if(insights.length === 0) generateInsights();
-  if(insights.length === 0){
-    return `<h2 class="section-title">💡 AI পরামর্শ</h2>
-      <div class="empty" style="padding:40px;">আরও ডেটা লাগবে — কিছুদিন রুটিন ব্যবহার করুন।</div>`;
+function getHabitCompletionRate(habitId, days = 30){
+  let total = 0, done = 0;
+  const today = new Date();
+  for(let i = 0; i < days; i++){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    total++;
+    const key = d.toISOString().slice(0,10);
+    if(habitLog[key] && habitLog[key][habitId]) done++;
   }
-  let html = `<h2 class="section-title">💡 AI পরামর্শ (${insights.length})</h2>
-    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
-      <span style="font-size:.78rem; color:var(--sub);">আপনার ডেটা বিশ্লেষণ করে তৈরি</span>
-      <button class="btn-ghost" onclick="generateInsights();renderView();">🔄 আবার বিশ্লেষণ</button>
+  return total > 0 ? Math.round((done / total) * 100) : 0;
+}
+function renderHabits(){
+  let html = `<h2 class="section-title">🎯 হ্যাবিট ট্র্যাকার</h2>
+    <p style="color:var(--sub); font-size:.85rem; margin-bottom:16px;">প্রতিদিন টিক দিন, স্ট্রিক বজায় রাখুন।</p>`;
+  if(habits.length === 0){
+    html += `<div class="card" style="text-align:center; padding:40px 20px;">
+      <div style="font-size:3rem; margin-bottom:12px;">🎯</div>
+      <div style="font-weight:700; margin-bottom:8px;">এখনো কোনো হ্যাবিট নেই</div>
+      <div style="color:var(--sub); font-size:.85rem; margin-bottom:20px;">নতুন অভ্যাস তৈরি করে শুরু করুন</div>
+      <button class="btn-primary" onclick="addHabit()">+ নতুন হ্যাবিট</button>
     </div>`;
-  insights.forEach(i => {
-    html += `<div class="insight">
-      <div class="ic-icon">${i.icon}</div>
-      <div class="ic-body">
-        <div class="ic-title">${escapeHtml(i.title)}</div>
-        <div class="ic-text">${escapeHtml(i.text)}</div>
+    return html;
+  }
+  html += `<div style="margin-bottom:16px;"><button class="btn-primary" onclick="addHabit()">+ নতুন হ্যাবিট</button></div>
+    <div class="habit-grid">`;
+  habits.forEach(h => {
+    const key = todayKey();
+    const doneToday = habitLog[key] && habitLog[key][h.id];
+    const streak = getHabitStreak(h.id);
+    const total = getHabitTotalDays(h.id);
+    const rate = getHabitCompletionRate(h.id, 30);
+    const progress = Math.min(100, Math.round((streak / h.goal) * 100));
+    const week = [];
+    const today = new Date();
+    for(let i = 6; i >= 0; i--){
+      const d = new Date(today); d.setDate(d.getDate() - i);
+      const k = d.toISOString().slice(0,10);
+      week.push({ key: k, day: DAYS_SHORT[d.getDay()], done: habitLog[k] && habitLog[k][h.id] });
+    }
+    html += `<div class="card">
+      <div style="display:flex; align-items:flex-start; gap:12px; margin-bottom:12px;">
+        <div style="font-size:2.2rem; flex-shrink:0;">${h.icon}</div>
+        <div style="flex:1;">
+          <div style="font-weight:700; font-size:1rem;">${escapeHtml(h.name)}</div>
+          <div style="font-size:.72rem; color:var(--sub); margin-top:2px;">
+            ${streak}🔥 · ${total} দিন · ${rate}% (৩০ দিন)
+          </div>
+        </div>
+        <button class="btn-ghost" onclick="deleteHabit('${h.id}')" style="padding:4px 8px;">🗑️</button>
       </div>
+      <div style="margin-bottom:12px;">
+        <div style="display:flex; justify-content:space-between; font-size:.75rem; margin-bottom:4px; color:var(--sub);">
+          <span>লক্ষ্য: ${h.goal} দিন</span><span>${progress}%</span>
+        </div>
+        <div style="height:10px; background:var(--bg); border-radius:6px; overflow:hidden;">
+          <div style="height:100%; width:${progress}%; background:linear-gradient(90deg, var(--ok), #5fa585); border-radius:6px; transition:width .4s;"></div>
+        </div>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(7,1fr); gap:4px; margin-bottom:12px;">
+        ${week.map(w => `
+          <div style="text-align:center;">
+            <div style="font-size:.62rem; color:var(--sub); margin-bottom:3px;">${w.day}</div>
+            <div style="aspect-ratio:1; background:${w.done ? 'var(--ok)' : 'var(--bg)'}; border:1px solid ${w.done ? 'var(--ok)' : 'var(--line)'}; border-radius:8px; display:grid; place-items:center; color:${w.done ? '#fff' : 'var(--sub)'}; font-size:.85rem;">${w.done ? '✓' : ''}</div>
+          </div>
+        `).join("")}
+      </div>
+      <button class="${doneToday ? 'btn-ok' : 'btn-primary'}" style="width:100%; padding:12px;" onclick="toggleHabitToday('${h.id}')">
+        ${doneToday ? '✅ আজ সম্পন্ন — আনডু' : '✓ আজ সম্পন্ন করুন'}
+      </button>
     </div>`;
   });
+  html += `</div>`;
   return html;
 }
 
-/* FORECAST */
-function renderForecast(){
-  let html = `<h2 class="section-title">🔮 আগামী ৭ দিনের পূর্বাভাস</h2>`;
-  html += `<div class="card"><div class="forecast-list">`;
+/* MONTHLY REPORTS */
+function getMonthStats(offset = 0){
   const today = new Date();
-  for(let i = 0; i < 7; i++){
-    const d = new Date(today); d.setDate(d.getDate() + i);
-    const dayIdx = d.getDay();
-    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-    const load = items.length;
-    let level = "light", label = "হালকা";
-    if(load > 6){ level = "heavy"; label = "ব্যস্ত"; }
-    else if(load > 3){ level = "normal"; label = "স্বাভাবিক"; }
-    const itemText = items.slice(0, 3).map(r => `${r.time} ${r.text}`).join(" · ");
-    html += `<div class="forecast-day">
-      <span class="fd-name">${i === 0 ? "আজ" : DAYS_SHORT[dayIdx]}</span>
-      <span class="fd-items">${escapeHtml(itemText) || "কোনো কাজ নেই"}</span>
-      <span class="fd-load ${level}">${label} (${load})</span>
+  const target = new Date(today.getFullYear(), today.getMonth() - offset, 1);
+  const monthEnd = new Date(target.getFullYear(), target.getMonth() + 1, 0);
+  let totalScheduled = 0, totalStarted = 0, totalSnoozed = 0, totalSkipped = 0;
+  let activeDays = 0;
+  const dailyData = [];
+  for(let d = 1; d <= monthEnd.getDate(); d++){
+    const date = new Date(target.getFullYear(), target.getMonth(), d);
+    if(date > today) break;
+    const key = date.toISOString().slice(0,10);
+    const dayIdx = date.getDay();
+    const items = (routine[dayIdx]||[]).filter(r => r.enabled);
+    totalScheduled += items.length;
+    const dc = checkins[key] || {};
+    let dayStarted = 0;
+    items.forEach(r => {
+      const c = dc[r.id];
+      if(!c) return;
+      if(c.status === "started"){ totalStarted++; dayStarted++; }
+      else if(c.status === "snoozed") totalSnoozed++;
+      else if(c.status === "skipped") totalSkipped++;
+    });
+    if(dayStarted > 0) activeDays++;
+    dailyData.push({ date: key, day: d, started: dayStarted, total: items.length });
+  }
+  const monthName = target.toLocaleDateString("bn-BD", { month: "long", year: "numeric" });
+  const rate = totalScheduled > 0 ? Math.round((totalStarted / totalScheduled) * 100) : 0;
+  return { name: monthName, year: target.getFullYear(), month: target.getMonth(),
+    totalScheduled, totalStarted, totalSnoozed, totalSkipped, activeDays, rate, dailyData,
+    daysInMonth: monthEnd.getDate() };
+}
+function renderReports(){
+  const currentMonth = getMonthStats(0);
+  const lastMonth = getMonthStats(1);
+  const twoMonthsAgo = getMonthStats(2);
+  const rateChange = lastMonth.rate > 0 ? currentMonth.rate - lastMonth.rate : 0;
+  let html = `<h2 class="section-title">📊 রিপোর্ট</h2>`;
+  html += `<div class="card" style="background:linear-gradient(135deg, var(--accent), #d8734c); color:#fff; border:none;">
+    <div style="font-size:.75rem; text-transform:uppercase; letter-spacing:.08em; opacity:.9;">${currentMonth.name}</div>
+    <div style="font-size:2.4rem; font-weight:800; margin:6px 0; letter-spacing:-.03em;">${currentMonth.rate}%</div>
+    <div style="font-size:.85rem; opacity:.95;">সম্পন্নতার হার ${rateChange !== 0 ? `· ${rateChange > 0 ? '▲' : '▼'} ${Math.abs(rateChange)}% গত মাস থেকে` : ''}</div>
+  </div>`;
+  html += `<div class="analytics-grid">
+    <div class="analytics-card"><h4>✅ সম্পন্ন</h4><div class="streak-big">${currentMonth.totalStarted}</div><div class="streak-label">${currentMonth.totalScheduled}টির মধ্যে</div></div>
+    <div class="analytics-card"><h4>⏱️ Snooze</h4><div class="streak-big">${currentMonth.totalSnoozed}</div><div class="streak-label">বার পিছিয়েছেন</div></div>
+    <div class="analytics-card"><h4>⏭️ Skip</h4><div class="streak-big">${currentMonth.totalSkipped}</div><div class="streak-label">বার বাদ</div></div>
+  </div>`;
+  html += `<div class="card" style="margin-top:16px;">
+    <h3>🗓️ ${currentMonth.name} — দৈনিক কার্যক্রম</h3>
+    <div style="display:grid; grid-template-columns:repeat(7, 1fr); gap:4px;">
+      ${["র","সো","ম","বু","বৃ","শু","শ"].map(d => `<div style="text-align:center; font-size:.68rem; color:var(--sub); font-weight:600; padding:4px 0;">${d}</div>`).join("")}
+      ${(() => {
+        const firstDay = new Date(currentMonth.year, currentMonth.month, 1).getDay();
+        let cells = "";
+        for(let i = 0; i < firstDay; i++) cells += `<div></div>`;
+        currentMonth.dailyData.forEach(d => {
+          const ratio = d.total > 0 ? d.started / d.total : 0;
+          let bg = "var(--bg)";
+          if(ratio >= 0.9) bg = "var(--ok)";
+          else if(ratio >= 0.6) bg = "rgba(47,107,82,.7)";
+          else if(ratio >= 0.3) bg = "var(--warn)";
+          else if(ratio > 0) bg = "var(--danger)";
+          cells += `<div style="aspect-ratio:1; background:${bg}; border-radius:5px; display:grid; place-items:center; font-size:.7rem; font-weight:600; color:${ratio > 0.3 ? '#fff' : 'var(--sub)'};" title="${d.date}: ${d.started}/${d.total}">${d.day}</div>`;
+        });
+        return cells;
+      })()}
+    </div>
+  </div>`;
+  if(habits.length > 0){
+    html += `<div class="card"><h3>🎯 হ্যাবিট সারসংক্ষেপ</h3>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${habits.map(h => `<div style="display:flex; align-items:center; gap:10px; padding:10px 12px; background:var(--bg); border-radius:10px; font-size:.82rem;">
+          <span style="font-size:1.4rem;">${h.icon}</span>
+          <span style="flex:1; font-weight:600;">${escapeHtml(h.name)}</span>
+          <span style="font-size:.72rem; color:var(--sub);">${getHabitStreak(h.id)}🔥 · ${getHabitTotalDays(h.id)} দিন · ${getHabitCompletionRate(h.id, 30)}%</span>
+        </div>`).join("")}
+      </div>
     </div>`;
   }
-  html += `</div></div>`;
-  html += `<div class="card">
-    <h3>🎯 AI সাজেশন</h3>
-    <p style="font-size:.82rem; color:var(--sub); line-height:1.6;">${getWeeklyAdvice()}</p>
+  html += `<div class="card"><h3>📈 মাসিক তুলনা</h3>
+    ${[twoMonthsAgo, lastMonth, currentMonth].map(m => `<div class="bar-row">
+      <span class="br-label" style="width:90px;">${m.name.split(" ")[0]}</span>
+      <div class="br-bar-wrap"><div class="br-bar" style="width:${m.rate}%"></div></div>
+      <span class="br-value">${m.rate}%</span>
+    </div>`).join("")}
+  </div>`;
+  html += `<div class="card"><h3>📄 রিপোর্ট Export</h3>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn-primary" onclick="exportReportPDF('month')">📄 এই মাসের PDF</button>
+      <button class="btn-secondary" onclick="exportReportPDF('year')">📄 বছরের PDF</button>
+      <button class="btn-secondary" onclick="exportReportJSON()">⬇ JSON ডেটা</button>
+      <button class="btn-secondary" onclick="window.print()">🖨️ প্রিন্ট</button>
+    </div>
   </div>`;
   return html;
 }
-function getWeeklyAdvice(){
-  const loads = getDayLoad();
-  const maxIdx = loads.indexOf(Math.max(...loads));
-  const minIdx = loads.indexOf(Math.min(...loads));
-  const avg = loads.reduce((a,b)=>a+b,0) / 7;
-  if(avg === 0) return "এখনো কোনো রুটিন যোগ করা হয়নি। টেমপ্লেট থেকে শুরু করুন।";
-  if(loads[maxIdx] > avg * 1.8) return `${DAYS[maxIdx]}-এ অনেক বেশি কাজ। কিছু কাজ ${DAYS[minIdx]}-এ সরিয়ে নিন।`;
-  return "আপনার সাপ্তাহিক লোড ভালোভাবে ব্যালান্সড। এভাবেই চালিয়ে যান।";
+function exportReportPDF(type){
+  const w = window.open("", "_blank");
+  const stats = getMonthStats(0);
+  const ds = getDisciplineStats();
+  let content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Admin Agent রিপোর্ট</title>
+<style>
+body{font-family:"Noto Sans Bengali",Arial,sans-serif;padding:40px;color:#1a1916;max-width:800px;margin:0 auto;}
+h1{color:#b5502f;border-bottom:3px solid #b5502f;padding-bottom:12px;}
+h2{color:#b5502f;margin-top:32px;font-size:1.2rem;}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;margin:20px 0;}
+.stat-box{background:#f5f4f0;padding:16px;border-radius:12px;border-left:4px solid #b5502f;}
+.stat-val{font-size:2rem;font-weight:800;color:#b5502f;}
+.stat-lbl{font-size:.8rem;color:#6f6e67;text-transform:uppercase;letter-spacing:.06em;}
+table{width:100%;border-collapse:collapse;margin:16px 0;}
+th,td{padding:10px;text-align:left;border-bottom:1px solid #e2e0d8;font-size:.88rem;}
+th{background:#f5f4f0;font-weight:700;color:#6f6e67;text-transform:uppercase;font-size:.72rem;}
+.footer{margin-top:40px;padding-top:20px;border-top:1px solid #e2e0d8;font-size:.75rem;color:#6f6e67;text-align:center;}
+@media print{body{padding:20px;}.no-print{display:none;}}
+</style></head><body>
+<h1>📊 Admin Agent রিপোর্ট</h1>
+<p style="color:#6f6e67;">তৈরি: ${new Date().toLocaleString("bn-BD")}</p>`;
+  if(type === "month"){
+    content += `<h2>${stats.name} — মাসিক সারসংক্ষেপ</h2>
+    <div class="stat-grid">
+      <div class="stat-box"><div class="stat-val">${stats.rate}%</div><div class="stat-lbl">সম্পন্নতা</div></div>
+      <div class="stat-box"><div class="stat-val">${stats.totalStarted}</div><div class="stat-lbl">সম্পন্ন কাজ</div></div>
+      <div class="stat-box"><div class="stat-val">${stats.totalSnoozed}</div><div class="stat-lbl">Snooze</div></div>
+      <div class="stat-box"><div class="stat-val">${stats.totalSkipped}</div><div class="stat-lbl">Skip</div></div>
+    </div>
+    <h2>🎯 নিয়মানুবর্তিতা</h2>
+    <table><tr><th>মেট্রিক</th><th>মান</th></tr>
+      <tr><td>স্কোর</td><td><b>${ds.score}/100</b></td></tr>
+      <tr><td>লেভেল</td><td>${getDisciplineLevel(ds.score).name}</td></tr>
+      <tr><td>স্ট্রিক</td><td>${ds.streak} দিন</td></tr>
+      <tr><td>কনফার্মেশন রেট</td><td>${ds.confirmationRate}%</td></tr>
+      <tr><td>গড় সাড়া</td><td>${ds.avgResponseSec} সেকেন্ড</td></tr>
+    </table>`;
+    if(habits.length > 0){
+      content += `<h2>🎯 হ্যাবিট ট্র্যাকিং</h2><table>
+        <tr><th>হ্যাবিট</th><th>স্ট্রিক</th><th>মোট দিন</th><th>৩০ দিনের হার</th></tr>
+        ${habits.map(h => `<tr><td>${h.icon} ${h.name}</td><td>${getHabitStreak(h.id)} দিন</td><td>${getHabitTotalDays(h.id)} দিন</td><td>${getHabitCompletionRate(h.id, 30)}%</td></tr>`).join("")}
+      </table>`;
+    }
+  } else {
+    content += `<h2>📅 বার্ষিক সারসংক্ষেপ</h2><table>
+      <tr><th>মাস</th><th>সম্পন্ন</th><th>মোট</th><th>হার</th></tr>`;
+    for(let m = 11; m >= 0; m--){
+      const s = getMonthStats(m);
+      if(s.dailyData.length > 0){
+        content += `<tr><td>${s.name}</td><td>${s.totalStarted}</td><td>${s.totalScheduled}</td><td><b>${s.rate}%</b></td></tr>`;
+      }
+    }
+    content += `</table>`;
+  }
+  content += `<div class="footer">Admin Agent AI · স্বয়ংক্রিয় রিপোর্ট</div>
+  <div class="no-print" style="text-align:center;margin-top:30px;">
+    <button onclick="window.print()" style="background:#b5502f;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;cursor:pointer;">🖨️ PDF হিসেবে সেভ</button>
+  </div></body></html>`;
+  w.document.write(content);
+  w.document.close();
+  toast("PDF উইন্ডো খোলা হচ্ছে...", "info", "📄");
+}
+window.exportReportPDF = exportReportPDF;
+function exportReportJSON(){
+  const data = {
+    exported: new Date().toISOString(),
+    discipline: getDisciplineStats(),
+    months: [getMonthStats(0), getMonthStats(1), getMonthStats(2)],
+    habits: habits.map(h => ({
+      name: h.name, streak: getHabitStreak(h.id),
+      total: getHabitTotalDays(h.id), rate30: getHabitCompletionRate(h.id, 30)
+    }))
+  };
+  downloadFile(`admin-agent-report-${todayKey()}.json`, JSON.stringify(data, null, 2), "application/json");
+  toast("JSON ডাউনলোড", "ok", "⬇");
+}
+window.exportReportJSON = exportReportJSON;
+
+/* FAMILY SHARE */
+function encodeRoutine(){
+  const compact = {};
+  for(let i = 0; i < 7; i++){
+    if(routine[i] && routine[i].length > 0){
+      compact[i] = routine[i].filter(r => r.enabled).map(r => ({ t: r.text, m: r.time }));
+    }
+  }
+  return btoa(unescape(encodeURIComponent(JSON.stringify({ r: compact }))));
+}
+function decodeRoutine(str){
+  try{
+    const data = JSON.parse(decodeURIComponent(escape(atob(str))));
+    return data.r || {};
+  }catch(e){ return null; }
+}
+function generateFamilyLink(){
+  let total = 0;
+  for(let i=0; i<7; i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0){ toast("প্রথমে রুটিন যোগ করুন", "err"); return; }
+  localStorage.setItem("aa_has_shared", "true");
+  const encoded = encodeRoutine();
+  const url = `${window.location.origin}${window.location.pathname}#share=${encoded}`;
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>👥 ফ্যামিলি শেয়ার</h2>
+    <p>লিংক কপি করে পরিবারের সদস্যকে পাঠান।</p>
+    <div class="field"><label>শেয়ার লিংক</label>
+      <textarea id="shareLink" rows="4" readonly style="font-size:.7rem; font-family:monospace;">${escapeHtml(url)}</textarea>
+    </div>
+    <div style="background:var(--bg); border-radius:10px; padding:12px; margin-bottom:14px; font-size:.78rem; color:var(--sub); line-height:1.6;">
+      📌 <b>${total}টি রুটিন</b> শেয়ার হচ্ছে।<br>
+      🔒 কোনো সার্ভারে যায় না।
+    </div>
+    <div class="modal-actions" style="flex-wrap:wrap;">
+      <button class="btn-secondary" onclick="closeModal()">বন্ধ</button>
+      <button class="btn-secondary" id="copyLinkBtn">📋 কপি</button>
+      ${navigator.share ? '<button class="btn-primary" id="shareNativeBtn">📤 শেয়ার</button>' : '<button class="btn-primary" id="waLinkBtn">📤 WhatsApp</button>'}
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  $("copyLinkBtn").onclick = () => {
+    navigator.clipboard.writeText(url).then(() => toast("কপি হয়েছে", "ok", "📋")).catch(() => toast("কপি ব্যর্থ", "err"));
+  };
+  const snb = $("shareNativeBtn");
+  if(snb) snb.onclick = async () => {
+    try{ await navigator.share({ title: "আমার সাপ্তাহিক রুটিন", text: "Admin Agent-এ import করুন:", url }); toast("শেয়ার", "ok", "📤"); }catch(e){}
+  };
+  const wab = $("waLinkBtn");
+  if(wab) wab.onclick = () => window.open("https://wa.me/?text=" + encodeURIComponent("আমার সাপ্তাহিক রুটিন: " + url), "_blank");
+}
+window.generateFamilyLink = generateFamilyLink;
+function checkShareLink(){
+  const hash = window.location.hash;
+  if(!hash.startsWith("#share=")) return;
+  const encoded = hash.slice(7);
+  const sharedRoutine = decodeRoutine(encoded);
+  if(!sharedRoutine){ toast("শেয়ার ডেটা পড়া যায়নি", "err"); return; }
+  let total = 0;
+  for(const day in sharedRoutine) total += sharedRoutine[day].length;
+  setTimeout(() => {
+    const modal = $("modal");
+    modal.innerHTML = `
+      <h2>👥 শেয়ারকৃত রুটিন</h2>
+      <p>কেউ একটি সাপ্তাহিক রুটিন শেয়ার করেছেন।</p>
+      <div style="background:var(--bg); border-radius:10px; padding:14px; margin-bottom:16px; max-height:200px; overflow-y:auto; font-size:.8rem;">
+        ${Object.keys(sharedRoutine).sort((a,b)=>a-b).map(d => `
+          <div style="margin-bottom:10px;">
+            <div style="font-weight:700; color:var(--accent); margin-bottom:4px;">${DAYS[d]}</div>
+            ${sharedRoutine[d].map(r => `<div style="padding:2px 0; color:var(--sub);">${r.m} — ${escapeHtml(r.t)}</div>`).join("")}
+          </div>
+        `).join("")}
+      </div>
+      <p style="font-size:.78rem;">মোট <b>${total}টি রুটিন</b>।</p>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="closeModal();window.location.hash='';">বাতিল</button>
+        <button class="btn-primary" id="importSharedBtn">📥 যোগ করুন</button>
+      </div>`;
+    $("modalBackdrop").classList.add("show");
+    $("importSharedBtn").onclick = () => {
+      for(const day in sharedRoutine){
+        const i = parseInt(day);
+        if(!routine[i]) routine[i] = [];
+        sharedRoutine[day].forEach(r => {
+          routine[i].push({
+            id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+            time: r.m, text: r.t, enabled: true, shared: true,
+            createdAt: new Date().toISOString()
+          });
+        });
+        routine[i].sort((a,b) => a.time.localeCompare(b.time));
+      }
+      saveRoutine(); renderView(); closeModal();
+      window.location.hash = "";
+      toast(`${total}টি রুটিন যোগ`, "ok", "👥");
+    };
+  }, 800);
+}
+function renderFamily(){
+  return `<h2 class="section-title">👥 ফ্যামিলি শেয়ার</h2>
+    <div class="card" style="background:linear-gradient(135deg, var(--ok-soft), var(--card)); border-color:var(--ok);">
+      <div style="display:flex; gap:14px;">
+        <div style="font-size:2.5rem;">👨‍👩‍👧‍👦</div>
+        <div style="flex:1;">
+          <div style="font-weight:700; margin-bottom:4px;">পরিবারের সাথে রুটিন শেয়ার</div>
+          <div style="font-size:.8rem; color:var(--sub); line-height:1.5;">লিংক পাঠান — তারা খুললে import করতে পারবেন।</div>
+        </div>
+      </div>
+    </div>
+    <div class="card"><h3>📤 রুটিন শেয়ার</h3>
+      <button class="btn-primary" onclick="generateFamilyLink()" style="width:100%; padding:14px;">🔗 শেয়ার লিংক তৈরি করুন</button>
+    </div>
+    <div class="card"><h3>📥 শেয়ারকৃত রুটিন গ্রহণ</h3>
+      <div class="field"><label>শেয়ার কোড</label>
+        <textarea id="importCode" rows="3" placeholder="লিংকের শেষ অংশ..." style="font-size:.75rem; font-family:monospace;"></textarea>
+      </div>
+      <button class="btn-secondary" onclick="importFromCode()" style="width:100%;">📥 কোড থেকে import</button>
+    </div>
+    <div class="card"><h3>ℹ️ কীভাবে কাজ করে</h3>
+      <div style="font-size:.82rem; color:var(--sub); line-height:1.7;">
+        <b>১.</b> শেয়ার লিংক তৈরি করুন<br>
+        <b>২.</b> পরিবারকে পাঠান<br>
+        <b>৩.</b> তারা খুললে import অপশন আসবে<br>
+        <b>৪.</b> এক ক্লিকে পুরো রুটিন যোগ<br><br>
+        🔒 ডেটা কোনো সার্ভারে যায় না।
+      </div>
+    </div>`;
+}
+window.importFromCode = function(){
+  const code = $("importCode").value.trim();
+  if(!code){ toast("কোড পেস্ট করুন", "err"); return; }
+  let encoded = code;
+  if(code.includes("#share=")) encoded = code.split("#share=")[1];
+  const sharedRoutine = decodeRoutine(encoded);
+  if(!sharedRoutine){ toast("অবৈধ কোড", "err"); return; }
+  let total = 0;
+  for(const day in sharedRoutine) total += sharedRoutine[day].length;
+  if(!confirm(`${total}টি রুটিন যোগ হবে। চালিয়ে যাবেন?`)) return;
+  for(const day in sharedRoutine){
+    const i = parseInt(day);
+    if(!routine[i]) routine[i] = [];
+    sharedRoutine[day].forEach(r => {
+      routine[i].push({
+        id: "r_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
+        time: r.m, text: r.t, enabled: true, shared: true,
+        createdAt: new Date().toISOString()
+      });
+    });
+    routine[i].sort((a,b) => a.time.localeCompare(b.time));
+  }
+  saveRoutine(); renderView();
+  toast(`${total}টি রুটিন যোগ`, "ok", "👥");
+};
+
+/* BADGES */
+const BADGES = [
+  { id: "first_step", icon: "🌱", name: "প্রথম পদক্ষেপ", desc: "প্রথম কাজ কনফার্ম", check: (s) => s.stats.totalStarted >= 1 },
+  { id: "week_warrior", icon: "🔥", name: "সপ্তাহ যোদ্ধা", desc: "৭ দিনের স্ট্রিক", check: (s) => s.stats.streak >= 7 },
+  { id: "month_master", icon: "🏅", name: "মাস মাস্টার", desc: "৩০ দিনের স্ট্রিক", check: (s) => s.stats.streak >= 30 },
+  { id: "century", icon: "💯", name: "শতক", desc: "১০০টি কাজ সম্পন্ন", check: (s) => s.stats.totalStarted >= 100 },
+  { id: "habit_hero", icon: "🎯", name: "হ্যাবিট হিরো", desc: "২১ দিনের হ্যাবিট স্ট্রিক", check: (s) => s.maxHabitStreak >= 21 },
+  { id: "fast_responder", icon: "⚡", name: "দ্রুত সাড়া", desc: "গড় সাড়া < ৩০ সেকেন্ড", check: (s) => s.stats.avgResponseSec > 0 && s.stats.avgResponseSec < 30 },
+  { id: "perfect_day", icon: "⭐", name: "নিখুঁত দিন", desc: "একদিনে সব কাজ সম্পন্ন", check: (s) => s.hasPerfectDay },
+  { id: "discipline_master", icon: "👑", name: "মাস্টার", desc: "৯০+ স্কোর", check: (s) => s.stats.score >= 90 },
+  { id: "sharer", icon: "👥", name: "শেয়ারার", desc: "রুটিন শেয়ার করুন", check: (s) => s.hasShared },
+  { id: "planner", icon: "📝", name: "পরিকল্পক", desc: "টেমপ্লেট ব্যবহার", check: (s) => s.hasTemplate }
+];
+function getUnlockedBadges(){
+  const stats = getDisciplineStats();
+  let maxHabitStreak = 0;
+  habits.forEach(h => { const s = getHabitStreak(h.id); if(s > maxHabitStreak) maxHabitStreak = s; });
+  let hasPerfectDay = false;
+  Object.keys(checkins).forEach(date => {
+    const d = new Date(date);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r => r.enabled);
+    if(items.length === 0) return;
+    const dc = checkins[date];
+    const started = items.filter(r => dc[r.id]?.status === "started").length;
+    if(started === items.length && items.length >= 3) hasPerfectDay = true;
+  });
+  const context = {
+    stats, maxHabitStreak, hasPerfectDay,
+    hasShared: localStorage.getItem("aa_has_shared") === "true",
+    hasTemplate: localStorage.getItem("aa_has_template") === "true"
+  };
+  return BADGES.filter(b => { try{ return b.check(context); }catch(e){ return false; } });
+}
+function renderBadges(){
+  const unlocked = getUnlockedBadges();
+  const ids = unlocked.map(b => b.id);
+  return `<h2 class="section-title">🎁 ব্যাজ ও অর্জন</h2>
+    <div class="card" style="background:linear-gradient(135deg, var(--gold-soft), var(--card)); border-color:var(--gold);">
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div style="font-size:2.5rem;">🏆</div>
+        <div>
+          <div style="font-weight:700; font-size:1.1rem;">${unlocked.length} / ${BADGES.length} অর্জিত</div>
+          <div style="font-size:.8rem; color:var(--sub);">আরও ব্যাজ আনলক করতে চালিয়ে যান</div>
+        </div>
+      </div>
+    </div>
+    <div class="badge-grid">
+      ${BADGES.map(b => {
+        const isU = ids.includes(b.id);
+        return `<div style="background:var(--card); border:2px solid ${isU ? 'var(--gold)' : 'var(--line)'}; border-radius:14px; padding:16px; text-align:center; opacity:${isU ? 1 : 0.5};">
+          <div style="font-size:2.5rem; margin-bottom:8px; filter:${isU ? 'none' : 'grayscale(1)'};">${b.icon}</div>
+          <div style="font-weight:700; font-size:.85rem; margin-bottom:4px;">${b.name}</div>
+          <div style="font-size:.7rem; color:var(--sub); line-height:1.4;">${b.desc}</div>
+          ${isU ? '<div style="margin-top:8px; font-size:.7rem; color:var(--gold); font-weight:700;">✅ অর্জিত</div>' : ''}
+        </div>`;
+      }).join("")}
+    </div>`;
 }
 
 /* VIEWS */
@@ -2183,28 +1858,23 @@ function renderDashboard(){
   const rate = getCompletionRate(7);
   const stats = getDisciplineStats();
   const level = getDisciplineLevel(stats.score);
-
   let html = `
     <div class="discipline-card">
       <div class="dc-head">
         <div>
           <div class="dc-label">নিয়মানুবর্তিতা স্কোর</div>
           <div class="dc-score">${stats.score}</div>
-          <div class="dc-level">${level.icon} ${level.name} · ${stats.streak}🔥 স্ট্রিক</div>
+          <div class="dc-level">${level.icon} ${level.name} · ${stats.streak}🔥</div>
         </div>
-        <div class="dc-ring" style="--p:${stats.score}%">
-          <span>${level.icon}</span>
-        </div>
+        <div class="dc-ring" style="--p:${stats.score}%"><span>${level.icon}</span></div>
       </div>
     </div>
-
     <div class="stats">
-      <div class="stat high"><div class="label">আজকের কাজ</div><div class="value">${todayItems.length}</div><div class="delta">${doneToday}টি কনফার্ম</div></div>
+      <div class="stat high"><div class="label">আজকের কাজ</div><div class="value">${todayItems.length}</div><div class="delta">${doneToday} কনফার্ম</div></div>
       <div class="stat ok"><div class="label">স্ট্রিক</div><div class="value">${stats.streak}</div><div class="delta">দিন</div></div>
-      <div class="stat"><div class="label">সাপ্তাহিক গড়</div><div class="value">${rate}%</div><div class="delta">সম্পন্নতা</div></div>
-      <div class="stat gold"><div class="label">লেভেল</div><div class="value" style="font-size:1.1rem;">${level.name}</div><div class="delta">${stats.confirmationRate}% কনফার্মেশন</div></div>
+      <div class="stat"><div class="label">সাপ্তাহিক</div><div class="value">${rate}%</div><div class="delta">সম্পন্নতা</div></div>
+      <div class="stat gold"><div class="label">লেভেল</div><div class="value" style="font-size:1.1rem;">${level.name}</div><div class="delta">${stats.confirmationRate}% কনফার্ম</div></div>
     </div>
-
     <div class="card">
       <h3>📌 আজকের রুটিন (${DAYS[todayIdx]})</h3>
       <div style="display:flex; flex-direction:column; gap:8px;">
@@ -2217,22 +1887,22 @@ function renderDashboard(){
             <span style="flex:1; font-size:.86rem;">${escapeHtml(r.text)}</span>
             ${icon ? `<span style="font-size:1.1rem;">${icon}</span>` : `<button class="btn-ghost" onclick="manualCheckin('${r.id}','started')" style="padding:4px 10px; font-size:.72rem;">কনফার্ম</button>`}
           </div>`;
-        }).join("") : '<div class="empty">আজকের জন্য কোনো রুটিন নেই</div>'}
+        }).join("") : '<div class="empty">আজকের রুটিন নেই</div>'}
       </div>
     </div>
-
     <div class="card">
       <h3>⚡ দ্রুত কাজ</h3>
       <div style="display:grid; gap:8px; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr));">
         <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
-        <button class="btn-secondary" onclick="syncToCalendar()">📅 Calendar সিঙ্ক</button>
-        <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp শেয়ার</button>
-        <button class="btn-secondary" onclick="testAlert()">🔊 টেস্ট সাউন্ড</button>
+        <button class="btn-secondary" onclick="syncToCalendar()">📅 Calendar</button>
+        <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp</button>
         <button class="btn-secondary" onclick="testCheckin()">🎯 টেস্ট Check-in</button>
-        <button class="btn-secondary" onclick="switchView('discipline')">🏆 স্কোর দেখুন</button>
+        <button class="btn-secondary" onclick="switchView('habits')">🎯 হ্যাবিট</button>
+        <button class="btn-secondary" onclick="switchView('reports')">📊 রিপোর্ট</button>
+        <button class="btn-secondary" onclick="switchView('family')">👥 ফ্যামিলি</button>
+        <button class="btn-secondary" onclick="switchView('badges')">🎁 ব্যাজ</button>
       </div>
     </div>`;
-
   if(insights.length === 0) generateInsights();
   if(insights.length > 0){
     const top = insights[0];
@@ -2241,30 +1911,38 @@ function renderDashboard(){
       <div class="ic-body">
         <div class="ic-title">💡 ${escapeHtml(top.title)}</div>
         <div class="ic-text">${escapeHtml(top.text)}</div>
-        <button class="btn-ghost" onclick="switchView('insights')" style="margin-top:8px; padding:4px 0;">সব পরামর্শ দেখুন →</button>
+        <button class="btn-ghost" onclick="switchView('insights')" style="margin-top:8px; padding:4px 0;">সব পরামর্শ →</button>
       </div>
     </div>`;
   }
   return html;
 }
-
 window.testCheckin = function(){
   const todayIdx = new Date().getDay();
   const items = (routine[todayIdx]||[]).filter(r=>r.enabled);
   const item = items[0] || { id: "test", time: "এখন", text: "টেস্ট কাজ" };
   openCheckin(item, todayIdx);
 };
+window.manualCheckin = function(routineId, status){
+  const key = todayKey();
+  if(!checkins[key]) checkins[key] = {};
+  checkins[key][routineId] = { status, timestamp: Date.now(), responseMs: 0, manual: true };
+  if(!history[key]) history[key] = {};
+  history[key][routineId] = status === "started" ? "done" : "skipped";
+  saveCheckins(); saveHistory(); renderView();
+  toast(status === "started" ? "সম্পন্ন" : "বাদ", "ok", status === "started" ? "✅" : "✕");
+};
 
 function renderRoutineView(){
   const todayIdx = new Date().getDay();
   let html = `<h2 class="section-title">📅 সাপ্তাহিক রুটিন</h2>
     <div style="display:flex; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
-      <button class="btn-primary" onclick="syncToCalendar()">📅 Calendar-এ সিঙ্ক</button>
-      <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp শেয়ার</button>
+      <button class="btn-primary" onclick="syncToCalendar()">📅 Calendar</button>
+      <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp</button>
       <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
+      <button class="btn-secondary" onclick="switchView('family')">👥 শেয়ার</button>
     </div>
     <div class="routine-grid">`;
-
   for(let i=0; i<7; i++){
     const items = (routine[i]||[]);
     const today = new Date();
@@ -2272,7 +1950,6 @@ function renderRoutineView(){
     const d = new Date(today); d.setDate(today.getDate() + diff);
     const dateLabel = d.toLocaleDateString("bn-BD", { day:"numeric", month:"short" });
     const dc = checkins[todayKey()] || {};
-
     html += `<div class="day-card ${i === todayIdx ? "today" : ""}">
       <div class="day-head">
         <div>
@@ -2284,12 +1961,11 @@ function renderRoutineView(){
       <div class="day-body">
         ${items.length ? items.map(r => {
           const c = i === todayIdx ? dc[r.id] : null;
-          const statusIcon = c?.status === "started" ? "✅" : c?.status === "snoozed" ? "⏱️" : c?.status === "skipped" ? "⏭️" : "";
-          return `
-          <div class="routine-item" style="${r.enabled ? "" : "opacity:.45;"}">
+          const si = c?.status === "started" ? "✅" : c?.status === "snoozed" ? "⏱️" : c?.status === "skipped" ? "⏭️" : "";
+          return `<div class="routine-item" style="${r.enabled ? "" : "opacity:.45;"}">
             <span class="time">${r.time}</span>
             <span class="r-text" onclick="toggleRoutineItem(${i},'${r.id}')" style="cursor:pointer;">${escapeHtml(r.text)}</span>
-            ${statusIcon ? `<span style="font-size:.9rem;">${statusIcon}</span>` : ""}
+            ${si ? `<span style="font-size:.9rem;">${si}</span>` : ""}
             <button class="r-cal" onclick="event.stopPropagation();quickAddToGoogleCalendar(${i},'${r.id}')" title="Calendar">📅</button>
             <button class="r-mail" onclick="event.stopPropagation();emailRoutineItem(${i},'${r.id}')" title="Email">✉️</button>
             <button class="r-del" onclick="event.stopPropagation();deleteRoutineItem(${i},'${r.id}')">✕</button>
@@ -2303,7 +1979,6 @@ function renderRoutineView(){
   html += `</div>`;
   return html;
 }
-
 window.quickAddToGoogleCalendar = function(dayIdx, routineId){
   const item = (routine[dayIdx]||[]).find(r => r.id === routineId);
   if(!item) return;
@@ -2313,9 +1988,8 @@ window.quickAddToGoogleCalendar = function(dayIdx, routineId){
   const start = new Date(today); start.setDate(start.getDate() + offset); start.setHours(h, m, 0, 0);
   const end = new Date(start.getTime() + 30*60000);
   const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
-  const url = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`;
-  window.open(url, "_blank");
-  toast("Google Calendar-এ খোলা হচ্ছে", "info", "📅");
+  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`, "_blank");
+  toast("Google Calendar খোলা হচ্ছে", "info", "📅");
 };
 
 function renderTasksView(){
@@ -2340,23 +2014,12 @@ function renderTasksView(){
     <div class="board">`;
   COLS.forEach(col => {
     html += `<div class="col">
-      <div class="col-head">
-        <h2><span class="dot-cat"></span>${col}</h2>
-        <span class="count">${byCol[col].length}</span>
-      </div>
+      <div class="col-head"><h2><span class="dot-cat"></span>${col}</h2><span class="count">${byCol[col].length}</span></div>
       ${byCol[col].length ? byCol[col].map(t => `
         <div class="task">
-          <div class="top">
-            <span class="text">${escapeHtml(t.text)}</span>
-            <button class="remove" onclick="removeTask('${t.id}')">✕</button>
-          </div>
-          <div class="meta">
-            <span class="tag ${t.priority.toLowerCase()}">${t.priority}</span>
-            ${t.deadline ? `<span>📅 ${t.deadline}</span>` : ""}
-            ${t.fromCalendar ? `<span style="color:var(--ok);">📅 cal</span>` : ""}
-          </div>
-        </div>
-      `).join("") : `<div class="empty">কোনো টাস্ক নেই</div>`}
+          <div class="top"><span class="text">${escapeHtml(t.text)}</span><button class="remove" onclick="removeTask('${t.id}')">✕</button></div>
+          <div class="meta"><span class="tag ${t.priority.toLowerCase()}">${t.priority}</span>${t.deadline ? `<span>📅 ${t.deadline}</span>` : ""}${t.fromCalendar ? `<span style="color:var(--ok);">📅 cal</span>` : ""}</div>
+        </div>`).join("") : `<div class="empty">কোনো টাস্ক নেই</div>`}
     </div>`;
   });
   html += `</div>`;
@@ -2365,7 +2028,7 @@ function renderTasksView(){
 
 function renderTemplates(){
   let html = `<h2 class="section-title">📝 রুটিন টেমপ্লেট</h2>
-    <p style="color:var(--sub); font-size:.85rem; margin-bottom:16px;">এক ক্লিকে সাপ্তাহিক রুটিন লোড করুন।</p>
+    <p style="color:var(--sub); font-size:.85rem; margin-bottom:16px;">এক ক্লিকে রুটিন লোড করুন।</p>
     <div class="template-grid">`;
   Object.entries(TEMPLATES).forEach(([key, t]) => {
     const count = Object.values(t.data).reduce((s,a)=>s+a.length,0);
@@ -2373,18 +2036,175 @@ function renderTemplates(){
       <div class="tc-emoji">${t.icon}</div>
       <div class="tc-name">${t.name}</div>
       <div class="tc-desc">${t.desc}</div>
-      <div class="tc-count">${count}টি রুটিন আইটেম</div>
+      <div class="tc-count">${count}টি আইটেম</div>
     </div>`;
   });
   html += `</div>`;
   return html;
 }
 
+/* Discipline view (simplified) */
+function renderDiscipline(){
+  const stats = getDisciplineStats();
+  const level = getDisciplineLevel(stats.score);
+  const week = getWeekCheckins(7);
+  const trend = [];
+  const today = new Date();
+  for(let i = 6; i >= 0; i--){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const dc = week[key] || {};
+    const started = items.filter(r => dc[r.id]?.status === "started").length;
+    const pct = items.length > 0 ? Math.round(started / items.length * 100) : 0;
+    trend.push({ day: DAYS_SHORT[dayIdx], pct });
+  }
+  let advice = "", adviceIcon = "💡";
+  if(stats.score >= 90){ advice = "অসাধারণ! এই ধারা রাখুন।"; adviceIcon = "👑"; }
+  else if(stats.score >= 75){ advice = "খুব ভালো! শীর্ষে পৌঁছাতে আরও একটু।"; adviceIcon = "🏆"; }
+  else if(stats.score >= 60){ advice = "ভালো। দ্রুত সাড়া দিলে স্কোর বাড়বে।"; adviceIcon = "⭐"; }
+  else if(stats.score >= 40){ advice = "সকালের প্রথম কাজ কনফার্ম করুন।"; adviceIcon = "🌱"; }
+  else { advice = "ছোট রুটিন দিয়ে শুরু করুন।"; adviceIcon = "🎯"; }
+  return `<h2 class="section-title">🏆 নিয়মানুবর্তিতা</h2>
+    <div class="discipline-card">
+      <div class="dc-head">
+        <div>
+          <div class="dc-label">আপনার স্কোর</div>
+          <div class="dc-score">${stats.score}<span style="font-size:1.2rem;opacity:.6;">/100</span></div>
+          <div class="dc-level">${level.icon} ${level.name}</div>
+        </div>
+        <div class="dc-ring" style="--p:${stats.score}%"><span>${level.icon}</span></div>
+      </div>
+    </div>
+    <div class="analytics-grid">
+      <div class="analytics-card"><h4>✅ কনফার্মেশন</h4><div class="streak-big">${stats.confirmationRate}%</div><div class="streak-label">${stats.started}/${stats.total}</div></div>
+      <div class="analytics-card"><h4>⚡ সাড়া</h4><div class="streak-big">${stats.avgResponseSec}s</div><div class="streak-label">গড় সময়</div></div>
+      <div class="analytics-card"><h4>🔥 স্ট্রিক</h4><div class="streak-big">${stats.streak}</div><div class="streak-label">দিন</div></div>
+    </div>
+    <div class="card" style="margin-top:16px;"><h3>${adviceIcon} পরামর্শ</h3><p style="font-size:.85rem; line-height:1.7;">${advice}</p></div>
+    <div class="card"><h3>📊 শেষ ৭ দিন</h3>
+      ${trend.map(t => `<div class="bar-row">
+        <span class="br-label">${t.day}</span>
+        <div class="br-bar-wrap"><div class="br-bar" style="width:${t.pct}%; background:${t.pct>=75?'linear-gradient(90deg,var(--ok),#5fa585)':t.pct>=40?'linear-gradient(90deg,var(--warn),#e0b06a)':'linear-gradient(90deg,var(--danger),#e57366)'}"></div></div>
+        <span class="br-value">${t.pct}%</span>
+      </div>`).join("")}
+    </div>`;
+}
+
+/* Analytics (simplified) */
+function renderAnalytics(){
+  const catStats = getCategoryStats();
+  const rate = getCompletionRate(7);
+  const streak = getStreak();
+  const loads = getDayLoad();
+  const maxLoad = Math.max(...loads, 1);
+  const todayIdx = new Date().getDay();
+  const heat = [];
+  const today = new Date();
+  for(let i = 27; i >= 0; i--){
+    const d = new Date(today); d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const h = history[key] || {};
+    const doneCount = items.filter(r => h[r.id] === "done").length;
+    const ratio = items.length > 0 ? doneCount / items.length : 0;
+    let level = 0;
+    if(ratio > 0 && ratio <= 0.3) level = 1;
+    else if(ratio > 0.3 && ratio <= 0.6) level = 2;
+    else if(ratio > 0.6 && ratio <= 0.9) level = 3;
+    else if(ratio > 0.9) level = 4;
+    heat.push({ key, level });
+  }
+  return `<h2 class="section-title">📈 অগ্রগতি</h2>
+    <div class="analytics-grid">
+      <div class="analytics-card"><h4>🎯 সম্পন্নতার হার</h4><div class="streak-big">${rate}%</div><div class="streak-label">গত ৭ দিন</div></div>
+      <div class="analytics-card"><h4>🔥 স্ট্রিক</h4><div class="streak-big">${streak}</div><div class="streak-label">দিন</div></div>
+      <div class="analytics-card"><h4>📋 টাস্ক</h4><div class="streak-big">${tasks.length}</div><div class="streak-label">মোট</div></div>
+    </div>
+    <div class="card" style="margin-top:16px;"><h3>📊 ক্যাটাগরি</h3>
+      ${Object.entries(catStats).map(([cat, n]) => {
+        const max = Math.max(...Object.values(catStats), 1);
+        return `<div class="bar-row"><span class="br-label">${cat}</span><div class="br-bar-wrap"><div class="br-bar" style="width:${(n/max)*100}%"></div></div><span class="br-value">${n}</span></div>`;
+      }).join("")}
+    </div>
+    <div class="card"><h3>🔥 শেষ ২৮ দিন</h3>
+      <div class="heat-grid">${heat.map(h => `<div class="heat-cell" data-level="${h.level}" title="${h.key}"></div>`).join("")}</div>
+    </div>
+    <div class="card"><h3>📅 সাপ্তাহিক লোড</h3>
+      ${loads.map((n, i) => `<div class="bar-row"><span class="br-label">${DAYS_SHORT[i]}</span><div class="br-bar-wrap"><div class="br-bar" style="width:${(n/maxLoad)*100}%"></div></div><span class="br-value">${n}</span></div>`).join("")}
+    </div>`;
+}
+
+/* Insights */
+function generateInsights(){
+  const list = [];
+  const loads = getDayLoad();
+  const avgLoad = loads.reduce((a,b)=>a+b,0) / 7;
+  const stats = getDisciplineStats();
+  if(stats.score >= 75) list.push({ icon: "🏆", title: `স্কোর: ${stats.score}`, text: "খুব ভালো করছেন! এই ধারা বজায় রাখুন।" });
+  else if(stats.score < 40 && stats.total > 0) list.push({ icon: "🎯", title: `স্কোর: ${stats.score}`, text: "চেক-ইন কম করছেন। দ্রুত সাড়া দিলে স্কোর বাড়বে।" });
+  if(stats.avgResponseSec > 120 && stats.started > 3) list.push({ icon: "⚡", title: "সাড়া দিতে দেরি", text: `গড়ে ${stats.avgResponseSec}s সময় নিচ্ছেন। ৩০s এর মধ্যে সাড়া দিন।` });
+  loads.forEach((n, i) => {
+    if(n > avgLoad * 1.5 && n >= 5) list.push({ icon: "⚖️", title: `${DAYS[i]} ব্যস্ত`, text: `${n}টি কাজ — কিছু সরান।` });
+    if(n === 0) list.push({ icon: "💤", title: `${DAYS[i]} ফাঁকা`, text: "একটি হালকা রুটিন যোগ করুন।" });
+  });
+  const rate = getCompletionRate(7);
+  if(rate > 0 && rate < 40) list.push({ icon: "📉", title: "সম্পন্নতা কম", text: `${rate}% — রুটিন কমান।` });
+  else if(rate >= 70) list.push({ icon: "🌟", title: "দুর্দান্ত", text: `${rate}% সম্পন্ন।` });
+  if(!settings.sleepEnabled) list.push({ icon: "🌙", title: "স্লিপ মোড", text: "রাতে অ্যালার্ট বন্ধ রাখুন।" });
+  insights = list;
+  saveInsights();
+  return list;
+}
+window.generateInsights = generateInsights;
+function renderInsights(){
+  if(insights.length === 0) generateInsights();
+  if(insights.length === 0) return `<h2 class="section-title">💡 AI পরামর্শ</h2><div class="empty" style="padding:40px;">আরও ডেটা লাগবে।</div>`;
+  let html = `<h2 class="section-title">💡 AI পরামর্শ (${insights.length})</h2>
+    <div style="display:flex; justify-content:space-between; margin-bottom:12px;">
+      <span style="font-size:.78rem; color:var(--sub);">ডেটা বিশ্লেষণ</span>
+      <button class="btn-ghost" onclick="generateInsights();renderView();">🔄 আবার</button>
+    </div>`;
+  insights.forEach(i => {
+    html += `<div class="insight">
+      <div class="ic-icon">${i.icon}</div>
+      <div class="ic-body">
+        <div class="ic-title">${escapeHtml(i.title)}</div>
+        <div class="ic-text">${escapeHtml(i.text)}</div>
+      </div>
+    </div>`;
+  });
+  return html;
+}
+
+/* Forecast */
+function renderForecast(){
+  let html = `<h2 class="section-title">🔮 সাপ্তাহিক পূর্বাভাস</h2><div class="card"><div class="forecast-list">`;
+  const today = new Date();
+  for(let i = 0; i < 7; i++){
+    const d = new Date(today); d.setDate(d.getDate() + i);
+    const dayIdx = d.getDay();
+    const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+    const load = items.length;
+    let level = "light", label = "হালকা";
+    if(load > 6){ level = "heavy"; label = "ব্যস্ত"; }
+    else if(load > 3){ level = "normal"; label = "স্বাভাবিক"; }
+    const txt = items.slice(0, 3).map(r => `${r.time} ${r.text}`).join(" · ");
+    html += `<div class="forecast-day">
+      <span class="fd-name">${i === 0 ? "আজ" : DAYS_SHORT[dayIdx]}</span>
+      <span class="fd-items">${escapeHtml(txt) || "কিছু নেই"}</span>
+      <span class="fd-load ${level}">${label} (${load})</span>
+    </div>`;
+  }
+  html += `</div></div>`;
+  return html;
+}
+
 function renderSettings(){
   let html = `<h2 class="section-title">⚙️ সেটিংস</h2>`;
-
-  html += `<div class="card">
-    <h3>🎨 থিম</h3>
+  html += `<div class="card"><h3>🎨 থিম</h3>
     <div class="theme-picker">
       ${THEMES.map(t => {
         const cur = document.documentElement.getAttribute("data-theme") || "light";
@@ -2392,94 +2212,69 @@ function renderSettings(){
       }).join("")}
     </div>
   </div>`;
-
-  html += `<div class="card">
-    <h3>🎯 Check-in কনফার্মেশন</h3>
-    <p style="font-size:.78rem; color:var(--sub); margin-bottom:12px;">প্রতিটি কাজের সময়ে "শুরু করছি" কনফার্ম চাওয়া হবে — এতে নিয়মানুবর্তিতা মাপা যায়।</p>
-    <label class="check-row"><input type="checkbox" ${settings.checkinEnabled?"checked":""} onchange="window._updateSetting('checkinEnabled',this.checked)"> <span>Check-in কনফার্মেশন চালু</span></label>
-    <label class="check-row"><input type="checkbox" ${settings.welcomeEnabled?"checked":""} onchange="window._updateSetting('welcomeEnabled',this.checked)"> <span>সকালের স্বাগত বার্তা চালু</span></label>
-    <div class="field" style="margin-top:8px;">
-      <label>Auto-skip সময় (মিনিট): <span id="skipVal">${settings.autoSkipMinutes}</span></label>
-      <input type="range" min="1" max="10" step="1" value="${settings.autoSkipMinutes}" oninput="window._updateSetting('autoSkipMinutes',parseInt(this.value));document.getElementById('skipVal').textContent=this.value">
+  html += `<div class="card"><h3>🎯 Check-in</h3>
+    <label class="check-row"><input type="checkbox" ${settings.checkinEnabled?"checked":""} onchange="window._updateSetting('checkinEnabled',this.checked)"> <span>Check-in কনফার্মেশন</span></label>
+    <label class="check-row"><input type="checkbox" ${settings.welcomeEnabled?"checked":""} onchange="window._updateSetting('welcomeEnabled',this.checked)"> <span>সকালের স্বাগত</span></label>
+    <div class="field" style="margin-top:8px;"><label>Auto-skip (মিনিট): <span id="skipVal">${settings.autoSkipMinutes}</span></label>
+      <input type="range" min="1" max="10" value="${settings.autoSkipMinutes}" oninput="window._updateSetting('autoSkipMinutes',parseInt(this.value));document.getElementById('skipVal').textContent=this.value">
     </div>
   </div>`;
-
-  html += `<div class="card">
-    <h3>🔔 অ্যালার্ট</h3>
+  html += `<div class="card"><h3>🔔 অ্যালার্ট</h3>
     <label class="check-row"><input type="checkbox" ${settings.sound?"checked":""} onchange="window._updateSetting('sound',this.checked)"> <span>সাউন্ড</span></label>
-    <label class="check-row"><input type="checkbox" ${settings.voice?"checked":""} onchange="window._updateSetting('voice',this.checked)"> <span>ভয়েস অ্যানাউন্সমেন্ট</span></label>
-    <label class="check-row"><input type="checkbox" ${settings.notif?"checked":""} onchange="window._updateSetting('notif',this.checked)"> <span>ব্রাউজার নোটিফিকেশন</span></label>
-    <div class="field" style="margin-top:12px;">
-      <label>ভলিউম: <span id="volVal">${Math.round(settings.volume*100)}</span>%</label>
+    <label class="check-row"><input type="checkbox" ${settings.voice?"checked":""} onchange="window._updateSetting('voice',this.checked)"> <span>ভয়েস</span></label>
+    <label class="check-row"><input type="checkbox" ${settings.notif?"checked":""} onchange="window._updateSetting('notif',this.checked)"> <span>নোটিফিকেশন</span></label>
+    <div class="field" style="margin-top:12px;"><label>ভলিউম: <span id="volVal">${Math.round(settings.volume*100)}</span>%</label>
       <input type="range" min="0" max="1" step="0.05" value="${settings.volume}" oninput="window._updateSetting('volume',parseFloat(this.value));document.getElementById('volVal').textContent=Math.round(this.value*100)">
     </div>
-    <button class="btn-secondary" onclick="testAlert()" style="margin-top:8px;">🔊 টেস্ট করুন</button>
+    <button class="btn-secondary" onclick="testAlert()" style="margin-top:8px;">🔊 টেস্ট</button>
   </div>`;
-
-  html += `<div class="card">
-    <h3>🌙 স্লিপ মোড</h3>
-    <label class="check-row"><input type="checkbox" ${settings.sleepEnabled?"checked":""} onchange="window._updateSetting('sleepEnabled',this.checked);updateSleepIndicator()"> <span>স্লিপ মোড চালু</span></label>
+  html += `<div class="card"><h3>🌙 স্লিপ মোড</h3>
+    <label class="check-row"><input type="checkbox" ${settings.sleepEnabled?"checked":""} onchange="window._updateSetting('sleepEnabled',this.checked);updateSleepIndicator()"> <span>চালু</span></label>
     <div class="field-row" style="margin-top:8px;">
       <div class="field"><label>শুরু</label><input type="time" value="${settings.sleepStart}" onchange="window._updateSetting('sleepStart',this.value);updateSleepIndicator()"></div>
       <div class="field"><label>শেষ</label><input type="time" value="${settings.sleepEnd}" onchange="window._updateSetting('sleepEnd',this.value);updateSleepIndicator()"></div>
     </div>
   </div>`;
-
-  html += `<div class="card">
-    <h3>💾 ডেটা</h3>
+  html += `<div class="card"><h3>💾 ডেটা</h3>
     <div style="display:flex; gap:8px; flex-wrap:wrap;">
       <button class="btn-secondary" onclick="exportBackup()">⬇ ব্যাকআপ</button>
       <button class="btn-secondary" onclick="document.getElementById('importFile').click()">⬆ রিস্টোর</button>
-      <button class="btn-danger" onclick="if(confirm('সব ডেটা মুছে ফেলবেন?')){localStorage.clear();location.reload();}">🗑️ সব রিসেট</button>
+      <button class="btn-danger" onclick="if(confirm('সব ডেটা মুছবেন?')){localStorage.clear();location.reload();}">🗑️ রিসেট</button>
     </div>
   </div>`;
-
-  html += `<div class="card">
-    <h3>ℹ️ সম্পর্কে</h3>
-    <p style="font-size:.8rem; color:var(--sub); line-height:1.6;">
-      Admin Agent AI · সম্পূর্ণ ডিভাইসে সংরক্ষিত · কোনো সার্ভারে ডেটা যায় না।<br>
-      Check-in কনফার্মেশন দিয়ে আপনার নিয়মানুবর্তিতা স্কোরিং করা হয়।
-    </p>
+  html += `<div class="card"><h3>ℹ️ সম্পর্কে</h3>
+    <p style="font-size:.8rem; color:var(--sub); line-height:1.6;">Admin Agent AI · সব ডেটা ডিভাইসে সংরক্ষিত।</p>
   </div>`;
   return html;
 }
 
 function renderIntegrations(){
   return `<h2 class="section-title">🔌 ডিভাইস সিঙ্ক</h2>
-    <div class="card">
-      <h3>📅 Google Calendar</h3>
-      <p style="font-size:.82rem; color:var(--sub); line-height:1.6;">রুটিনকে সাপ্তাহিক recurring event হিসেবে export করুন। একবার import করলেই Google নিজেই reminder পাঠাবে।</p>
+    <div class="card"><h3>📅 Google Calendar</h3>
+      <p style="font-size:.82rem; color:var(--sub); line-height:1.6;">সাপ্তাহিক recurring event হিসেবে export করুন।</p>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
         <button class="btn-primary" onclick="syncToCalendar()">📥 ICS ডাউনলোড</button>
         <button class="btn-secondary" onclick="importFromCalendar()">🔁 Calendar থেকে আনা</button>
       </div>
     </div>
-    <div class="card">
-      <h3>📤 WhatsApp / Messenger</h3>
+    <div class="card"><h3>📤 WhatsApp</h3>
       <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-        <button class="btn-primary" onclick="shareToWhatsApp()">WhatsApp-এ শেয়ার</button>
-        <button class="btn-secondary" onclick="shareViaDevice()">অন্য অ্যাপে শেয়ার</button>
+        <button class="btn-primary" onclick="shareToWhatsApp()">WhatsApp শেয়ার</button>
+        <button class="btn-secondary" onclick="shareViaDevice()">অন্য অ্যাপে</button>
       </div>
     </div>
-    <div class="card">
-      <h3>✉️ Email</h3>
-      <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
-        <button class="btn-primary" onclick="emailDigest()">📧 Email digest</button>
-      </div>
+    <div class="card"><h3>✉️ Email</h3>
+      <button class="btn-primary" onclick="emailDigest()" style="margin-top:10px;">📧 Email digest</button>
     </div>`;
 }
 
-/* BACKUP */
 function exportBackup(){
-  const payload = {
-    version: 3, exportedAt: new Date().toISOString(),
-    routine, tasks, settings, history, checkins, insights
-  };
+  const payload = { version: 4, exportedAt: new Date().toISOString(),
+    routine, tasks, settings, history, checkins, insights, habits, habitLog };
   downloadFile(`admin-agent-backup-${todayKey()}.json`, JSON.stringify(payload, null, 2), "application/json");
   toast("ব্যাকআপ ডাউনলোড", "ok", "⬇");
 }
 window.exportBackup = exportBackup;
-
 function importBackup(file){
   const reader = new FileReader();
   reader.onload = () => {
@@ -2491,7 +2286,10 @@ function importBackup(file){
       if(data.history) history = data.history;
       if(data.checkins) checkins = data.checkins;
       if(data.insights) insights = data.insights;
-      saveRoutine(); saveTasks(); saveSettings(); saveHistory(); saveCheckins(); saveInsights();
+      if(data.habits) habits = data.habits;
+      if(data.habitLog) habitLog = data.habitLog;
+      saveRoutine(); saveTasks(); saveSettings(); saveHistory(); saveCheckins();
+      saveInsights(); saveHabits(); saveHabitLog();
       renderView(); updateSleepIndicator(); updateSoundIcon();
       toast("রিস্টোর সফল", "ok", "⬆");
     }catch(e){ toast("ফাইল পড়া যায়নি", "err"); }
@@ -2502,7 +2300,7 @@ function importBackup(file){
 /* VIEW ROUTER */
 function switchView(view){
   currentView = view;
-  document.querySelectorAll(".nav-item").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+  document.querySelectorAll(".nav-item[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === view));
   renderView();
   closeSidebarMobile();
 }
@@ -2512,12 +2310,16 @@ const VIEW_TITLES = {
   dashboard: ["ড্যাশবোর্ড", "সবকিছু এক নজরে।"],
   routine: ["৭ দিনের রুটিন", "সাপ্তাহিক কাজ ব্যবস্থাপনা।"],
   tasks: ["টাস্ক বোর্ড", "আপনার সব টাস্ক।"],
-  discipline: ["নিয়মানুবর্তিতা", "আপনার কনফার্মেশন ও স্কোর।"],
-  analytics: ["অগ্রগতি", "আপনার অগ্রগতির পরিসংখ্যান।"],
-  insights: ["AI পরামর্শ", "আপনার ডেটা বিশ্লেষণ করে পরামর্শ।"],
-  forecast: ["সাপ্তাহিক পূর্বাভাস", "আগামী ৭ দিনের পরিকল্পনা।"],
-  templates: ["রুটিন টেমপ্লেট", "এক ক্লিকে রুটিন লোড।"],
-  settings: ["সেটিংস", "অ্যাপ কাস্টমাইজ করুন।"],
+  discipline: ["নিয়মানুবর্তিতা", "কনফার্মেশন ও স্কোর।"],
+  habits: ["হ্যাবিট ট্র্যাকার", "নতুন অভ্যাস গড়ে তুলুন।"],
+  analytics: ["অগ্রগতি", "আপনার পরিসংখ্যান।"],
+  reports: ["রিপোর্ট", "মাসিক ও বার্ষিক।"],
+  insights: ["AI পরামর্শ", "ডেটা বিশ্লেষণ।"],
+  forecast: ["পূর্বাভাস", "আগামী ৭ দিনের পরিকল্পনা।"],
+  templates: ["টেমপ্লেট", "এক ক্লিকে রুটিন।"],
+  family: ["ফ্যামিলি শেয়ার", "পরিবারের সাথে।"],
+  badges: ["ব্যাজ", "আপনার অর্জন।"],
+  settings: ["সেটিংস", "কাস্টমাইজ।"],
   integrations: ["ডিভাইস সিঙ্ক", "Calendar, WhatsApp, Email।"]
 };
 
@@ -2532,10 +2334,14 @@ function renderView(){
     case "routine": html = renderRoutineView(); break;
     case "tasks": html = renderTasksView(); break;
     case "discipline": html = renderDiscipline(); break;
+    case "habits": html = renderHabits(); break;
     case "analytics": html = renderAnalytics(); break;
+    case "reports": html = renderReports(); break;
     case "insights": generateInsights(); html = renderInsights(); break;
     case "forecast": html = renderForecast(); break;
     case "templates": html = renderTemplates(); break;
+    case "family": html = renderFamily(); break;
+    case "badges": html = renderBadges(); break;
     case "settings": html = renderSettings(); break;
     case "integrations": html = renderIntegrations(); break;
     default: html = renderDashboard();
@@ -2549,8 +2355,8 @@ function closeSidebarMobile(){ $("sidebar").classList.remove("open"); $("sidebar
 function testAlert(){
   playAlertSound();
   setTimeout(() => speak("এটি একটি টেস্ট অ্যালার্ট"), 800);
-  showSystemNotification("⏰ টেস্ট অ্যালার্ট", "সাউন্ড ও নোটিফিকেশন কাজ করছে");
-  toast("টেস্ট সাউন্ড বাজছে", "ok", "🔊");
+  showSystemNotification("⏰ টেস্ট", "সাউন্ড কাজ করছে");
+  toast("সাউন্ড বাজছে", "ok", "🔊");
 }
 window.testAlert = testAlert;
 
@@ -2560,7 +2366,6 @@ function updateSoundIcon(){
   btn.textContent = settings.sound ? "🔔" : "🔕";
   btn.classList.toggle("active", settings.sound);
 }
-
 window._updateSetting = function(key, val){
   settings[key] = val;
   saveSettings();
@@ -2578,27 +2383,22 @@ if("serviceWorker" in navigator){
 }
 let deferredPrompt = null;
 window.addEventListener("beforeinstallprompt", e => {
-  e.preventDefault();
-  deferredPrompt = e;
+  e.preventDefault(); deferredPrompt = e;
   $("pwaInstallBanner").classList.add("show");
 });
 const installBtn = $("pwaInstallBtn");
-if(installBtn){
-  installBtn.addEventListener("click", async () => {
-    if(!deferredPrompt) return;
-    deferredPrompt.prompt();
-    await deferredPrompt.userChoice;
-    deferredPrompt = null;
-    $("pwaInstallBanner").classList.remove("show");
-  });
-}
+if(installBtn) installBtn.addEventListener("click", async () => {
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  await deferredPrompt.userChoice;
+  deferredPrompt = null;
+  $("pwaInstallBanner").classList.remove("show");
+});
 const dismissBtn = $("pwaDismissBtn");
-if(dismissBtn){
-  dismissBtn.addEventListener("click", () => {
-    $("pwaInstallBanner").classList.remove("show");
-    localStorage.setItem("pwa_dismissed", Date.now().toString());
-  });
-}
+if(dismissBtn) dismissBtn.addEventListener("click", () => {
+  $("pwaInstallBanner").classList.remove("show");
+  localStorage.setItem("pwa_dismissed", Date.now().toString());
+});
 if(window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone){
   const banner = $("pwaInstallBanner");
   if(banner) banner.style.display = "none";
@@ -2622,26 +2422,18 @@ function init(){
   $("modalBackdrop").addEventListener("click", e => { if(e.target.id === "modalBackdrop") closeModal(); });
   $("importFile").addEventListener("change", e => { if(e.target.files[0]) importBackup(e.target.files[0]); });
 
-  // Email & WhatsApp sidebar buttons
   const emailBtn = $("btnEmailShare");
   if(emailBtn) emailBtn.addEventListener("click", () => { emailFullWeek(); closeSidebarMobile(); });
   const waBtn = $("btnWhatsAppShare");
   if(waBtn) waBtn.addEventListener("click", () => { shareToWhatsApp(); closeSidebarMobile(); });
 
-  // Check-in overlay buttons
   $("ciStart").addEventListener("click", startCheckin);
   $("ciSnooze").addEventListener("click", snoozeCheckin);
   $("ciSkip").addEventListener("click", skipCheckin);
-
-  // Welcome overlay
-  $("wcContinue").addEventListener("click", () => {
-    $("welcomeOverlay").classList.remove("show");
-  });
+  $("wcContinue").addEventListener("click", () => $("welcomeOverlay").classList.remove("show"));
 
   const firstClick = () => {
-    if("Notification" in window && Notification.permission === "default"){
-      requestNotifPermission();
-    }
+    if("Notification" in window && Notification.permission === "default") requestNotifPermission();
     ensureAudio();
     document.removeEventListener("click", firstClick);
   };
@@ -2651,8 +2443,9 @@ function init(){
   updateSoundIcon();
   updateSleepIndicator();
 
-  // Show welcome after short delay
   setTimeout(showWelcome, 1500);
+  setTimeout(checkShareLink, 500);
+  window.addEventListener("hashchange", checkShareLink);
 
   setInterval(() => { checkSchedule(); updateSleepIndicator(); }, 20000);
   checkSchedule();
