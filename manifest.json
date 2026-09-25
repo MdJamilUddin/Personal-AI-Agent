@@ -18,7 +18,7 @@
   ],
   "shortcuts": [
     { "name": "৭ দিনের রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
-    { "name": "হ্যাবিট", "short_name": "হ্যাবিট", "url": "./index.html?view=habits" },
+    { "name": "শেয়ার সেন্টার", "short_name": "শেয়ার", "url": "./index.html?view=share" },
     { "name": "রিপোর্ট", "short_name": "রিপোর্ট", "url": "./index.html?view=reports" }
   ]
 }
