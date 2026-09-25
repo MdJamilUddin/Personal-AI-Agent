@@ -90,6 +90,7 @@ input,select,textarea{font:inherit;color:inherit;}
 .btn-ghost:hover{background:var(--bg2);color:var(--ink);}
 .btn-danger{background:var(--danger);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
 .btn-ok{background:var(--ok);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
+.btn-gold{background:var(--gold);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
 .card h3{margin:0 0 12px;font-size:.95rem;font-weight:600;}
 .stats{display:grid;gap:12px;margin-bottom:20px;grid-template-columns:repeat(2,1fr);}
@@ -258,6 +259,8 @@ input,select,textarea{font:inherit;color:inherit;}
 .habit-grid{display:grid;gap:12px;grid-template-columns:1fr;}
 @media(min-width:700px){.habit-grid{grid-template-columns:repeat(2,1fr);}}
 .badge-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
+.share-box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:monospace;font-size:.72rem;word-break:break-all;max-height:120px;overflow-y:auto;}
+.copy-hint{background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:.75rem;color:var(--ink);margin-bottom:12px;}
 </style>
 </head>
 <body>
@@ -268,7 +271,7 @@ input,select,textarea{font:inherit;color:inherit;}
   <span style="font-size:1.8rem;">📲</span>
   <div style="flex:1;">
     <div style="font-weight:700;font-size:.95rem;">অ্যাপটি ইনস্টল করুন</div>
-    <div style="font-size:.78rem;color:var(--sub);">হোম স্ক্রিনে যোগ করুন — দ্রুত ও অফলাইনে চলবে</div>
+    <div style="font-size:.78rem;color:var(--sub);">হোম স্ক্রিনে যোগ করুন</div>
   </div>
   <button id="pwaInstallBtn" style="background:var(--accent);color:#fff;padding:8px 16px;border-radius:10px;font-weight:600;font-size:.85rem;border:none;cursor:pointer;">ইনস্টল</button>
   <button id="pwaDismissBtn" style="background:none;color:var(--sub);padding:6px;font-size:1.1rem;border:none;cursor:pointer;">✕</button>
@@ -296,14 +299,10 @@ input,select,textarea{font:inherit;color:inherit;}
 
     <div class="nav-section">টুলস</div>
     <button class="nav-item" data-view="templates"><span class="icon">📝</span><span class="label">টেমপ্লেট</span></button>
-    <button class="nav-item" data-view="family"><span class="icon">👥</span><span class="label">ফ্যামিলি শেয়ার</span></button>
+    <button class="nav-item" data-view="share"><span class="icon">📤</span><span class="label">শেয়ার সেন্টার</span></button>
     <button class="nav-item" data-view="badges"><span class="icon">🎁</span><span class="label">ব্যাজ</span></button>
     <button class="nav-item" data-view="settings"><span class="icon">⚙️</span><span class="label">সেটিংস</span></button>
     <button class="nav-item" data-view="integrations"><span class="icon">🔌</span><span class="label">ডিভাইস সিঙ্ক</span></button>
-
-    <div class="nav-section">শেয়ার</div>
-    <button class="nav-item" id="btnEmailShare"><span class="icon">📧</span><span class="label">Email</span></button>
-    <button class="nav-item" id="btnWhatsAppShare"><span class="icon">📤</span><span class="label">WhatsApp</span></button>
   </aside>
 
   <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
@@ -355,19 +354,21 @@ input,select,textarea{font:inherit;color:inherit;}
 <div class="toast-container" id="toastContainer"></div>
 <div class="modal-backdrop" id="modalBackdrop"><div class="modal" id="modal"></div></div>
 <input type="file" id="importFile" accept="application/json" style="display:none">
+<input type="file" id="importICSFile" accept=".ics,text/calendar" style="display:none">
+<textarea id="hiddenCopyArea" style="position:fixed;left:-9999px;top:-9999px;"></textarea>
 
 <script>
 /* =========================================================
-   PERSONAL ADMIN AGENT · AI v5
-   Fixed: Family Share, WhatsApp, Calendar dedup
+   PERSONAL ADMIN AGENT · AI v6
+   Complete rewrite: robust copy/share/open
    ========================================================= */
 
 const KEYS = {
-  routine: "aa_routine_v5", tasks: "aa_tasks_v5", settings: "aa_settings_v5",
-  theme: "aa_theme_v5", history: "aa_history_v5", insights: "aa_insights_v5",
-  checkins: "aa_checkins_v5", welcome: "aa_welcome_v5",
-  habits: "aa_habits_v5", habitLog: "aa_habit_log_v5",
-  shareCodes: "aa_share_codes_v5"
+  routine:"aa_routine_v6", tasks:"aa_tasks_v6", settings:"aa_settings_v6",
+  theme:"aa_theme_v6", history:"aa_history_v6", insights:"aa_insights_v6",
+  checkins:"aa_checkins_v6", welcome:"aa_welcome_v6",
+  habits:"aa_habits_v6", habitLog:"aa_habit_log_v6",
+  shareCodes:"aa_share_codes_v6", shareHistory:"aa_share_history_v6"
 };
 
 const DAYS = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
@@ -419,7 +420,105 @@ function toast(msg,type="info",icon){
 function closeModal(){ $("modalBackdrop").classList.remove("show"); }
 window.closeModal = closeModal;
 
-/* THEME */
+/* =========================================================
+   ROBUST CLIPBOARD — multi-layer fallback
+   ========================================================= */
+function copyToClipboard(text, successMsg = "কপি হয়েছে"){
+  // Layer 1: modern Clipboard API
+  if(navigator.clipboard && window.isSecureContext){
+    navigator.clipboard.writeText(text)
+      .then(() => toast(successMsg,"ok","📋"))
+      .catch(() => copyFallback(text,successMsg));
+    return;
+  }
+  copyFallback(text,successMsg);
+}
+function copyFallback(text, successMsg){
+  // Layer 2: hidden textarea + execCommand
+  try{
+    const ta = $("hiddenCopyArea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    ta.focus();
+    ta.select();
+    ta.setSelectionRange(0, 99999);
+    const ok = document.execCommand("copy");
+    ta.value = "";
+    ta.blur();
+    if(ok){
+      toast(successMsg,"ok","📋");
+      return true;
+    }
+  }catch(e){}
+  // Layer 3: manual modal
+  showManualCopy(text);
+  return false;
+}
+function showManualCopy(text){
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>📋 ম্যানুয়ালি কপি করুন</h2>
+    <p>স্বয়ংক্রিয় কপি কাজ করেনি। নিচের টেক্সটটি সিলেক্ট করে কপি করুন:</p>
+    <div class="field">
+      <textarea id="manualCopyText" rows="6" readonly style="font-family:monospace;font-size:.75rem;">${escapeHtml(text)}</textarea>
+    </div>
+    <p style="font-size:.75rem;color:var(--sub);">💡 টেক্সট বক্সে ক্লিক করুন → সব select হবে → Ctrl+C বা long-press → Copy</p>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বন্ধ</button>
+      <button class="btn-primary" onclick="selectAllManual()">সব সিলেক্ট করুন</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  setTimeout(() => {
+    const ta = $("manualCopyText");
+    if(ta){ ta.focus(); ta.select(); ta.setSelectionRange(0, 99999); }
+  }, 200);
+}
+window.showManualCopy = showManualCopy;
+window.selectAllManual = function(){
+  const ta = $("manualCopyText");
+  if(ta){ ta.focus(); ta.select(); ta.setSelectionRange(0, 99999); }
+};
+
+/* =========================================================
+   ROBUST SHARE — multiple fallbacks
+   ========================================================= */
+function shareContent(title, text, url){
+  // Try native share first
+  if(navigator.share){
+    const payload = { title, text };
+    if(url) payload.url = url;
+    navigator.share(payload)
+      .then(() => toast("শেয়ার হয়েছে","ok","📤"))
+      .catch(err => {
+        if(err.name === "AbortError") return;
+        // Fallback: copy
+        copyToClipboard(url || text, "কপি হয়েছে — paste করুন");
+      });
+    return true;
+  }
+  // Fallback: copy
+  copyToClipboard(url || text, "কপি হয়েছে — paste করুন");
+  return false;
+}
+
+/* Open URL in new tab with fallback */
+function openUrl(url){
+  try{
+    const win = window.open(url, "_blank", "noopener,noreferrer");
+    if(!win || win.closed || typeof win.closed === "undefined"){
+      // Popup blocked → try location
+      window.location.href = url;
+    }
+    return true;
+  }catch(e){
+    try{ window.location.href = url; return true; }catch(e2){ return false; }
+  }
+}
+
+/* =========================================================
+   THEME
+   ========================================================= */
 const THEMES = [
   {id:"light",name:"লাইট",icon:"☀️"},{id:"dark",name:"ডার্ক",icon:"🌙"},
   {id:"ocean",name:"ওশান",icon:"🌊"},{id:"forest",name:"ফরেস্ট",icon:"🌲"},
@@ -449,14 +548,16 @@ function updateThemeIcon(){
   const btn = $("themeToggle"); if(btn) btn.textContent = t.icon;
 }
 
-/* AUDIO */
+/* =========================================================
+   AUDIO
+   ========================================================= */
 function ensureAudio(){
   if(!audioCtx){
     const Ctx = window.AudioContext||window.webkitAudioContext;
     if(!Ctx) return null;
     audioCtx = new Ctx();
   }
-  if(audioCtx.state==="suspended") audioCtx.resume();
+  if(audioCtx.state === "suspended") audioCtx.resume();
   return audioCtx;
 }
 function playBeep(d=0.6,f1=880,f2=660){
@@ -535,7 +636,9 @@ function showSystemNotification(title,body){
   }catch(e){}
 }
 
-/* DISCIPLINE */
+/* =========================================================
+   DISCIPLINE
+   ========================================================= */
 function getWeekCheckins(daysBack=7){
   const all = {}; const today = new Date();
   for(let i=0;i<daysBack;i++){
@@ -869,7 +972,9 @@ function applyTemplate(key){
 }
 window.applyTemplate = applyTemplate;
 
-/* ICS EXPORT */
+/* =========================================================
+   ICS EXPORT
+   ========================================================= */
 function escapeICS(s){ return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
 function icsTS(){ const d = new Date(); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`; }
 function routineToVEvent(item,dayIdx){
@@ -926,9 +1031,7 @@ function syncToCalendar(){
 }
 window.syncToCalendar = syncToCalendar;
 
-/* =========================================================
-   ICS IMPORT v2 — FIXED DEDUP (UID + content hash)
-   ========================================================= */
+/* ICS IMPORT with robust dedup */
 function simpleHash(str){
   let hash = 0;
   for(let i=0;i<str.length;i++){
@@ -938,17 +1041,16 @@ function simpleHash(str){
   }
   return Math.abs(hash).toString(36);
 }
-
 function importFromCalendar(){
-  const input = document.createElement("input");
-  input.type = "file"; input.accept = ".ics,text/calendar";
-  input.onchange = e => {
+  const inp = $("importICSFile");
+  inp.value = "";
+  inp.onchange = e => {
     const f = e.target.files[0]; if(!f) return;
     const reader = new FileReader();
     reader.onload = () => parseICS(reader.result);
     reader.readAsText(f);
   };
-  input.click();
+  inp.click();
 }
 window.importFromCalendar = importFromCalendar;
 
@@ -959,8 +1061,7 @@ function parseICS(text){
     const block = blocks[i].split("END:VEVENT")[0];
     const get = key => {
       const re = new RegExp("^"+key+"[^:]*:(.*)$","mi");
-      const m = block.match(re);
-      return m ? m[1].trim() : "";
+      const m = block.match(re); return m ? m[1].trim() : "";
     };
     const summary = get("SUMMARY").replace(/\\,/g,",").replace(/\\;/g,";").replace(/\\n/g,"\n");
     const uid = get("UID") || "";
@@ -972,14 +1073,11 @@ function parseICS(text){
       const iso = dtStart.slice(0,8);
       if(iso.length === 8) deadline = `${iso.slice(0,4)}-${iso.slice(4,6)}-${iso.slice(6,8)}`;
     }
-    // Content hash — UID + summary + deadline + rrule
     const contentKey = `${uid}|${summary}|${deadline}|${rrule}`.toLowerCase();
-    const contentHash = simpleHash(contentKey);
-    events.push({ summary, deadline, uid, rrule, contentHash });
+    events.push({ summary, deadline, uid, contentHash:simpleHash(contentKey) });
   }
   if(events.length === 0){ toast("ইভেন্ট পাওয়া যায়নি","err"); return; }
 
-  // Collect existing identifiers
   const existingUids = new Set();
   const existingHashes = new Set();
   const existingTextDeadline = new Set();
@@ -991,14 +1089,10 @@ function parseICS(text){
 
   let added = 0, skipped = 0;
   events.forEach(ev => {
-    // Check 1: UID match
     if(ev.uid && existingUids.has(ev.uid)){ skipped++; return; }
-    // Check 2: Content hash
     if(existingHashes.has(ev.contentHash)){ skipped++; return; }
-    // Check 3: text + deadline fallback
     if(existingTextDeadline.has(`${ev.summary.toLowerCase()}|${ev.deadline||""}`)){ skipped++; return; }
 
-    // Add new
     tasks.push({
       id:"cal_"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
       text:ev.summary, category:"This Week", priority:"Medium",
@@ -1006,269 +1100,249 @@ function parseICS(text){
       calendarUid:ev.uid, calendarHash:ev.contentHash,
       createdAt:new Date().toISOString()
     });
-    existingUids.add(ev.uid);
+    if(ev.uid) existingUids.add(ev.uid);
     existingHashes.add(ev.contentHash);
     existingTextDeadline.add(`${ev.summary.toLowerCase()}|${ev.deadline||""}`);
     added++;
   });
 
   saveTasks(); renderView();
-
-  if(added === 0 && skipped > 0){
-    toast(`সব ${skipped}টি ইভেন্ট আগেই আছে — ডুপ্লিকেট নেই ✓`,"info","✨");
-  } else if(added > 0 && skipped > 0){
-    toast(`${added}টি নতুন যোগ · ${skipped}টি আগেই ছিল`,"ok","🔁");
-  } else {
-    toast(`${added}টি ইভেন্ট যোগ`,"ok","🔁");
-  }
+  if(added === 0 && skipped > 0) toast(`সব ${skipped}টি আগেই আছে ✓`,"info","✨");
+  else if(added > 0 && skipped > 0) toast(`${added}টি নতুন · ${skipped}টি আগেই ছিল`,"ok","🔁");
+  else toast(`${added}টি ইভেন্ট যোগ`,"ok","🔁");
 }
 
-/* Clean up existing duplicates */
 window.removeCalendarDuplicates = function(){
-  const seen = new Map();
+  const seen = new Set();
   const duplicates = [];
   tasks.forEach(t => {
     if(!t.fromCalendar) return;
-    // Prefer UID; else content hash; else text+deadline
-    let key;
-    if(t.calendarUid) key = "uid:"+t.calendarUid;
-    else if(t.calendarHash) key = "hash:"+t.calendarHash;
-    else key = "td:"+(t.text+"|"+(t.deadline||"")).toLowerCase();
-
-    if(seen.has(key)){
-      duplicates.push(t.id);
-    } else {
-      seen.set(key, t.id);
-    }
+    const key = t.calendarUid ? "uid:"+t.calendarUid
+      : t.calendarHash ? "hash:"+t.calendarHash
+      : "td:"+(t.text+"|"+(t.deadline||"")).toLowerCase();
+    if(seen.has(key)) duplicates.push(t.id);
+    else seen.add(key);
   });
-
-  if(duplicates.length === 0){
-    toast("কোনো ডুপ্লিকেট নেই ✓","ok","✨");
-    return;
-  }
-
-  const origCount = tasks.length;
-  if(!confirm(`${duplicates.length}টি ডুপ্লিকেট পাওয়া গেছে। সরাবেন?`)) return;
-
+  if(duplicates.length === 0){ toast("ডুপ্লিকেট নেই ✓","ok","✨"); return; }
+  if(!confirm(`${duplicates.length}টি ডুপ্লিকেট সরাবেন?`)) return;
   tasks = tasks.filter(t => !duplicates.includes(t.id));
   saveTasks(); renderView();
-  toast(`${duplicates.length}টি সরানো (${origCount} → ${tasks.length})`,"ok","🧹");
-};
-
-/* Rehash existing calendar tasks (add missing hashes) */
-window.rehashCalendarTasks = function(){
-  let updated = 0;
-  tasks.forEach(t => {
-    if(t.fromCalendar && !t.calendarHash){
-      const key = `${t.calendarUid||""}|${t.text}|${t.deadline||""}||`.toLowerCase();
-      t.calendarHash = simpleHash(key);
-      updated++;
-    }
-  });
-  if(updated > 0){
-    saveTasks();
-    toast(`${updated}টি task rehashed`,"ok","🔧");
-  } else {
-    toast("সব task-এ hash আছে ✓","info","✓");
-  }
+  toast(`${duplicates.length}টি সরানো`,"ok","🧹");
 };
 
 /* =========================================================
-   EMAIL SHARE (with Gmail button)
+   SHARE CENTER — এক জায়গায় সব শেয়ার অপশন
    ========================================================= */
-function buildWeekEmailBody(){
-  let total = 0;
-  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-  if(total===0) return null;
-  let body = `আসসালামু আলাইকুম,\n\n📅 আমার সাপ্তাহিক রুটিন:\n\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-  for(let d=0;d<7;d++){
-    const items = (routine[d]||[]).filter(r=>r.enabled);
-    if(items.length===0) continue;
-    body += `\n📌 ${DAYS[d]}\n━━━━━━━━━━━━━━━━━━━━━━\n`;
-    items.forEach(r=>{ body += `  ${r.time}  ·  ${r.text}\n`; });
-  }
-  body += `\n━━━━━━━━━━━━━━━━━━━━━━\nমোট: ${total}টি\n\n— Admin Agent AI`;
-  return body;
+
+/* Share history */
+function addShareHistory(type, detail){
+  try{
+    const hist = JSON.parse(localStorage.getItem(KEYS.shareHistory) || "[]");
+    hist.unshift({ type, detail, at: Date.now() });
+    if(hist.length > 30) hist.length = 30;
+    localStorage.setItem(KEYS.shareHistory, JSON.stringify(hist));
+  }catch(e){}
 }
-function buildDayEmailBody(dayIdx){
-  const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-  if(items.length===0) return `আসসালামু আলাইকুম,\n\n${DAYS[dayIdx]}-এ কোনো কাজ নেই।`;
-  let body = `আসসালামু আলাইকুম,\n\n📅 ${DAYS[dayIdx]}-এর রুটিন:\n\n`;
-  items.forEach((r,i)=>{ body += `${i+1}. ${r.time} — ${r.text}\n`; });
-  return body + `\nমোট ${items.length}টি।\n\n— Admin Agent AI`;
-}
-function buildItemEmailBody(item,dayIdx){
-  return `আসসালামু আলাইকুম,\n\n📌 কাজ: ${item.text}\n⏰ সময়: ${item.time}\n📅 দিন: ${DAYS[dayIdx]}\n\n— Admin Agent AI`;
+function getShareHistory(){
+  try{ return JSON.parse(localStorage.getItem(KEYS.shareHistory) || "[]"); }catch(e){ return []; }
 }
 
-function openEmailModal(opts){
+/* Build text versions */
+function buildRoutineText(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0) return null;
+  let txt = "📅 আমার সাপ্তাহিক রুটিন\n\n";
+  for(let d=0;d<7;d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    txt += `📌 ${DAYS[d]}\n`;
+    items.forEach(r => { txt += `  ${r.time} — ${r.text}\n`; });
+    txt += "\n";
+  }
+  txt += "— Admin Agent AI";
+  return txt;
+}
+function buildRoutineHTML(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0) return null;
+  let html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>সাপ্তাহিক রুটিন</title>
+  <style>body{font-family:Arial,sans-serif;max-width:600px;margin:0 auto;padding:20px;color:#1a1916;}
+  h1{color:#b5502f;border-bottom:2px solid #b5502f;padding-bottom:8px;}
+  h3{color:#b5502f;margin-top:24px;margin-bottom:8px;}
+  table{width:100%;border-collapse:collapse;font-size:14px;}
+  td{padding:6px 10px;border-bottom:1px solid #e2e0d8;}
+  td.time{color:#b5502f;font-weight:700;width:70px;}
+  .footer{margin-top:30px;padding-top:16px;border-top:1px solid #e2e0d8;color:#6f6e67;font-size:12px;}</style></head><body>
+  <h1>📅 আমার সাপ্তাহিক রুটিন</h1>`;
+  for(let d=0;d<7;d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    if(items.length === 0) continue;
+    html += `<h3>${DAYS[d]}</h3><table>`;
+    items.forEach(r => { html += `<tr><td class="time">${r.time}</td><td>${escapeHtml(r.text)}</td></tr>`; });
+    html += `</table>`;
+  }
+  html += `<div class="footer">মোট ${total}টি · Admin Agent AI</div></body></html>`;
+  return html;
+}
+function buildRoutineCSV(){
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  if(total === 0) return null;
+  let csv = "Day,Time,Task\n";
+  for(let d=0;d<7;d++){
+    const items = (routine[d]||[]).filter(r=>r.enabled);
+    items.forEach(r => {
+      const day = DAYS[d].replace(/,/g," ");
+      const text = r.text.replace(/,/g,";").replace(/\n/g," ");
+      csv += `${day},${r.time},"${text}"\n`;
+    });
+  }
+  return csv;
+}
+
+/* Share via WhatsApp — multiple methods */
+function shareViaWhatsApp(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+
+  const encoded = encodeURIComponent(text);
+  const waMobile = "https://wa.me/?text=" + encoded;
+  const waDesktop = "https://api.whatsapp.com/send?text=" + encoded;
+
+  // Try native share first (mobile)
+  if(navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
+    navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text })
+      .then(() => { addShareHistory("whatsapp","native share"); toast("শেয়ার হয়েছে","ok","📤"); })
+      .catch(err => {
+        if(err.name === "AbortError") return;
+        copyToClipboard(text, "কপি হয়েছে — WhatsApp-এ paste করুন");
+        setTimeout(() => openUrl(waMobile), 600);
+      });
+    return;
+  }
+  // Desktop: try WhatsApp URL
+  copyToClipboard(text, "কপি — WhatsApp-এ paste করুন");
+  setTimeout(() => {
+    const opened = openUrl(waDesktop);
+    addShareHistory("whatsapp", opened ? "opened" : "copied");
+  }, 500);
+}
+window.shareViaWhatsApp = shareViaWhatsApp;
+
+/* Share via Email — multiple methods */
+function openEmailCompose(subject, body){
+  const encSub = encodeURIComponent(subject);
+  const encBody = encodeURIComponent(body);
+  const mailtoUrl = `mailto:?subject=${encSub}&body=${encBody}`;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${encSub}&body=${encBody}`;
+  const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encSub}&body=${encBody}`;
+  const yahooUrl = `https://compose.mail.yahoo.com/?subject=${encSub}&body=${encBody}`;
+
   const modal = $("modal");
   modal.innerHTML = `
-    <h2>📧 Email পাঠান</h2>
-    <p>প্রাপক, বিষয় ও বার্তা edit করে পাঠান।</p>
-    <div class="field"><label>প্রাপক (To)</label><input type="email" id="emailTo" placeholder="example@gmail.com"></div>
-    <div class="field"><label>বিষয়</label><input id="emailSubject" value="${escapeHtml(opts.subject||"")}"></div>
-    <div class="field"><label>বার্তা</label><textarea id="emailBody" rows="12" style="font-family:monospace;font-size:.82rem;resize:vertical;">${escapeHtml(opts.body||"")}</textarea></div>
-    <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
-      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
-      <button class="btn-secondary" id="emailCopyBtn">📋 কপি</button>
-      <button class="btn-secondary" id="emailShareBtn">📤 শেয়ার</button>
-      <button class="btn-primary" id="emailGmailBtn">🌐 Gmail</button>
-      <button class="btn-primary" id="emailSendBtn">✉️ Mail</button>
+    <h2>✉️ Email পাঠান</h2>
+    <p>কোন মাধ্যম দিয়ে পাঠাতে চান?</p>
+    <div style="display:flex;flex-direction:column;gap:8px;">
+      <button class="btn-primary" id="openMailtoBtn" style="width:100%;padding:14px;">📱 ডিফল্ট Mail অ্যাপ</button>
+      <button class="btn-secondary" id="openGmailBtn" style="width:100%;padding:14px;">🌐 Gmail (Web)</button>
+      <button class="btn-secondary" id="openOutlookBtn" style="width:100%;padding:14px;">📧 Outlook</button>
+      <button class="btn-secondary" id="openYahooBtn" style="width:100%;padding:14px;">📬 Yahoo Mail</button>
+      <button class="btn-secondary" id="copyEmailBtn" style="width:100%;padding:14px;">📋 বার্তা কপি (নিজে পাঠান)</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">বাতিল</button>
     </div>`;
   $("modalBackdrop").classList.add("show");
 
-  $("emailSendBtn").onclick = () => {
-    const to = encodeURIComponent($("emailTo").value.trim());
-    const sub = encodeURIComponent($("emailSubject").value);
-    const body = encodeURIComponent($("emailBody").value);
-    window.location.href = `mailto:${to}?subject=${sub}&body=${body}`;
+  $("openMailtoBtn").onclick = () => {
+    addShareHistory("email","mailto");
+    window.location.href = mailtoUrl;
     toast("Mail app খোলা হচ্ছে...","info","✉️");
-    setTimeout(closeModal,800);
+    setTimeout(closeModal, 500);
   };
-
-  $("emailGmailBtn").onclick = () => {
-    const to = $("emailTo").value.trim();
-    const sub = $("emailSubject").value;
-    const body = $("emailBody").value;
-    const url = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(to)}&su=${encodeURIComponent(sub)}&body=${encodeURIComponent(body)}`;
-    window.open(url,"_blank");
+  $("openGmailBtn").onclick = () => {
+    addShareHistory("email","gmail");
+    openUrl(gmailUrl);
     toast("Gmail খোলা হচ্ছে","info","🌐");
-    setTimeout(closeModal,800);
+    setTimeout(closeModal, 500);
   };
-
-  $("emailCopyBtn").onclick = async () => {
-    try{
-      await navigator.clipboard.writeText(`To: ${$("emailTo").value}\nSubject: ${$("emailSubject").value}\n\n${$("emailBody").value}`);
-      toast("কপি হয়েছে","ok","📋");
-    }catch(e){ toast("কপি ব্যর্থ","err"); }
+  $("openOutlookBtn").onclick = () => {
+    addShareHistory("email","outlook");
+    openUrl(outlookUrl);
+    toast("Outlook খোলা হচ্ছে","info","📧");
+    setTimeout(closeModal, 500);
   };
-
-  $("emailShareBtn").onclick = async () => {
-    const text = $("emailBody").value;
-    const sub = $("emailSubject").value;
-    if(navigator.share){
-      try{
-        await navigator.share({title:sub,text});
-        toast("শেয়ার","ok","📤");
-        closeModal();
-        return;
-      }catch(err){ if(err.name==="AbortError") return; }
-    }
-    try{
-      await navigator.clipboard.writeText(text);
-      toast("বার্তা কপি — paste করুন","ok","📋");
-    }catch(e){ toast("শেয়ার ব্যর্থ","err"); }
+  $("openYahooBtn").onclick = () => {
+    addShareHistory("email","yahoo");
+    openUrl(yahooUrl);
+    toast("Yahoo Mail খোলা হচ্ছে","info","📬");
+    setTimeout(closeModal, 500);
+  };
+  $("copyEmailBtn").onclick = () => {
+    copyToClipboard(`Subject: ${subject}\n\n${body}`, "কপি হয়েছে — paste করুন");
+    addShareHistory("email","copy");
   };
 }
-window.openEmailModal = openEmailModal;
+window.openEmailCompose = openEmailCompose;
 
-function emailFullWeek(){
-  let total = 0;
-  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-  if(total===0){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-  openEmailModal({
-    subject:`📅 আমার সাপ্তাহিক রুটিন · ${new Date().toLocaleDateString("bn-BD")}`,
-    body: buildWeekEmailBody()
-  });
+function shareViaEmail(){
+  const body = buildRoutineText();
+  if(!body){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  const subject = `📅 আমার সাপ্তাহিক রুটিন · ${new Date().toLocaleDateString("bn-BD")}`;
+  openEmailCompose(subject, body);
 }
-window.emailFullWeek = emailFullWeek;
-function emailDay(dayIdx){
-  const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
-  if(items.length===0){ toast(`${DAYS[dayIdx]}-এ কোনো কাজ নেই`,"err"); return; }
-  openEmailModal({
-    subject:`📅 ${DAYS[dayIdx]}-এর রুটিন · ${items.length}টি`,
-    body: buildDayEmailBody(dayIdx)
-  });
+window.shareViaEmail = shareViaEmail;
+
+/* WhatsApp / SMS / Messenger / Telegram direct */
+function shareViaMessenger(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  copyToClipboard(text, "কপি — Messenger-এ paste করুন");
+  setTimeout(() => openUrl("https://www.messenger.com/"), 500);
 }
-window.emailDay = emailDay;
-function emailRoutineItem(dayIdx,routineId){
-  const item = (routine[dayIdx]||[]).find(r=>r.id===routineId);
-  if(!item) return;
-  openEmailModal({
-    subject:`⏰ রিমাইন্ডার: ${item.text}`,
-    body: buildItemEmailBody(item,dayIdx)
-  });
+window.shareViaMessenger = shareViaMessenger;
+
+function shareViaSMS(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  window.location.href = `sms:?body=${encodeURIComponent(text)}`;
 }
-window.emailRoutineItem = emailRoutineItem;
+window.shareViaSMS = shareViaSMS;
 
-/* =========================================================
-   WHATSAPP SHARE — FIXED (with proper fallback)
-   ========================================================= */
-function shareToWhatsApp(){
-  let total = 0;
-  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-  if(total===0){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-
-  let msg = "📅 *আমার সাপ্তাহিক রুটিন*\n\n";
-  for(let d=0;d<7;d++){
-    const items = (routine[d]||[]).filter(r=>r.enabled);
-    if(items.length===0) continue;
-    msg += `*${DAYS[d]}*\n`;
-    items.forEach(r=>{ msg += `  ${r.time} — ${r.text}\n`; });
-    msg += "\n";
-  }
-  msg += "— Admin Agent AI";
-
-  const waUrl = "https://wa.me/?text=" + encodeURIComponent(msg);
-
-  // Strategy 1: Native share (best UX on mobile)
-  if(navigator.share){
-    navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text: msg })
-      .then(() => toast("শেয়ার হয়েছে","ok","📤"))
-      .catch(err => {
-        // User cancelled → do nothing
-        if(err.name === "AbortError") return;
-        // Share failed → fallback to WhatsApp URL
-        window.open(waUrl,"_blank");
-        toast("WhatsApp খোলা হচ্ছে...","info","📤");
-      });
-    return;
-  }
-
-  // Strategy 2: Desktop fallback — copy + open WhatsApp Web
-  navigator.clipboard.writeText(msg).then(() => {
-    toast("মেসেজ কপি — WhatsApp-এ paste করুন","ok","📋");
-    setTimeout(() => window.open(waUrl,"_blank"), 400);
-  }).catch(() => {
-    // If clipboard fails, just open WhatsApp
-    window.open(waUrl,"_blank");
-  });
+function shareViaTelegram(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  const url = "https://t.me/share/url?url=" + encodeURIComponent("Admin Agent") + "&text=" + encodeURIComponent(text);
+  copyToClipboard(text, "কপি — Telegram-এ paste করুন");
+  setTimeout(() => openUrl(url), 500);
 }
-window.shareToWhatsApp = shareToWhatsApp;
+window.shareViaTelegram = shareViaTelegram;
 
-function shareViaDevice(){
-  let total = 0;
-  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-  if(total===0){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-
-  let msg = "📅 আমার সাপ্তাহিক রুটিন\n\n";
-  for(let d=0;d<7;d++){
-    const items = (routine[d]||[]).filter(r=>r.enabled);
-    if(items.length===0) continue;
-    msg += `${DAYS[d]}\n`;
-    items.forEach(r=>{ msg += `  ${r.time} — ${r.text}\n`; });
-    msg += "\n";
-  }
+/* Native share (device picker) */
+function shareNative(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
 
   if(navigator.share){
-    navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text: msg })
-      .then(() => toast("শেয়ার","ok","📤"))
+    navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text })
+      .then(() => { addShareHistory("native","success"); toast("শেয়ার হয়েছে","ok","📤"); })
       .catch(err => {
         if(err.name === "AbortError") return;
-        navigator.clipboard.writeText(msg).then(() => toast("কপি — paste করুন","ok","📋"));
+        copyToFallback(text);
       });
-    return;
+  } else {
+    copyToClipboard(text, "কপি — যেকোনো অ্যাপে paste করুন");
   }
-
-  navigator.clipboard.writeText(msg)
-    .then(() => toast("কপি হয়েছে — paste করুন","ok","📋"))
-    .catch(() => toast("কপি ব্যর্থ","err"));
 }
-window.shareViaDevice = shareViaDevice;
+function copyToFallback(text){
+  copyToClipboard(text, "কপি — যেকোনো অ্যাপে paste করুন");
+}
+window.shareNative = shareNative;
 
 /* =========================================================
-   FAMILY SHARE v2 — COMPRESSED LINK + SHORT CODE
+   FAMILY SHARE — with compression, short code, QR
    ========================================================= */
 async function compressBytes(str){
   try{
@@ -1294,7 +1368,6 @@ function b64UrlToBytes(str){
   for(let i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
   return bytes;
 }
-
 function buildCompactRoutine(){
   const compact = {};
   for(let i=0;i<7;i++){
@@ -1305,7 +1378,6 @@ function buildCompactRoutine(){
   }
   return compact;
 }
-
 async function encodeRoutineCompact(){
   const compact = buildCompactRoutine();
   const json = JSON.stringify({ r: compact, v: 2 });
@@ -1313,11 +1385,8 @@ async function encodeRoutineCompact(){
   if(compressed){
     return { encoded: "z" + bytesToB64Url(compressed), compressed: true };
   }
-  const fallback = btoa(unescape(encodeURIComponent(json)))
-    .replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");
-  return { encoded: "p" + fallback, compressed: false };
+  return { encoded: "p" + btoa(unescape(encodeURIComponent(json))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""), compressed: false };
 }
-
 async function decodeRoutineCompact(str){
   if(!str || str.length < 2) return null;
   const prefix = str[0], data = str.slice(1);
@@ -1335,7 +1404,6 @@ async function decodeRoutineCompact(str){
   }catch(e){ return null; }
   return null;
 }
-
 function compactToRoutineItems(compact){
   const result = {};
   for(const day in compact){
@@ -1348,8 +1416,6 @@ function compactToRoutineItems(compact){
   }
   return result;
 }
-
-/* Short code storage */
 function generateShortCode(){
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   let code = "";
@@ -1373,14 +1439,31 @@ function lookupShortCode(code){
   }catch(e){ return null; }
 }
 
+/* Simple QR code via canvas (no library) — for small text only */
+function generateQRCanvas(text, canvas){
+  // Simplified QR is complex; use QR Server API image as fallback
+  const size = 220;
+  const img = new Image();
+  img.crossOrigin = "anonymous";
+  img.onload = () => {
+    canvas.width = size;
+    canvas.height = size;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(img, 0, 0, size, size);
+  };
+  img.onerror = () => {
+    canvas.style.display = "none";
+    canvas.parentElement.innerHTML += "<div style='font-size:.75rem;color:var(--sub);text-align:center;'>QR তৈরি করা যায়নি — লিংক/text কপি করুন</div>";
+  };
+  img.src = "https://api.qrserver.com/v1/create-qr-code/?size=" + size + "x" + size + "&data=" + encodeURIComponent(text);
+}
+
 async function generateFamilyLink(){
   let total = 0;
   for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
   if(total === 0){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
 
   localStorage.setItem("aa_has_shared","true");
-
-  // Show loading
   const modal = $("modal");
   modal.innerHTML = `<h2>👥 শেয়ার তৈরি হচ্ছে...</h2><p>একটু অপেক্ষা করুন...</p>`;
   $("modalBackdrop").classList.add("show");
@@ -1390,6 +1473,7 @@ async function generateFamilyLink(){
   const fullUrl = `${baseUrl}#share=${encoded}`;
   const code = generateShortCode();
   storeShortCode(code, encoded);
+  addShareHistory("family", `code ${code}`);
 
   const urlSize = fullUrl.length;
   const sizeKB = (urlSize / 1024).toFixed(1);
@@ -1399,61 +1483,71 @@ async function generateFamilyLink(){
     <h2>👥 ফ্যামিলি শেয়ার</h2>
     <p>${total}টি রুটিন শেয়ার হবে।</p>
 
+    <div class="copy-hint">
+      ⚠️ <b>মনে রাখুন:</b> ৬ অক্ষরের কোড শুধু <b>এই ডিভাইসেই</b> কাজ করে। অন্য ফোনে পাঠাতে <b>পূর্ণ লিংক</b> বা <b>ICS ফাইল</b> ব্যবহার করুন।
+    </div>
+
     <div style="background:var(--ok-soft);border:1px solid var(--ok);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ok);font-weight:700;margin-bottom:6px;">🎫 শেয়ার কোড</div>
-      <div style="font-size:2rem;font-weight:800;letter-spacing:.15em;text-align:center;font-family:monospace;color:var(--ok);margin:6px 0;">${code}</div>
-      <div style="font-size:.7rem;color:var(--sub);text-align:center;line-height:1.5;">
-        এই ৬ অক্ষরের কোড যেকোনোভাবে পাঠান (SMS/WhatsApp/কাগজে লিখেও)।<br>
-        ⚠️ শুধু এই ডিভাইসেই কোড কাজ করবে — অন্য ডিভাইসে পূর্ণ লিংক দরকার।
+      <div id="codeDisplay" style="font-size:2rem;font-weight:800;letter-spacing:.15em;text-align:center;font-family:monospace;color:var(--ok);margin:6px 0;user-select:all;">${code}</div>
+      <div style="display:flex;gap:6px;margin-top:8px;">
+        <button class="btn-secondary" style="flex:1;" onclick="copyText('${code}','কোড কপি হয়েছে')">📋 কোড কপি</button>
+        <button class="btn-secondary" style="flex:1;" onclick="openUrl('https://wa.me/?text=' + encodeURIComponent('🎫 আমার রুটিন শেয়ার কোড: ${code}'))">📤 WhatsApp</button>
       </div>
     </div>
 
     <div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
         <span style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:700;">🔗 পূর্ণ লিংক</span>
-        <span style="font-size:.7rem;color:var(--sub);">${sizeKB} KB ${compressed ? '· সংকুচিত' : '· সংকুচিত হয়নি'}</span>
+        <span style="font-size:.7rem;color:${tooBig?'var(--danger)':'var(--sub)'};">${sizeKB} KB</span>
       </div>
       <textarea id="shareLink" rows="3" readonly style="font-size:.68rem;font-family:monospace;width:100%;">${escapeHtml(fullUrl)}</textarea>
-      <div style="font-size:.7rem;color:${tooBig?'var(--danger)':'var(--ok)'};margin-top:6px;">
-        ${tooBig ? '⚠️ লিংক অনেক বড় — WhatsApp-এ সমস্যা হতে পারে। কোড ব্যবহার করুন বা ICS export করুন।' : '✅ লিংক ছোট — WhatsApp-এ পাঠাতে পারবেন।'}
+      <div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">
+        <button class="btn-secondary" style="flex:1;min-width:120px;" id="copyLinkBtn">🔗 লিংক কপি</button>
+        <button class="btn-primary" style="flex:1;min-width:120px;" id="shareLinkBtn">📤 লিংক শেয়ার</button>
       </div>
+      ${tooBig ? '<div style="font-size:.72rem;color:var(--danger);margin-top:6px;">⚠️ লিংক বড় — WhatsApp-এ ভাঙতে পারে। ICS ফাইল ব্যবহার করুন।</div>' : ''}
     </div>
 
-    <div class="modal-actions" style="flex-wrap:wrap;gap:8px;">
+    <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;">
+      <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:700;margin-bottom:8px;">📱 QR কোড</div>
+      <div style="text-align:center;">
+        <canvas id="qrCanvas" style="max-width:100%;border-radius:8px;background:#fff;padding:8px;"></canvas>
+      </div>
+      <div style="font-size:.72rem;color:var(--sub);text-align:center;margin-top:8px;">পরিবারের সদস্য QR স্ক্যান করে শেয়ার খুলতে পারবেন</div>
+    </div>
+
+    <div class="modal-actions" style="flex-wrap:wrap;">
       <button class="btn-secondary" onclick="closeModal()">বন্ধ</button>
-      <button class="btn-secondary" id="copyCodeBtn">📋 কোড কপি</button>
-      <button class="btn-secondary" id="copyLinkBtn">🔗 লিংক কপি</button>
-      <button class="btn-primary" id="shareLinkBtn">📤 শেয়ার</button>
+      <button class="btn-secondary" id="downloadTxtBtn">⬇ TXT ডাউনলোড</button>
+      <button class="btn-secondary" id="downloadIcsBtn">📅 ICS ডাউনলোড</button>
     </div>`;
+
   $("modalBackdrop").classList.add("show");
 
-  $("copyCodeBtn").onclick = () => {
-    navigator.clipboard.writeText(code)
-      .then(() => toast("কোড কপি: " + code,"ok","🎫"))
-      .catch(() => toast("কপি ব্যর্থ","err"));
+  // QR code
+  setTimeout(() => {
+    const canvas = $("qrCanvas");
+    if(canvas) generateQRCanvas(fullUrl, canvas);
+  }, 100);
+
+  $("copyLinkBtn").onclick = () => copyToClipboard(fullUrl, "লিংক কপি হয়েছে");
+  $("shareLinkBtn").onclick = () => shareContent("আমার সাপ্তাহিক রুটিন", "Admin Agent-এ import করুন:", fullUrl);
+  $("downloadTxtBtn").onclick = () => {
+    downloadFile(`admin-agent-routine-${todayKey()}.txt`, buildRoutineText() || "", "text/plain;charset=utf-8");
+    toast("TXT ডাউনলোড","ok","⬇");
   };
-  $("copyLinkBtn").onclick = () => {
-    navigator.clipboard.writeText(fullUrl)
-      .then(() => toast("লিংক কপি","ok","🔗"))
-      .catch(() => toast("কপি ব্যর্থ","err"));
-  };
-  $("shareLinkBtn").onclick = async () => {
-    const message = `🎫 আমার রুটিন শেয়ার কোড: ${code}\n\n🔗 অথবা এই লিংক:\n${fullUrl}\n\nAdmin Agent-এ import করুন।`;
-    if(navigator.share){
-      try{
-        await navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text: message });
-        toast("শেয়ার হয়েছে","ok","📤");
-        return;
-      }catch(e){ if(e.name === "AbortError") return; }
-    }
-    try{
-      await navigator.clipboard.writeText(message);
-      toast("মেসেজ কপি — paste করুন","ok","📋");
-    }catch(e){ toast("শেয়ার ব্যর্থ","err"); }
+  $("downloadIcsBtn").onclick = () => {
+    downloadFile(`admin-agent-weekly-${todayKey()}.ics`, buildWeeklyICS(), "text/calendar;charset=utf-8");
+    toast("ICS ডাউনলোড","ok","📅");
   };
 }
 window.generateFamilyLink = generateFamilyLink;
 
+/* Global copy helper for inline onclick */
+window.copyText = function(text, msg){ copyToClipboard(text, msg || "কপি হয়েছে"); };
+
+/* URL check on load */
 async function checkShareLink(){
   const hash = window.location.hash;
   if(!hash.startsWith("#share=")) return;
@@ -1518,19 +1612,13 @@ async function checkShareLink(){
 window.importFromCode = async function(){
   const code = ($("importCode")?.value || "").trim().toUpperCase();
   if(!code){ toast("কোড দিন","err"); return; }
-
   const encoded = lookupShortCode(code);
-  if(!encoded){
-    toast("এই কোড এই ডিভাইসে নেই। পূর্ণ লিংক ব্যবহার করুন।","err","❌");
-    return;
-  }
-
+  if(!encoded){ toast("এই কোড এই ডিভাইসে নেই","err","❌"); return; }
   const sharedRoutine = await decodeRoutineCompact(encoded);
   if(!sharedRoutine){ toast("ডেটা পড়া যায়নি","err"); return; }
 
   let total = 0;
   for(const day in sharedRoutine) total += sharedRoutine[day].length;
-
   if(!confirm(`${total}টি রুটিন যোগ হবে। চালিয়ে যাবেন?`)) return;
 
   const items = compactToRoutineItems(sharedRoutine);
@@ -1543,30 +1631,46 @@ window.importFromCode = async function(){
   toast(`${total}টি রুটিন যোগ`,"ok","👥");
 };
 
-function renderFamily(){
-  return `<h2 class="section-title">👥 ফ্যামিলি শেয়ার</h2>
+/* =========================================================
+   SHARE CENTER VIEW
+   ========================================================= */
+function renderShare(){
+  const hist = getShareHistory();
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+
+  return `<h2 class="section-title">📤 শেয়ার সেন্টার</h2>
 
     <div class="card" style="background:linear-gradient(135deg,var(--ok-soft),var(--card));border-color:var(--ok);">
       <div style="display:flex;gap:14px;">
-        <div style="font-size:2.5rem;">👨‍👩‍👧‍👦</div>
+        <div style="font-size:2.5rem;">📤</div>
         <div style="flex:1;">
-          <div style="font-weight:700;margin-bottom:4px;">দুই উপায়ে শেয়ার</div>
-          <div style="font-size:.8rem;color:var(--sub);line-height:1.5;">
-            <b>🎫 কোড</b> — ৬ অক্ষর, সহজে পাঠানো যায় (শুধু এই ডিভাইসে কাজ করে)<br>
-            <b>🔗 লিংক</b> — সম্পূর্ণ ডেটা, যেকোনো ডিভাইসে খোলে
-          </div>
+          <div style="font-weight:700;margin-bottom:4px;">${total}টি রুটিন শেয়ার করুন</div>
+          <div style="font-size:.8rem;color:var(--sub);line-height:1.5;">WhatsApp, Email, SMS, Messenger, Telegram — যেকোনোভাবে</div>
         </div>
       </div>
     </div>
 
     <div class="card">
-      <h3>📤 রুটিন শেয়ার করুন</h3>
+      <h3>📱 সরাসরি শেয়ার</h3>
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+        <button class="btn-primary" onclick="shareViaWhatsApp()" style="padding:14px;justify-content:center;">📤 WhatsApp</button>
+        <button class="btn-primary" onclick="shareViaEmail()" style="padding:14px;justify-content:center;">✉️ Email</button>
+        <button class="btn-secondary" onclick="shareViaSMS()" style="padding:14px;">💬 SMS</button>
+        <button class="btn-secondary" onclick="shareViaMessenger()" style="padding:14px;">💌 Messenger</button>
+        <button class="btn-secondary" onclick="shareViaTelegram()" style="padding:14px;">📨 Telegram</button>
+        <button class="btn-secondary" onclick="shareNative()" style="padding:14px;">📱 যেকোনো অ্যাপ</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>👥 ফ্যামিলি শেয়ার</h3>
+      <p style="font-size:.82rem;color:var(--sub);line-height:1.6;margin-bottom:12px;">৬ অক্ষরের কোড বা সম্পূর্ণ লিংক তৈরি করে পরিবারকে পাঠান।</p>
       <button class="btn-primary" onclick="generateFamilyLink()" style="width:100%;padding:14px;">🔗 শেয়ার তৈরি করুন</button>
     </div>
 
     <div class="card">
       <h3>📥 শেয়ার কোড দিয়ে import</h3>
-      <p style="font-size:.8rem;color:var(--sub);margin-bottom:12px;">৬ অক্ষরের কোড দিন (যিনি পাঠিয়েছেন তার ডিভাইসেই কাজ করবে)।</p>
       <div class="field">
         <label>শেয়ার কোড</label>
         <input id="importCode" placeholder="A7K9P2" maxlength="6" style="text-transform:uppercase;font-family:monospace;font-size:1.2rem;letter-spacing:.2em;text-align:center;">
@@ -1575,45 +1679,91 @@ function renderFamily(){
     </div>
 
     <div class="card">
-      <h3>ℹ️ আগে কেন কাজ করছিল না?</h3>
+      <h3>⬇ ফাইল ডাউনলোড</h3>
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+        <button class="btn-secondary" onclick="syncToCalendar()" style="padding:12px;">📅 ICS (Calendar)</button>
+        <button class="btn-secondary" onclick="downloadRoutineTxt()" style="padding:12px;">📄 TXT</button>
+        <button class="btn-secondary" onclick="downloadRoutineCSV()" style="padding:12px;">📊 CSV</button>
+        <button class="btn-secondary" onclick="downloadRoutineHTML()" style="padding:12px;">🌐 HTML</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>📜 শেয়ার ইতিহাস</h3>
+      ${hist.length === 0 ? '<div class="empty">এখনো কিছু শেয়ার করা হয়নি</div>' : `
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:.78rem;">
+          ${hist.slice(0,10).map(h => `
+            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:8px;">
+              <span>${h.type} · ${escapeHtml(h.detail)}</span>
+              <span style="color:var(--sub);font-size:.7rem;">${new Date(h.at).toLocaleString("bn-BD")}</span>
+            </div>
+          `).join("")}
+        </div>`}
+    </div>
+
+    <div class="card">
+      <h3>ℹ️ কেন আগে কাজ করছিল না?</h3>
       <div style="font-size:.82rem;color:var(--sub);line-height:1.7;">
-        আগের লিংক ৩-৮ KB ছিল, WhatsApp কেটে দিত। এখন:
+        আগের সংস্করণে:
         <ul style="margin:8px 0;padding-left:20px;">
-          <li>✅ Deflate compression (~৭০% ছোট)</li>
-          <li>✅ Base64url (safe characters)</li>
-          <li>✅ ছোট ৬ অক্ষরের কোড</li>
+          <li>❌ Clipboard API fail হলে কিছুই হতো না</li>
+          <li>❌ navigator.share reject হলে chain ভাঙত</li>
+          <li>❌ WhatsApp URL শুধু একটাই try করত</li>
+          <li>❌ Email শুধু mailto: ব্যবহার করত</li>
+        </ul>
+        <b>এখন:</b>
+        <ul style="margin:8px 0;padding-left:20px;">
+          <li>✅ ৩ স্তরের clipboard fallback</li>
+          <li>✅ Manual copy modal</li>
+          <li>✅ WhatsApp এর ২টি URL + native share</li>
+          <li>✅ Email এর ৫টি অপশন (Gmail/Outlook/Yahoo/Mail app/Copy)</li>
+          <li>✅ QR কোড শেয়ার</li>
+          <li>✅ TXT/CSV/HTML download</li>
         </ul>
       </div>
     </div>`;
 }
 
-/* HABITS */
+window.downloadRoutineTxt = function(){
+  const txt = buildRoutineText();
+  if(!txt){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.txt`, txt, "text/plain;charset=utf-8");
+  toast("TXT ডাউনলোড","ok","📄");
+};
+window.downloadRoutineCSV = function(){
+  const csv = buildRoutineCSV();
+  if(!csv){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.csv`, "\uFEFF"+csv, "text/csv;charset=utf-8");
+  toast("CSV ডাউনলোড","ok","📊");
+};
+window.downloadRoutineHTML = function(){
+  const html = buildRoutineHTML();
+  if(!html){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.html`, html, "text/html;charset=utf-8");
+  toast("HTML ডাউনলোড","ok","🌐");
+};
+
+/* =========================================================
+   HABITS / REPORTS / BADGES / ANALYTICS
+   ========================================================= */
 function addHabit(){
   const modal = $("modal");
   modal.innerHTML = `
     <h2>🎯 নতুন হ্যাবিট</h2>
-    <p>নতুন অভ্যাস তৈরি করুন।</p>
-    <div class="field"><label>নাম</label><input id="hbName" placeholder="যেমন: ৩০ মিনিট ব্যায়াম" required></div>
+    <div class="field"><label>নাম</label><input id="hbName" placeholder="৩০ মিনিট ব্যায়াম" required></div>
     <div class="field"><label>আইকন</label>
       <select id="hbIcon">
-        <option value="🏃">🏃 ব্যায়াম</option>
-        <option value="💧">💧 পানি</option>
-        <option value="📚">📚 পড়া</option>
-        <option value="🧘">🧘 ধ্যান</option>
-        <option value="😴">😴 ঘুম</option>
-        <option value="🥗">🥗 স্বাস্থ্যকর</option>
-        <option value="🚭">🚭 ধূমপান বর্জন</option>
-        <option value="📝">📝 জার্নাল</option>
-        <option value="🕌">🕌 নামাজ</option>
-        <option value="🎯">🎯 কাস্টম</option>
+        <option value="🏃">🏃 ব্যায়াম</option><option value="💧">💧 পানি</option>
+        <option value="📚">📚 পড়া</option><option value="🧘">🧘 ধ্যান</option>
+        <option value="😴">😴 ঘুম</option><option value="🥗">🥗 স্বাস্থ্যকর</option>
+        <option value="🚭">🚭 ধূমপান বর্জন</option><option value="📝">📝 জার্নাল</option>
+        <option value="🕌">🕌 নামাজ</option><option value="🎯">🎯 কাস্টম</option>
       </select>
     </div>
     <div class="field"><label>লক্ষ্য</label>
       <select id="hbGoal">
-        <option value="21">২১ দিন</option>
-        <option value="30" selected>৩০ দিন</option>
-        <option value="66">৬৬ দিন</option>
-        <option value="100">১০০ দিন</option>
+        <option value="21">২১ দিন</option><option value="30" selected>৩০ দিন</option>
+        <option value="66">৬৬ দিন</option><option value="100">১০০ দিন</option>
       </select>
     </div>
     <div class="modal-actions">
@@ -1738,7 +1888,6 @@ function renderHabits(){
   return html;
 }
 
-/* MONTHLY REPORTS */
 function getMonthStats(offset=0){
   const today = new Date();
   const target = new Date(today.getFullYear(),today.getMonth()-offset,1);
@@ -1783,7 +1932,7 @@ function renderReports(){
     <div class="analytics-card"><h4>⏭️ Skip</h4><div class="streak-big">${cur.totalSkipped}</div><div class="streak-label">বার</div></div>
   </div>`;
   html += `<div class="card" style="margin-top:16px;">
-    <h3>🗓️ ${cur.name} — দৈনিক</h3>
+    <h3>🗓️ ${cur.name}</h3>
     <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;">
       ${["র","সো","ম","বু","বৃ","শু","শ"].map(d => `<div style="text-align:center;font-size:.68rem;color:var(--sub);font-weight:600;padding:4px 0;">${d}</div>`).join("")}
       ${(() => {
@@ -1797,7 +1946,7 @@ function renderReports(){
           else if(ratio>=0.6) bg = "rgba(47,107,82,.7)";
           else if(ratio>=0.3) bg = "var(--warn)";
           else if(ratio>0) bg = "var(--danger)";
-          cells += `<div style="aspect-ratio:1;background:${bg};border-radius:5px;display:grid;place-items:center;font-size:.7rem;font-weight:600;color:${ratio>0.3?'#fff':'var(--sub)'};" title="${d.date}: ${d.started}/${d.total}">${d.day}</div>`;
+          cells += `<div style="aspect-ratio:1;background:${bg};border-radius:5px;display:grid;place-items:center;font-size:.7rem;font-weight:600;color:${ratio>0.3?'#fff':'var(--sub)'};">${d.day}</div>`;
         });
         return cells;
       })()}
@@ -1831,6 +1980,7 @@ function renderReports(){
 }
 function exportReportPDF(type){
   const w = window.open("","_blank");
+  if(!w){ toast("Popup blocked — browser allow করুন","err"); return; }
   const stats = getMonthStats(0);
   const ds = getDisciplineStats();
   let content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Admin Agent রিপোর্ট</title>
@@ -1845,12 +1995,11 @@ table{width:100%;border-collapse:collapse;margin:16px 0;}
 th,td{padding:10px;text-align:left;border-bottom:1px solid #e2e0d8;font-size:.88rem;}
 th{background:#f5f4f0;font-weight:700;color:#6f6e67;font-size:.72rem;text-transform:uppercase;}
 .footer{margin-top:40px;padding-top:20px;border-top:1px solid #e2e0d8;font-size:.75rem;color:#6f6e67;text-align:center;}
-@media print{body{padding:20px;}.no-print{display:none;}}
-</style></head><body>
+@media print{body{padding:20px;}.no-print{display:none;}}</style></head><body>
 <h1>📊 Admin Agent রিপোর্ট</h1>
 <p style="color:#6f6e67;">তৈরি: ${new Date().toLocaleString("bn-BD")}</p>`;
   if(type === "month"){
-    content += `<h2>${stats.name} — মাসিক সারসংক্ষেপ</h2>
+    content += `<h2>${stats.name} — মাসিক</h2>
     <div class="stat-grid">
       <div class="stat-box"><div class="stat-val">${stats.rate}%</div><div class="stat-lbl">সম্পন্নতা</div></div>
       <div class="stat-box"><div class="stat-val">${stats.totalStarted}</div><div class="stat-lbl">সম্পন্ন</div></div>
@@ -1872,7 +2021,7 @@ th{background:#f5f4f0;font-weight:700;color:#6f6e67;font-size:.72rem;text-transf
       </table>`;
     }
   } else {
-    content += `<h2>📅 বার্ষিক সারসংক্ষেপ</h2><table>
+    content += `<h2>📅 বার্ষিক</h2><table>
       <tr><th>মাস</th><th>সম্পন্ন</th><th>মোট</th><th>হার</th></tr>`;
     for(let m=11;m>=0;m--){
       const s = getMonthStats(m);
@@ -1882,7 +2031,7 @@ th{background:#f5f4f0;font-weight:700;color:#6f6e67;font-size:.72rem;text-transf
     }
     content += `</table>`;
   }
-  content += `<div class="footer">Admin Agent AI · স্বয়ংক্রিয় রিপোর্ট</div>
+  content += `<div class="footer">Admin Agent AI</div>
   <div class="no-print" style="text-align:center;margin-top:30px;">
     <button onclick="window.print()" style="background:#b5502f;color:white;border:none;padding:12px 24px;border-radius:8px;font-size:14px;cursor:pointer;">🖨️ PDF সেভ</button>
   </div></body></html>`;
@@ -1906,11 +2055,11 @@ window.exportReportJSON = exportReportJSON;
 /* BADGES */
 const BADGES = [
   { id:"first_step", icon:"🌱", name:"প্রথম পদক্ষেপ", desc:"প্রথম কনফার্ম", check:s=>s.stats.totalStarted>=1 },
-  { id:"week_warrior", icon:"🔥", name:"সপ্তাহ যোদ্ধা", desc:"৭ দিনের স্ট্রিক", check:s=>s.stats.streak>=7 },
+  { id:"week_warrior", icon:"🔥", name:"সপ্তাহ যোদ্ধা", desc:"৭ দিন স্ট্রিক", check:s=>s.stats.streak>=7 },
   { id:"month_master", icon:"🏅", name:"মাস মাস্টার", desc:"৩০ দিন স্ট্রিক", check:s=>s.stats.streak>=30 },
   { id:"century", icon:"💯", name:"শতক", desc:"১০০ কাজ", check:s=>s.stats.totalStarted>=100 },
   { id:"habit_hero", icon:"🎯", name:"হ্যাবিট হিরো", desc:"২১ দিন হ্যাবিট স্ট্রিক", check:s=>s.maxHabitStreak>=21 },
-  { id:"fast_responder", icon:"⚡", name:"দ্রুত সাড়া", desc:"সাড়া < ৩০ সেকেন্ড", check:s=>s.stats.avgResponseSec>0 && s.stats.avgResponseSec<30 },
+  { id:"fast_responder", icon:"⚡", name:"দ্রুত সাড়া", desc:"সাড়া < ৩০s", check:s=>s.stats.avgResponseSec>0 && s.stats.avgResponseSec<30 },
   { id:"perfect_day", icon:"⭐", name:"নিখুঁত দিন", desc:"একদিনে সব সম্পন্ন", check:s=>s.hasPerfectDay },
   { id:"discipline_master", icon:"👑", name:"মাস্টার", desc:"৯০+ স্কোর", check:s=>s.stats.score>=90 },
   { id:"sharer", icon:"👥", name:"শেয়ারার", desc:"রুটিন শেয়ার", check:s=>s.hasShared },
@@ -2008,12 +2157,12 @@ function renderDashboard(){
       <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
         <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
         <button class="btn-secondary" onclick="syncToCalendar()">📅 Calendar</button>
-        <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp</button>
+        <button class="btn-secondary" onclick="switchView('share')">📤 শেয়ার</button>
         <button class="btn-secondary" onclick="testCheckin()">🎯 টেস্ট Check-in</button>
         <button class="btn-secondary" onclick="switchView('habits')">🎯 হ্যাবিট</button>
         <button class="btn-secondary" onclick="switchView('reports')">📊 রিপোর্ট</button>
-        <button class="btn-secondary" onclick="switchView('family')">👥 ফ্যামিলি</button>
         <button class="btn-secondary" onclick="switchView('badges')">🎁 ব্যাজ</button>
+        <button class="btn-secondary" onclick="testAllShares()">🧪 শেয়ার টেস্ট</button>
       </div>
     </div>`;
   if(insights.length === 0) generateInsights();
@@ -2046,14 +2195,48 @@ window.manualCheckin = function(routineId,status){
   toast(status === "started" ? "সম্পন্ন" : "বাদ","ok",status === "started"?"✅":"✕");
 };
 
+/* Test all share methods */
+window.testAllShares = function(){
+  const modal = $("modal");
+  const text = buildRoutineText() || "টেস্ট";
+  modal.innerHTML = `
+    <h2>🧪 শেয়ার টেস্ট</h2>
+    <p>প্রতিটি ফিচার আলাদা করে test করুন।</p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div style="background:var(--bg);border-radius:10px;padding:12px;">
+        <div style="font-weight:600;margin-bottom:6px;">1️⃣ Clipboard Test</div>
+        <button class="btn-secondary" style="width:100%;" onclick="copyToClipboard('test clipboard','✓ Clipboard কাজ করছে')">📋 কপি টেস্ট</button>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;">
+        <div style="font-weight:600;margin-bottom:6px;">2️⃣ Native Share Test</div>
+        <button class="btn-secondary" style="width:100%;" onclick="if(navigator.share){navigator.share({title:'টেস্ট',text:'test'}).then(()=>toast('✓ Native share কাজ করছে','ok')).catch(e=>toast('✗ Native share fail: '+e.name,'err'))}else{toast('✗ Native share নেই','err')}">📤 Native Share</button>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;">
+        <div style="font-weight:600;margin-bottom:6px;">3️⃣ WhatsApp Test</div>
+        <button class="btn-secondary" style="width:100%;" onclick="openUrl('https://wa.me/?text=test')">📤 WhatsApp</button>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;">
+        <div style="font-weight:600;margin-bottom:6px;">4️⃣ Mailto Test</div>
+        <button class="btn-secondary" style="width:100%;" onclick="window.location.href='mailto:test@example.com?subject=test&body=test'">✉️ Mail</button>
+      </div>
+      <div style="background:var(--bg);border-radius:10px;padding:12px;">
+        <div style="font-weight:600;margin-bottom:6px;">5️⃣ Gmail Web Test</div>
+        <button class="btn-secondary" style="width:100%;" onclick="openUrl('https://mail.google.com/mail/?view=cm&fs=1')">🌐 Gmail</button>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-ghost" onclick="closeModal()">বন্ধ</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+};
+
 function renderRoutineView(){
   const todayIdx = new Date().getDay();
   let html = `<h2 class="section-title">📅 সাপ্তাহিক রুটিন</h2>
     <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
       <button class="btn-primary" onclick="syncToCalendar()">📅 Calendar</button>
-      <button class="btn-secondary" onclick="shareToWhatsApp()">📤 WhatsApp</button>
+      <button class="btn-secondary" onclick="switchView('share')">📤 শেয়ার</button>
       <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
-      <button class="btn-secondary" onclick="switchView('family')">👥 শেয়ার</button>
     </div>
     <div class="routine-grid">`;
   for(let i=0;i<7;i++){
@@ -2099,9 +2282,26 @@ window.quickAddToGoogleCalendar = function(dayIdx,routineId){
   const start = new Date(today); start.setDate(start.getDate()+offset); start.setHours(h,m,0,0);
   const end = new Date(start.getTime()+30*60000);
   const fmt = d => d.toISOString().replace(/[-:]/g,"").replace(/\.\d{3}/,"");
-  window.open(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`,"_blank");
+  openUrl(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`);
   toast("Google Calendar খোলা হচ্ছে","info","📅");
 };
+
+function emailDay(dayIdx){
+  const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
+  if(items.length === 0){ toast(`${DAYS[dayIdx]}-এ কোনো কাজ নেই`,"err"); return; }
+  let body = `আসসালামু আলাইকুম,\n\n📅 ${DAYS[dayIdx]}-এর রুটিন:\n\n`;
+  items.forEach((r,i) => { body += `${i+1}. ${r.time} — ${r.text}\n`; });
+  body += `\nমোট ${items.length}টি।\n\n— Admin Agent AI`;
+  openEmailCompose(`📅 ${DAYS[dayIdx]}-এর রুটিন · ${items.length}টি`, body);
+}
+window.emailDay = emailDay;
+function emailRoutineItem(dayIdx,routineId){
+  const item = (routine[dayIdx]||[]).find(r=>r.id===routineId);
+  if(!item) return;
+  const body = `আসসালামু আলাইকুম,\n\n📌 কাজ: ${item.text}\n⏰ সময়: ${item.time}\n📅 দিন: ${DAYS[dayIdx]}\n\n— Admin Agent AI`;
+  openEmailCompose(`⏰ রিমাইন্ডার: ${item.text}`, body);
+}
+window.emailRoutineItem = emailRoutineItem;
 
 function renderTasksView(){
   const byCol = {};
@@ -2175,9 +2375,9 @@ function renderDiscipline(){
     trend.push({ day:DAYS_SHORT[dayIdx], pct });
   }
   let advice = "", advIcon = "💡";
-  if(stats.score>=90){ advice="অসাধারণ! এই ধারা রাখুন।"; advIcon="👑"; }
-  else if(stats.score>=75){ advice="খুব ভালো! শীর্ষে পৌঁছাতে আরও একটু।"; advIcon="🏆"; }
-  else if(stats.score>=60){ advice="ভালো। দ্রুত সাড়া দিলে স্কোর বাড়বে।"; advIcon="⭐"; }
+  if(stats.score>=90){ advice="অসাধারণ!"; advIcon="👑"; }
+  else if(stats.score>=75){ advice="খুব ভালো!"; advIcon="🏆"; }
+  else if(stats.score>=60){ advice="ভালো।"; advIcon="⭐"; }
   else if(stats.score>=40){ advice="সকালের প্রথম কাজ কনফার্ম করুন।"; advIcon="🌱"; }
   else { advice="ছোট রুটিন দিয়ে শুরু করুন।"; advIcon="🎯"; }
   return `<h2 class="section-title">🏆 নিয়মানুবর্তিতা</h2>
@@ -2281,7 +2481,7 @@ function renderAnalytics(){
       }).join("")}
     </div>
     <div class="card"><h3>🔥 শেষ ২৮ দিন</h3>
-      <div class="heat-grid">${heat.map(h => `<div class="heat-cell" data-level="${h.level}" title="${h.key}"></div>`).join("")}</div>
+      <div class="heat-grid">${heat.map(h => `<div class="heat-cell" data-level="${h.level}"></div>`).join("")}</div>
     </div>
     <div class="card"><h3>📅 সাপ্তাহিক লোড</h3>
       ${loads.map((n,i) => `<div class="bar-row"><span class="br-label">${DAYS_SHORT[i]}</span><div class="br-bar-wrap"><div class="br-bar" style="width:${(n/maxLoad)*100}%"></div></div><span class="br-value">${n}</span></div>`).join("")}
@@ -2295,7 +2495,6 @@ function generateInsights(){
   const stats = getDisciplineStats();
   if(stats.score>=75) list.push({ icon:"🏆", title:`স্কোর: ${stats.score}`, text:"খুব ভালো করছেন!" });
   else if(stats.score<40 && stats.total>0) list.push({ icon:"🎯", title:`স্কোর: ${stats.score}`, text:"দ্রুত সাড়া দিলে স্কোর বাড়বে।" });
-  if(stats.avgResponseSec>120 && stats.started>3) list.push({ icon:"⚡", title:"সাড়া দিতে দেরি", text:`গড়ে ${stats.avgResponseSec}s। ৩০s এর মধ্যে দিন।` });
   loads.forEach((n,i)=>{
     if(n>avgLoad*1.5 && n>=5) list.push({ icon:"⚖️", title:`${DAYS[i]} ব্যস্ত`, text:`${n}টি কাজ — কিছু সরান।` });
     if(n===0) list.push({ icon:"💤", title:`${DAYS[i]} ফাঁকা`, text:"হালকা রুটিন যোগ করুন।" });
@@ -2360,17 +2559,11 @@ function renderSettings(){
   html += `<div class="card"><h3>🎯 Check-in</h3>
     <label class="check-row"><input type="checkbox" ${settings.checkinEnabled?"checked":""} onchange="window._updateSetting('checkinEnabled',this.checked)"> <span>Check-in কনফার্মেশন</span></label>
     <label class="check-row"><input type="checkbox" ${settings.welcomeEnabled?"checked":""} onchange="window._updateSetting('welcomeEnabled',this.checked)"> <span>সকালের স্বাগত</span></label>
-    <div class="field" style="margin-top:8px;"><label>Auto-skip (মিনিট): <span id="skipVal">${settings.autoSkipMinutes}</span></label>
-      <input type="range" min="1" max="10" value="${settings.autoSkipMinutes}" oninput="window._updateSetting('autoSkipMinutes',parseInt(this.value));document.getElementById('skipVal').textContent=this.value">
-    </div>
   </div>`;
   html += `<div class="card"><h3>🔔 অ্যালার্ট</h3>
     <label class="check-row"><input type="checkbox" ${settings.sound?"checked":""} onchange="window._updateSetting('sound',this.checked)"> <span>সাউন্ড</span></label>
     <label class="check-row"><input type="checkbox" ${settings.voice?"checked":""} onchange="window._updateSetting('voice',this.checked)"> <span>ভয়েস</span></label>
     <label class="check-row"><input type="checkbox" ${settings.notif?"checked":""} onchange="window._updateSetting('notif',this.checked)"> <span>নোটিফিকেশন</span></label>
-    <div class="field" style="margin-top:12px;"><label>ভলিউম: <span id="volVal">${Math.round(settings.volume*100)}</span>%</label>
-      <input type="range" min="0" max="1" step="0.05" value="${settings.volume}" oninput="window._updateSetting('volume',parseFloat(this.value));document.getElementById('volVal').textContent=Math.round(this.value*100)">
-    </div>
     <button class="btn-secondary" onclick="testAlert()" style="margin-top:8px;">🔊 টেস্ট</button>
   </div>`;
   html += `<div class="card"><h3>🌙 স্লিপ মোড</h3>
@@ -2384,13 +2577,9 @@ function renderSettings(){
     <div style="display:flex;gap:8px;flex-wrap:wrap;">
       <button class="btn-secondary" onclick="exportBackup()">⬇ ব্যাকআপ</button>
       <button class="btn-secondary" onclick="document.getElementById('importFile').click()">⬆ রিস্টোর</button>
-      <button class="btn-secondary" onclick="removeCalendarDuplicates()">🧹 Calendar ডুপ্লিকেট সরান</button>
-      <button class="btn-secondary" onclick="rehashCalendarTasks()">🔧 Calendar rehash</button>
+      <button class="btn-secondary" onclick="removeCalendarDuplicates()">🧹 Calendar ডুপ্লিকেট</button>
       <button class="btn-danger" onclick="if(confirm('সব ডেটা মুছবেন?')){localStorage.clear();location.reload();}">🗑️ রিসেট</button>
     </div>
-  </div>`;
-  html += `<div class="card"><h3>ℹ️ সম্পর্কে</h3>
-    <p style="font-size:.8rem;color:var(--sub);line-height:1.6;">Admin Agent AI v5 · সব ডেটা ডিভাইসে সংরক্ষিত।</p>
   </div>`;
   return html;
 }
@@ -2398,27 +2587,19 @@ function renderSettings(){
 function renderIntegrations(){
   return `<h2 class="section-title">🔌 ডিভাইস সিঙ্ক</h2>
     <div class="card"><h3>📅 Google Calendar</h3>
-      <p style="font-size:.82rem;color:var(--sub);line-height:1.6;">সাপ্তাহিক recurring event হিসেবে export করুন। একবার import করলেই Google নিজেই reminder পাঠাবে।</p>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
         <button class="btn-primary" onclick="syncToCalendar()">📥 ICS ডাউনলোড</button>
         <button class="btn-secondary" onclick="importFromCalendar()">🔁 Calendar থেকে আনা</button>
       </div>
     </div>
-    <div class="card"><h3>📤 WhatsApp</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-        <button class="btn-primary" onclick="shareToWhatsApp()">WhatsApp শেয়ার</button>
-        <button class="btn-secondary" onclick="shareViaDevice()">অন্য অ্যাপে</button>
-      </div>
-    </div>
-    <div class="card"><h3>✉️ Email</h3>
-      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;">
-        <button class="btn-primary" onclick="emailFullWeek()">📧 Email digest</button>
-      </div>
+    <div class="card"><h3>📤 শেয়ার সেন্টার</h3>
+      <p style="font-size:.82rem;color:var(--sub);line-height:1.6;">WhatsApp, Email, SMS, Messenger, Telegram</p>
+      <button class="btn-primary" onclick="switchView('share')" style="margin-top:10px;">শেয়ার সেন্টারে যান</button>
     </div>`;
 }
 
 function exportBackup(){
-  const payload = { version:5, exportedAt:new Date().toISOString(),
+  const payload = { version:6, exportedAt:new Date().toISOString(),
     routine, tasks, settings, history, checkins, insights, habits, habitLog };
   downloadFile(`admin-agent-backup-${todayKey()}.json`, JSON.stringify(payload,null,2),"application/json");
   toast("ব্যাকআপ ডাউনলোড","ok","⬇");
@@ -2446,7 +2627,6 @@ function importBackup(file){
   reader.readAsText(file);
 }
 
-/* VIEW ROUTER */
 function switchView(view){
   currentView = view;
   document.querySelectorAll(".nav-item[data-view]").forEach(b => b.classList.toggle("active",b.dataset.view===view));
@@ -2457,17 +2637,17 @@ window.switchView = switchView;
 
 const VIEW_TITLES = {
   dashboard:["ড্যাশবোর্ড","সবকিছু এক নজরে।"],
-  routine:["৭ দিনের রুটিন","সাপ্তাহিক কাজ ব্যবস্থাপনা।"],
-  tasks:["টাস্ক বোর্ড","আপনার সব টাস্ক।"],
-  discipline:["নিয়মানুবর্তিতা","কনফার্মেশন ও স্কোর।"],
-  habits:["হ্যাবিট ট্র্যাকার","নতুন অভ্যাস গড়ে তুলুন।"],
-  analytics:["অগ্রগতি","আপনার পরিসংখ্যান।"],
+  routine:["৭ দিনের রুটিন","সাপ্তাহিক কাজ।"],
+  tasks:["টাস্ক বোর্ড","সব টাস্ক।"],
+  discipline:["নিয়মানুবর্তিতা","স্কোর।"],
+  habits:["হ্যাবিট","নতুন অভ্যাস।"],
+  analytics:["অগ্রগতি","পরিসংখ্যান।"],
   reports:["রিপোর্ট","মাসিক ও বার্ষিক।"],
   insights:["AI পরামর্শ","ডেটা বিশ্লেষণ।"],
   forecast:["পূর্বাভাস","আগামী ৭ দিন।"],
   templates:["টেমপ্লেট","এক ক্লিকে রুটিন।"],
-  family:["ফ্যামিলি শেয়ার","পরিবারের সাথে।"],
-  badges:["ব্যাজ","আপনার অর্জন।"],
+  share:["শেয়ার সেন্টার","সব শেয়ার অপশন।"],
+  badges:["ব্যাজ","অর্জন।"],
   settings:["সেটিংস","কাস্টমাইজ।"],
   integrations:["ডিভাইস সিঙ্ক","Calendar, WhatsApp, Email।"]
 };
@@ -2489,7 +2669,7 @@ function renderView(){
     case "insights": generateInsights(); html = renderInsights(); break;
     case "forecast": html = renderForecast(); break;
     case "templates": html = renderTemplates(); break;
-    case "family": html = renderFamily(); break;
+    case "share": html = renderShare(); break;
     case "badges": html = renderBadges(); break;
     case "settings": html = renderSettings(); break;
     case "integrations": html = renderIntegrations(); break;
@@ -2521,7 +2701,6 @@ window._updateSetting = function(key,val){
   toast("সেটিং সেভ","ok","💾");
 };
 
-/* SCHEDULER */
 function checkSchedule(){
   if(isSleepTime()) return;
   const now = new Date();
@@ -2591,11 +2770,6 @@ function init(){
   });
   $("modalBackdrop").addEventListener("click", e => { if(e.target.id === "modalBackdrop") closeModal(); });
   $("importFile").addEventListener("change", e => { if(e.target.files[0]) importBackup(e.target.files[0]); });
-
-  const emailBtn = $("btnEmailShare");
-  if(emailBtn) emailBtn.addEventListener("click",() => { emailFullWeek(); closeSidebarMobile(); });
-  const waBtn = $("btnWhatsAppShare");
-  if(waBtn) waBtn.addEventListener("click",() => { shareToWhatsApp(); closeSidebarMobile(); });
 
   $("ciStart").addEventListener("click",startCheckin);
   $("ciSnooze").addEventListener("click",snoozeCheckin);
