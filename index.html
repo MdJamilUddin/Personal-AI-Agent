@@ -90,7 +90,6 @@ input,select,textarea{font:inherit;color:inherit;}
 .btn-ghost:hover{background:var(--bg2);color:var(--ink);}
 .btn-danger{background:var(--danger);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
 .btn-ok{background:var(--ok);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
-.btn-gold{background:var(--gold);color:#fff;padding:10px 18px;border-radius:var(--radius-sm);font-weight:600;font-size:.86rem;}
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--shadow-sm);}
 .card h3{margin:0 0 12px;font-size:.95rem;font-weight:600;}
 .stats{display:grid;gap:12px;margin-bottom:20px;grid-template-columns:repeat(2,1fr);}
@@ -163,7 +162,7 @@ input,select,textarea{font:inherit;color:inherit;}
 .analytics-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow-sm);}
 .analytics-card h4{margin:0 0 12px;font-size:.9rem;font-weight:600;color:var(--sub);}
 .bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px;font-size:.78rem;}
-.bar-row .br-label{width:70px;flex-shrink:0;color:var(--sub);}
+.bar-row .br-label{width:80px;flex-shrink:0;color:var(--sub);}
 .bar-row .br-bar-wrap{flex:1;height:16px;background:var(--bg);border-radius:8px;overflow:hidden;}
 .bar-row .br-bar{height:100%;background:linear-gradient(90deg,var(--accent),#d8734c);border-radius:8px;transition:width .5s var(--ease);}
 .bar-row .br-value{width:44px;text-align:right;font-weight:600;color:var(--ink);}
@@ -259,7 +258,6 @@ input,select,textarea{font:inherit;color:inherit;}
 .habit-grid{display:grid;gap:12px;grid-template-columns:1fr;}
 @media(min-width:700px){.habit-grid{grid-template-columns:repeat(2,1fr);}}
 .badge-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));}
-.share-box{background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:monospace;font-size:.72rem;word-break:break-all;max-height:120px;overflow-y:auto;}
 .copy-hint{background:var(--warn-soft);border:1px solid var(--warn);border-radius:10px;padding:10px 12px;font-size:.75rem;color:var(--ink);margin-bottom:12px;}
 </style>
 </head>
@@ -288,6 +286,11 @@ input,select,textarea{font:inherit;color:inherit;}
     <button class="nav-item active" data-view="dashboard"><span class="icon">🏠</span><span class="label">ড্যাশবোর্ড</span></button>
     <button class="nav-item" data-view="routine"><span class="icon">📅</span><span class="label">৭ দিনের রুটিন</span></button>
     <button class="nav-item" data-view="tasks"><span class="icon">📋</span><span class="label">টাস্ক বোর্ড</span></button>
+
+    <div class="nav-section">স্বাস্থ্য</div>
+    <button class="nav-item" data-view="sleep"><span class="icon">🌙</span><span class="label">ঘুম ট্র্যাকার</span></button>
+    <button class="nav-item" data-view="water"><span class="icon">💧</span><span class="label">পানি ট্র্যাকার</span></button>
+    <button class="nav-item" data-view="journal"><span class="icon">📝</span><span class="label">দৈনিক জার্নাল</span></button>
 
     <div class="nav-section">AI এজেন্ট</div>
     <button class="nav-item" data-view="discipline"><span class="icon">🏆</span><span class="label">নিয়মানুবর্তিতা</span></button>
@@ -359,16 +362,19 @@ input,select,textarea{font:inherit;color:inherit;}
 
 <script>
 /* =========================================================
-   PERSONAL ADMIN AGENT · AI v6
-   Complete rewrite: robust copy/share/open
+   PERSONAL ADMIN AGENT · AI v7
+   All-in-one: Routine, Tasks, Check-in, Habits, Reports,
+   Family Share, Sleep, Water, Journal, Custom Sound, Voice
    ========================================================= */
 
 const KEYS = {
-  routine:"aa_routine_v6", tasks:"aa_tasks_v6", settings:"aa_settings_v6",
-  theme:"aa_theme_v6", history:"aa_history_v6", insights:"aa_insights_v6",
-  checkins:"aa_checkins_v6", welcome:"aa_welcome_v6",
-  habits:"aa_habits_v6", habitLog:"aa_habit_log_v6",
-  shareCodes:"aa_share_codes_v6", shareHistory:"aa_share_history_v6"
+  routine:"aa_routine_v7", tasks:"aa_tasks_v7", settings:"aa_settings_v7",
+  theme:"aa_theme_v7", history:"aa_history_v7", insights:"aa_insights_v7",
+  checkins:"aa_checkins_v7", welcome:"aa_welcome_v7",
+  habits:"aa_habits_v7", habitLog:"aa_habit_log_v7",
+  shareCodes:"aa_share_codes_v7", shareHistory:"aa_share_history_v7",
+  sleep:"aa_sleep_v7", water:"aa_water_v7", journal:"aa_journal_v7",
+  customSound:"aa_custom_sound_v7"
 };
 
 const DAYS = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
@@ -377,13 +383,16 @@ const COLS = ["Today","This Week","Waiting","Study","Family","Money","Later"];
 const ICS_DAY = ["SU","MO","TU","WE","TH","FR","SA"];
 
 let routine = {}, tasks = [], history = {}, checkins = {}, habits = [], habitLog = {};
+let sleepLog = {}, waterLog = {}, journalEntries = [], customSoundData = null;
 let settings = { sound:true, voice:true, notif:true, volume:0.7,
   sleepEnabled:false, sleepStart:"23:00", sleepEnd:"06:00",
-  checkinEnabled:true, welcomeEnabled:true, autoSkipMinutes:2 };
+  checkinEnabled:true, welcomeEnabled:true, autoSkipMinutes:2,
+  voiceRate:0.95, voicePitch:1.0 };
 let insights = [];
 let currentView = "dashboard";
 let audioCtx = null, activeCheckin = null, checkinTimer = null;
 let snoozeUntil = {}, lastFired = {}, welcomeShown = "";
+let customAudioEl = null;
 
 function loadState(){
   try{ routine = JSON.parse(localStorage.getItem(KEYS.routine)) || {}; }catch(e){ routine = {}; }
@@ -394,6 +403,10 @@ function loadState(){
   try{ insights = JSON.parse(localStorage.getItem(KEYS.insights)) || []; }catch(e){ insights = []; }
   try{ habits = JSON.parse(localStorage.getItem(KEYS.habits)) || []; }catch(e){ habits = []; }
   try{ habitLog = JSON.parse(localStorage.getItem(KEYS.habitLog)) || {}; }catch(e){ habitLog = {}; }
+  try{ sleepLog = JSON.parse(localStorage.getItem(KEYS.sleep)) || {}; }catch(e){ sleepLog = {}; }
+  try{ waterLog = JSON.parse(localStorage.getItem(KEYS.water)) || {}; }catch(e){ waterLog = {}; }
+  try{ journalEntries = JSON.parse(localStorage.getItem(KEYS.journal)) || []; }catch(e){ journalEntries = []; }
+  try{ customSoundData = JSON.parse(localStorage.getItem(KEYS.customSound)) || null; }catch(e){ customSoundData = null; }
   welcomeShown = localStorage.getItem(KEYS.welcome) || "";
 }
 function saveRoutine(){ try{localStorage.setItem(KEYS.routine,JSON.stringify(routine));}catch(e){} }
@@ -404,6 +417,10 @@ function saveCheckins(){ try{localStorage.setItem(KEYS.checkins,JSON.stringify(c
 function saveInsights(){ try{localStorage.setItem(KEYS.insights,JSON.stringify(insights));}catch(e){} }
 function saveHabits(){ try{localStorage.setItem(KEYS.habits,JSON.stringify(habits));}catch(e){} }
 function saveHabitLog(){ try{localStorage.setItem(KEYS.habitLog,JSON.stringify(habitLog));}catch(e){} }
+function saveSleep(){ try{localStorage.setItem(KEYS.sleep,JSON.stringify(sleepLog));}catch(e){} }
+function saveWater(){ try{localStorage.setItem(KEYS.water,JSON.stringify(waterLog));}catch(e){} }
+function saveJournal(){ try{localStorage.setItem(KEYS.journal,JSON.stringify(journalEntries));}catch(e){} }
+function saveCustomSound(){ try{localStorage.setItem(KEYS.customSound,JSON.stringify(customSoundData));}catch(e){} }
 
 function pad2(n){ return String(n).padStart(2,"0"); }
 function todayKey(){ return new Date().toISOString().slice(0,10); }
@@ -420,11 +437,8 @@ function toast(msg,type="info",icon){
 function closeModal(){ $("modalBackdrop").classList.remove("show"); }
 window.closeModal = closeModal;
 
-/* =========================================================
-   ROBUST CLIPBOARD — multi-layer fallback
-   ========================================================= */
+/* ROBUST CLIPBOARD */
 function copyToClipboard(text, successMsg = "কপি হয়েছে"){
-  // Layer 1: modern Clipboard API
   if(navigator.clipboard && window.isSecureContext){
     navigator.clipboard.writeText(text)
       .then(() => toast(successMsg,"ok","📋"))
@@ -434,7 +448,6 @@ function copyToClipboard(text, successMsg = "কপি হয়েছে"){
   copyFallback(text,successMsg);
 }
 function copyFallback(text, successMsg){
-  // Layer 2: hidden textarea + execCommand
   try{
     const ta = $("hiddenCopyArea");
     ta.value = text;
@@ -446,12 +459,8 @@ function copyFallback(text, successMsg){
     const ok = document.execCommand("copy");
     ta.value = "";
     ta.blur();
-    if(ok){
-      toast(successMsg,"ok","📋");
-      return true;
-    }
+    if(ok){ toast(successMsg,"ok","📋"); return true; }
   }catch(e){}
-  // Layer 3: manual modal
   showManualCopy(text);
   return false;
 }
@@ -459,14 +468,13 @@ function showManualCopy(text){
   const modal = $("modal");
   modal.innerHTML = `
     <h2>📋 ম্যানুয়ালি কপি করুন</h2>
-    <p>স্বয়ংক্রিয় কপি কাজ করেনি। নিচের টেক্সটটি সিলেক্ট করে কপি করুন:</p>
+    <p>স্বয়ংক্রিয় কপি কাজ করেনি। নিচের টেক্সট সিলেক্ট করে কপি করুন:</p>
     <div class="field">
       <textarea id="manualCopyText" rows="6" readonly style="font-family:monospace;font-size:.75rem;">${escapeHtml(text)}</textarea>
     </div>
-    <p style="font-size:.75rem;color:var(--sub);">💡 টেক্সট বক্সে ক্লিক করুন → সব select হবে → Ctrl+C বা long-press → Copy</p>
     <div class="modal-actions">
       <button class="btn-secondary" onclick="closeModal()">বন্ধ</button>
-      <button class="btn-primary" onclick="selectAllManual()">সব সিলেক্ট করুন</button>
+      <button class="btn-primary" onclick="selectAllManual()">সব সিলেক্ট</button>
     </div>`;
   $("modalBackdrop").classList.add("show");
   setTimeout(() => {
@@ -479,12 +487,9 @@ window.selectAllManual = function(){
   const ta = $("manualCopyText");
   if(ta){ ta.focus(); ta.select(); ta.setSelectionRange(0, 99999); }
 };
+window.copyText = function(text, msg){ copyToClipboard(text, msg || "কপি হয়েছে"); };
 
-/* =========================================================
-   ROBUST SHARE — multiple fallbacks
-   ========================================================= */
 function shareContent(title, text, url){
-  // Try native share first
   if(navigator.share){
     const payload = { title, text };
     if(url) payload.url = url;
@@ -492,33 +497,24 @@ function shareContent(title, text, url){
       .then(() => toast("শেয়ার হয়েছে","ok","📤"))
       .catch(err => {
         if(err.name === "AbortError") return;
-        // Fallback: copy
         copyToClipboard(url || text, "কপি হয়েছে — paste করুন");
       });
     return true;
   }
-  // Fallback: copy
   copyToClipboard(url || text, "কপি হয়েছে — paste করুন");
   return false;
 }
-
-/* Open URL in new tab with fallback */
 function openUrl(url){
   try{
     const win = window.open(url, "_blank", "noopener,noreferrer");
-    if(!win || win.closed || typeof win.closed === "undefined"){
-      // Popup blocked → try location
-      window.location.href = url;
-    }
+    if(!win || win.closed || typeof win.closed === "undefined") window.location.href = url;
     return true;
   }catch(e){
     try{ window.location.href = url; return true; }catch(e2){ return false; }
   }
 }
 
-/* =========================================================
-   THEME
-   ========================================================= */
+/* THEME */
 const THEMES = [
   {id:"light",name:"লাইট",icon:"☀️"},{id:"dark",name:"ডার্ক",icon:"🌙"},
   {id:"ocean",name:"ওশান",icon:"🌊"},{id:"forest",name:"ফরেস্ট",icon:"🌲"},
@@ -548,9 +544,7 @@ function updateThemeIcon(){
   const btn = $("themeToggle"); if(btn) btn.textContent = t.icon;
 }
 
-/* =========================================================
-   AUDIO
-   ========================================================= */
+/* AUDIO */
 function ensureAudio(){
   if(!audioCtx){
     const Ctx = window.AudioContext||window.webkitAudioContext;
@@ -575,6 +569,18 @@ function playBeep(d=0.6,f1=880,f2=660){
 }
 function playAlertSound(){
   if(!settings.sound) return;
+  if(customSoundData && customSoundData.dataUrl){
+    try{
+      if(customAudioEl) customAudioEl.pause();
+      customAudioEl = new Audio(customSoundData.dataUrl);
+      customAudioEl.volume = settings.volume;
+      customAudioEl.play().catch(() => playDefaultAlert());
+      return;
+    }catch(e){}
+  }
+  playDefaultAlert();
+}
+function playDefaultAlert(){
   playBeep(0.18,880,880);
   setTimeout(()=>playBeep(0.18,880,880),220);
   setTimeout(()=>playBeep(0.45,1200,700),440);
@@ -591,13 +597,21 @@ function speak(text){
   try{
     window.speechSynthesis.cancel();
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = /[\u0980-\u09FF]/.test(text)?"bn-BD":"en-US";
-    u.rate = 0.95; u.volume = settings.volume;
+    const isBn = /[\u0980-\u09FF]/.test(text);
+    u.lang = isBn ? "bn-BD" : "en-US";
+    u.rate = settings.voiceRate || 0.95;
+    u.pitch = settings.voicePitch || 1.0;
+    u.volume = settings.volume;
+    if(isBn){
+      const voices = window.speechSynthesis.getVoices();
+      const bnVoice = voices.find(v => v.lang.startsWith("bn"));
+      if(bnVoice) u.voice = bnVoice;
+    }
     window.speechSynthesis.speak(u);
   }catch(e){}
 }
 
-/* SLEEP */
+/* SLEEP MODE */
 function isSleepTime(){
   if(!settings.sleepEnabled) return false;
   const now = new Date();
@@ -636,9 +650,7 @@ function showSystemNotification(title,body){
   }catch(e){}
 }
 
-/* =========================================================
-   DISCIPLINE
-   ========================================================= */
+/* DISCIPLINE */
 function getWeekCheckins(daysBack=7){
   const all = {}; const today = new Date();
   for(let i=0;i<daysBack;i++){
@@ -972,9 +984,7 @@ function applyTemplate(key){
 }
 window.applyTemplate = applyTemplate;
 
-/* =========================================================
-   ICS EXPORT
-   ========================================================= */
+/* ICS EXPORT */
 function escapeICS(s){ return String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n"); }
 function icsTS(){ const d = new Date(); return `${d.getUTCFullYear()}${pad2(d.getUTCMonth()+1)}${pad2(d.getUTCDate())}T${pad2(d.getUTCHours())}${pad2(d.getUTCMinutes())}${pad2(d.getUTCSeconds())}Z`; }
 function routineToVEvent(item,dayIdx){
@@ -1130,11 +1140,7 @@ window.removeCalendarDuplicates = function(){
   toast(`${duplicates.length}টি সরানো`,"ok","🧹");
 };
 
-/* =========================================================
-   SHARE CENTER — এক জায়গায় সব শেয়ার অপশন
-   ========================================================= */
-
-/* Share history */
+/* SHARE HISTORY */
 function addShareHistory(type, detail){
   try{
     const hist = JSON.parse(localStorage.getItem(KEYS.shareHistory) || "[]");
@@ -1147,7 +1153,7 @@ function getShareHistory(){
   try{ return JSON.parse(localStorage.getItem(KEYS.shareHistory) || "[]"); }catch(e){ return []; }
 }
 
-/* Build text versions */
+/* BUILD TEXT/HTML/CSV */
 function buildRoutineText(){
   let total = 0;
   for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
@@ -1202,16 +1208,13 @@ function buildRoutineCSV(){
   return csv;
 }
 
-/* Share via WhatsApp — multiple methods */
+/* SHARE ACTIONS */
 function shareViaWhatsApp(){
   const text = buildRoutineText();
   if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-
   const encoded = encodeURIComponent(text);
   const waMobile = "https://wa.me/?text=" + encoded;
   const waDesktop = "https://api.whatsapp.com/send?text=" + encoded;
-
-  // Try native share first (mobile)
   if(navigator.share && /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent)){
     navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text })
       .then(() => { addShareHistory("whatsapp","native share"); toast("শেয়ার হয়েছে","ok","📤"); })
@@ -1222,7 +1225,6 @@ function shareViaWhatsApp(){
       });
     return;
   }
-  // Desktop: try WhatsApp URL
   copyToClipboard(text, "কপি — WhatsApp-এ paste করুন");
   setTimeout(() => {
     const opened = openUrl(waDesktop);
@@ -1231,7 +1233,6 @@ function shareViaWhatsApp(){
 }
 window.shareViaWhatsApp = shareViaWhatsApp;
 
-/* Share via Email — multiple methods */
 function openEmailCompose(subject, body){
   const encSub = encodeURIComponent(subject);
   const encBody = encodeURIComponent(body);
@@ -1239,7 +1240,6 @@ function openEmailCompose(subject, body){
   const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&su=${encSub}&body=${encBody}`;
   const outlookUrl = `https://outlook.live.com/mail/0/deeplink/compose?subject=${encSub}&body=${encBody}`;
   const yahooUrl = `https://compose.mail.yahoo.com/?subject=${encSub}&body=${encBody}`;
-
   const modal = $("modal");
   modal.innerHTML = `
     <h2>✉️ Email পাঠান</h2>
@@ -1249,41 +1249,22 @@ function openEmailCompose(subject, body){
       <button class="btn-secondary" id="openGmailBtn" style="width:100%;padding:14px;">🌐 Gmail (Web)</button>
       <button class="btn-secondary" id="openOutlookBtn" style="width:100%;padding:14px;">📧 Outlook</button>
       <button class="btn-secondary" id="openYahooBtn" style="width:100%;padding:14px;">📬 Yahoo Mail</button>
-      <button class="btn-secondary" id="copyEmailBtn" style="width:100%;padding:14px;">📋 বার্তা কপি (নিজে পাঠান)</button>
+      <button class="btn-secondary" id="copyEmailBtn" style="width:100%;padding:14px;">📋 বার্তা কপি</button>
     </div>
     <div class="modal-actions">
       <button class="btn-ghost" onclick="closeModal()">বাতিল</button>
     </div>`;
   $("modalBackdrop").classList.add("show");
-
   $("openMailtoBtn").onclick = () => {
     addShareHistory("email","mailto");
     window.location.href = mailtoUrl;
     toast("Mail app খোলা হচ্ছে...","info","✉️");
     setTimeout(closeModal, 500);
   };
-  $("openGmailBtn").onclick = () => {
-    addShareHistory("email","gmail");
-    openUrl(gmailUrl);
-    toast("Gmail খোলা হচ্ছে","info","🌐");
-    setTimeout(closeModal, 500);
-  };
-  $("openOutlookBtn").onclick = () => {
-    addShareHistory("email","outlook");
-    openUrl(outlookUrl);
-    toast("Outlook খোলা হচ্ছে","info","📧");
-    setTimeout(closeModal, 500);
-  };
-  $("openYahooBtn").onclick = () => {
-    addShareHistory("email","yahoo");
-    openUrl(yahooUrl);
-    toast("Yahoo Mail খোলা হচ্ছে","info","📬");
-    setTimeout(closeModal, 500);
-  };
-  $("copyEmailBtn").onclick = () => {
-    copyToClipboard(`Subject: ${subject}\n\n${body}`, "কপি হয়েছে — paste করুন");
-    addShareHistory("email","copy");
-  };
+  $("openGmailBtn").onclick = () => { addShareHistory("email","gmail"); openUrl(gmailUrl); toast("Gmail খোলা হচ্ছে","info","🌐"); setTimeout(closeModal, 500); };
+  $("openOutlookBtn").onclick = () => { addShareHistory("email","outlook"); openUrl(outlookUrl); toast("Outlook খোলা হচ্ছে","info","📧"); setTimeout(closeModal, 500); };
+  $("openYahooBtn").onclick = () => { addShareHistory("email","yahoo"); openUrl(yahooUrl); toast("Yahoo Mail খোলা হচ্ছে","info","📬"); setTimeout(closeModal, 500); };
+  $("copyEmailBtn").onclick = () => { copyToClipboard(`Subject: ${subject}\n\n${body}`, "কপি হয়েছে — paste করুন"); addShareHistory("email","copy"); };
 }
 window.openEmailCompose = openEmailCompose;
 
@@ -1295,7 +1276,13 @@ function shareViaEmail(){
 }
 window.shareViaEmail = shareViaEmail;
 
-/* WhatsApp / SMS / Messenger / Telegram direct */
+function shareViaSMS(){
+  const text = buildRoutineText();
+  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  window.location.href = `sms:?body=${encodeURIComponent(text)}`;
+}
+window.shareViaSMS = shareViaSMS;
+
 function shareViaMessenger(){
   const text = buildRoutineText();
   if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
@@ -1303,13 +1290,6 @@ function shareViaMessenger(){
   setTimeout(() => openUrl("https://www.messenger.com/"), 500);
 }
 window.shareViaMessenger = shareViaMessenger;
-
-function shareViaSMS(){
-  const text = buildRoutineText();
-  if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-  window.location.href = `sms:?body=${encodeURIComponent(text)}`;
-}
-window.shareViaSMS = shareViaSMS;
 
 function shareViaTelegram(){
   const text = buildRoutineText();
@@ -1320,30 +1300,20 @@ function shareViaTelegram(){
 }
 window.shareViaTelegram = shareViaTelegram;
 
-/* Native share (device picker) */
 function shareNative(){
   const text = buildRoutineText();
   if(!text){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-
   if(navigator.share){
     navigator.share({ title:"আমার সাপ্তাহিক রুটিন", text })
       .then(() => { addShareHistory("native","success"); toast("শেয়ার হয়েছে","ok","📤"); })
-      .catch(err => {
-        if(err.name === "AbortError") return;
-        copyToFallback(text);
-      });
+      .catch(err => { if(err.name === "AbortError") return; copyToClipboard(text, "কপি — যেকোনো অ্যাপে paste করুন"); });
   } else {
     copyToClipboard(text, "কপি — যেকোনো অ্যাপে paste করুন");
   }
 }
-function copyToFallback(text){
-  copyToClipboard(text, "কপি — যেকোনো অ্যাপে paste করুন");
-}
 window.shareNative = shareNative;
 
-/* =========================================================
-   FAMILY SHARE — with compression, short code, QR
-   ========================================================= */
+/* FAMILY SHARE */
 async function compressBytes(str){
   try{
     const stream = new Blob([str]).stream().pipeThrough(new CompressionStream("deflate-raw"));
@@ -1438,22 +1408,18 @@ function lookupShortCode(code){
     return codes[code.toUpperCase()]?.encoded || null;
   }catch(e){ return null; }
 }
-
-/* Simple QR code via canvas (no library) — for small text only */
 function generateQRCanvas(text, canvas){
-  // Simplified QR is complex; use QR Server API image as fallback
   const size = 220;
   const img = new Image();
   img.crossOrigin = "anonymous";
   img.onload = () => {
-    canvas.width = size;
-    canvas.height = size;
+    canvas.width = size; canvas.height = size;
     const ctx = canvas.getContext("2d");
     ctx.drawImage(img, 0, 0, size, size);
   };
   img.onerror = () => {
     canvas.style.display = "none";
-    canvas.parentElement.innerHTML += "<div style='font-size:.75rem;color:var(--sub);text-align:center;'>QR তৈরি করা যায়নি — লিংক/text কপি করুন</div>";
+    canvas.parentElement.innerHTML += "<div style='font-size:.75rem;color:var(--sub);text-align:center;'>QR তৈরি করা যায়নি</div>";
   };
   img.src = "https://api.qrserver.com/v1/create-qr-code/?size=" + size + "x" + size + "&data=" + encodeURIComponent(text);
 }
@@ -1462,7 +1428,6 @@ async function generateFamilyLink(){
   let total = 0;
   for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
   if(total === 0){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-
   localStorage.setItem("aa_has_shared","true");
   const modal = $("modal");
   modal.innerHTML = `<h2>👥 শেয়ার তৈরি হচ্ছে...</h2><p>একটু অপেক্ষা করুন...</p>`;
@@ -1482,20 +1447,17 @@ async function generateFamilyLink(){
   modal.innerHTML = `
     <h2>👥 ফ্যামিলি শেয়ার</h2>
     <p>${total}টি রুটিন শেয়ার হবে।</p>
-
     <div class="copy-hint">
       ⚠️ <b>মনে রাখুন:</b> ৬ অক্ষরের কোড শুধু <b>এই ডিভাইসেই</b> কাজ করে। অন্য ফোনে পাঠাতে <b>পূর্ণ লিংক</b> বা <b>ICS ফাইল</b> ব্যবহার করুন।
     </div>
-
     <div style="background:var(--ok-soft);border:1px solid var(--ok);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--ok);font-weight:700;margin-bottom:6px;">🎫 শেয়ার কোড</div>
-      <div id="codeDisplay" style="font-size:2rem;font-weight:800;letter-spacing:.15em;text-align:center;font-family:monospace;color:var(--ok);margin:6px 0;user-select:all;">${code}</div>
+      <div style="font-size:2rem;font-weight:800;letter-spacing:.15em;text-align:center;font-family:monospace;color:var(--ok);margin:6px 0;user-select:all;">${code}</div>
       <div style="display:flex;gap:6px;margin-top:8px;">
         <button class="btn-secondary" style="flex:1;" onclick="copyText('${code}','কোড কপি হয়েছে')">📋 কোড কপি</button>
         <button class="btn-secondary" style="flex:1;" onclick="openUrl('https://wa.me/?text=' + encodeURIComponent('🎫 আমার রুটিন শেয়ার কোড: ${code}'))">📤 WhatsApp</button>
       </div>
     </div>
-
     <div style="background:var(--bg);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
         <span style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:700;">🔗 পূর্ণ লিংক</span>
@@ -1506,26 +1468,20 @@ async function generateFamilyLink(){
         <button class="btn-secondary" style="flex:1;min-width:120px;" id="copyLinkBtn">🔗 লিংক কপি</button>
         <button class="btn-primary" style="flex:1;min-width:120px;" id="shareLinkBtn">📤 লিংক শেয়ার</button>
       </div>
-      ${tooBig ? '<div style="font-size:.72rem;color:var(--danger);margin-top:6px;">⚠️ লিংক বড় — WhatsApp-এ ভাঙতে পারে। ICS ফাইল ব্যবহার করুন।</div>' : ''}
     </div>
-
     <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;margin-bottom:14px;">
       <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;color:var(--sub);font-weight:700;margin-bottom:8px;">📱 QR কোড</div>
       <div style="text-align:center;">
         <canvas id="qrCanvas" style="max-width:100%;border-radius:8px;background:#fff;padding:8px;"></canvas>
       </div>
-      <div style="font-size:.72rem;color:var(--sub);text-align:center;margin-top:8px;">পরিবারের সদস্য QR স্ক্যান করে শেয়ার খুলতে পারবেন</div>
     </div>
-
     <div class="modal-actions" style="flex-wrap:wrap;">
       <button class="btn-secondary" onclick="closeModal()">বন্ধ</button>
-      <button class="btn-secondary" id="downloadTxtBtn">⬇ TXT ডাউনলোড</button>
-      <button class="btn-secondary" id="downloadIcsBtn">📅 ICS ডাউনলোড</button>
+      <button class="btn-secondary" id="downloadTxtBtn">⬇ TXT</button>
+      <button class="btn-secondary" id="downloadIcsBtn">📅 ICS</button>
     </div>`;
-
   $("modalBackdrop").classList.add("show");
 
-  // QR code
   setTimeout(() => {
     const canvas = $("qrCanvas");
     if(canvas) generateQRCanvas(fullUrl, canvas);
@@ -1533,42 +1489,26 @@ async function generateFamilyLink(){
 
   $("copyLinkBtn").onclick = () => copyToClipboard(fullUrl, "লিংক কপি হয়েছে");
   $("shareLinkBtn").onclick = () => shareContent("আমার সাপ্তাহিক রুটিন", "Admin Agent-এ import করুন:", fullUrl);
-  $("downloadTxtBtn").onclick = () => {
-    downloadFile(`admin-agent-routine-${todayKey()}.txt`, buildRoutineText() || "", "text/plain;charset=utf-8");
-    toast("TXT ডাউনলোড","ok","⬇");
-  };
-  $("downloadIcsBtn").onclick = () => {
-    downloadFile(`admin-agent-weekly-${todayKey()}.ics`, buildWeeklyICS(), "text/calendar;charset=utf-8");
-    toast("ICS ডাউনলোড","ok","📅");
-  };
+  $("downloadTxtBtn").onclick = () => { downloadFile(`admin-agent-routine-${todayKey()}.txt`, buildRoutineText() || "", "text/plain;charset=utf-8"); toast("TXT ডাউনলোড","ok","⬇"); };
+  $("downloadIcsBtn").onclick = () => { downloadFile(`admin-agent-weekly-${todayKey()}.ics`, buildWeeklyICS(), "text/calendar;charset=utf-8"); toast("ICS ডাউনলোড","ok","📅"); };
 }
 window.generateFamilyLink = generateFamilyLink;
 
-/* Global copy helper for inline onclick */
-window.copyText = function(text, msg){ copyToClipboard(text, msg || "কপি হয়েছে"); };
-
-/* URL check on load */
 async function checkShareLink(){
   const hash = window.location.hash;
   if(!hash.startsWith("#share=")) return;
   const encoded = hash.slice(7);
   if(!encoded) return;
-
   const modal = $("modal");
   modal.innerHTML = `<h2>👥 ডেটা পড়া হচ্ছে...</h2><p>একটু অপেক্ষা করুন...</p>`;
   $("modalBackdrop").classList.add("show");
 
   const sharedRoutine = await decodeRoutineCompact(encoded);
   if(!sharedRoutine){
-    modal.innerHTML = `
-      <h2>❌ ডেটা পড়া যায়নি</h2>
-      <p>লিংক ভাঙা বা অসম্পূর্ণ।</p>
-      <div class="modal-actions">
-        <button class="btn-primary" onclick="closeModal();window.location.hash='';">ঠিক আছে</button>
-      </div>`;
+    modal.innerHTML = `<h2>❌ ডেটা পড়া যায়নি</h2><p>লিংক ভাঙা বা অসম্পূর্ণ।</p>
+      <div class="modal-actions"><button class="btn-primary" onclick="closeModal();window.location.hash='';">ঠিক আছে</button></div>`;
     return;
   }
-
   let total = 0;
   for(const day in sharedRoutine) total += sharedRoutine[day].length;
 
@@ -1602,11 +1542,8 @@ async function checkShareLink(){
     window.location.hash = "";
     toast(`${total}টি রুটিন ${replace?"প্রতিস্থাপন":"যোগ"}`,"ok","👥");
   };
-
   $("importSharedBtn").onclick = () => doImport(false);
-  $("replaceBtn").onclick = () => {
-    if(confirm("বর্তমান সব রুটিন মুছে যাবে। নিশ্চিত?")) doImport(true);
-  };
+  $("replaceBtn").onclick = () => { if(confirm("বর্তমান সব রুটিন মুছে যাবে। নিশ্চিত?")) doImport(true); };
 }
 
 window.importFromCode = async function(){
@@ -1616,11 +1553,9 @@ window.importFromCode = async function(){
   if(!encoded){ toast("এই কোড এই ডিভাইসে নেই","err","❌"); return; }
   const sharedRoutine = await decodeRoutineCompact(encoded);
   if(!sharedRoutine){ toast("ডেটা পড়া যায়নি","err"); return; }
-
   let total = 0;
   for(const day in sharedRoutine) total += sharedRoutine[day].length;
   if(!confirm(`${total}টি রুটিন যোগ হবে। চালিয়ে যাবেন?`)) return;
-
   const items = compactToRoutineItems(sharedRoutine);
   for(const i in items){
     if(!routine[i]) routine[i] = [];
@@ -1632,120 +1567,513 @@ window.importFromCode = async function(){
 };
 
 /* =========================================================
-   SHARE CENTER VIEW
+   SLEEP TRACKER
    ========================================================= */
-function renderShare(){
-  const hist = getShareHistory();
-  let total = 0;
-  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
-
-  return `<h2 class="section-title">📤 শেয়ার সেন্টার</h2>
-
-    <div class="card" style="background:linear-gradient(135deg,var(--ok-soft),var(--card));border-color:var(--ok);">
-      <div style="display:flex;gap:14px;">
-        <div style="font-size:2.5rem;">📤</div>
-        <div style="flex:1;">
-          <div style="font-weight:700;margin-bottom:4px;">${total}টি রুটিন শেয়ার করুন</div>
-          <div style="font-size:.8rem;color:var(--sub);line-height:1.5;">WhatsApp, Email, SMS, Messenger, Telegram — যেকোনোভাবে</div>
-        </div>
+function logSleep(){
+  const modal = $("modal");
+  const today = todayKey();
+  const existing = sleepLog[today] || {};
+  modal.innerHTML = `
+    <h2>🌙 ঘুম লগ</h2>
+    <p>গত রাতে কত ঘণ্টা ঘুমালেন?</p>
+    <div class="field-row">
+      <div class="field"><label>ঘুমাতে গিয়েছিলাম</label>
+        <input type="time" id="sleepBed" value="${existing.bed || "23:00"}">
+      </div>
+      <div class="field"><label>ঘুম থেকে উঠেছি</label>
+        <input type="time" id="sleepWake" value="${existing.wake || "07:00"}">
       </div>
     </div>
-
-    <div class="card">
-      <h3>📱 সরাসরি শেয়ার</h3>
-      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
-        <button class="btn-primary" onclick="shareViaWhatsApp()" style="padding:14px;justify-content:center;">📤 WhatsApp</button>
-        <button class="btn-primary" onclick="shareViaEmail()" style="padding:14px;justify-content:center;">✉️ Email</button>
-        <button class="btn-secondary" onclick="shareViaSMS()" style="padding:14px;">💬 SMS</button>
-        <button class="btn-secondary" onclick="shareViaMessenger()" style="padding:14px;">💌 Messenger</button>
-        <button class="btn-secondary" onclick="shareViaTelegram()" style="padding:14px;">📨 Telegram</button>
-        <button class="btn-secondary" onclick="shareNative()" style="padding:14px;">📱 যেকোনো অ্যাপ</button>
-      </div>
+    <div class="field">
+      <label>গুণমান</label>
+      <select id="sleepQuality">
+        <option value="excellent" ${existing.quality==="excellent"?"selected":""}>🌟 চমৎকার</option>
+        <option value="good" ${existing.quality==="good"||!existing.quality?"selected":""}>😊 ভালো</option>
+        <option value="ok" ${existing.quality==="ok"?"selected":""}>😐 ঠিক আছে</option>
+        <option value="poor" ${existing.quality==="poor"?"selected":""}>😴 খারাপ</option>
+      </select>
     </div>
-
-    <div class="card">
-      <h3>👥 ফ্যামিলি শেয়ার</h3>
-      <p style="font-size:.82rem;color:var(--sub);line-height:1.6;margin-bottom:12px;">৬ অক্ষরের কোড বা সম্পূর্ণ লিংক তৈরি করে পরিবারকে পাঠান।</p>
-      <button class="btn-primary" onclick="generateFamilyLink()" style="width:100%;padding:14px;">🔗 শেয়ার তৈরি করুন</button>
-    </div>
-
-    <div class="card">
-      <h3>📥 শেয়ার কোড দিয়ে import</h3>
-      <div class="field">
-        <label>শেয়ার কোড</label>
-        <input id="importCode" placeholder="A7K9P2" maxlength="6" style="text-transform:uppercase;font-family:monospace;font-size:1.2rem;letter-spacing:.2em;text-align:center;">
-      </div>
-      <button class="btn-secondary" onclick="importFromCode()" style="width:100%;">📥 কোড থেকে import</button>
-    </div>
-
-    <div class="card">
-      <h3>⬇ ফাইল ডাউনলোড</h3>
-      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
-        <button class="btn-secondary" onclick="syncToCalendar()" style="padding:12px;">📅 ICS (Calendar)</button>
-        <button class="btn-secondary" onclick="downloadRoutineTxt()" style="padding:12px;">📄 TXT</button>
-        <button class="btn-secondary" onclick="downloadRoutineCSV()" style="padding:12px;">📊 CSV</button>
-        <button class="btn-secondary" onclick="downloadRoutineHTML()" style="padding:12px;">🌐 HTML</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <h3>📜 শেয়ার ইতিহাস</h3>
-      ${hist.length === 0 ? '<div class="empty">এখনো কিছু শেয়ার করা হয়নি</div>' : `
-        <div style="display:flex;flex-direction:column;gap:6px;font-size:.78rem;">
-          ${hist.slice(0,10).map(h => `
-            <div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:8px;">
-              <span>${h.type} · ${escapeHtml(h.detail)}</span>
-              <span style="color:var(--sub);font-size:.7rem;">${new Date(h.at).toLocaleString("bn-BD")}</span>
-            </div>
-          `).join("")}
-        </div>`}
-    </div>
-
-    <div class="card">
-      <h3>ℹ️ কেন আগে কাজ করছিল না?</h3>
-      <div style="font-size:.82rem;color:var(--sub);line-height:1.7;">
-        আগের সংস্করণে:
-        <ul style="margin:8px 0;padding-left:20px;">
-          <li>❌ Clipboard API fail হলে কিছুই হতো না</li>
-          <li>❌ navigator.share reject হলে chain ভাঙত</li>
-          <li>❌ WhatsApp URL শুধু একটাই try করত</li>
-          <li>❌ Email শুধু mailto: ব্যবহার করত</li>
-        </ul>
-        <b>এখন:</b>
-        <ul style="margin:8px 0;padding-left:20px;">
-          <li>✅ ৩ স্তরের clipboard fallback</li>
-          <li>✅ Manual copy modal</li>
-          <li>✅ WhatsApp এর ২টি URL + native share</li>
-          <li>✅ Email এর ৫টি অপশন (Gmail/Outlook/Yahoo/Mail app/Copy)</li>
-          <li>✅ QR কোড শেয়ার</li>
-          <li>✅ TXT/CSV/HTML download</li>
-        </ul>
-      </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      ${existing.bed ? '<button class="btn-danger" id="sleepDelete">মুছুন</button>' : ''}
+      <button class="btn-primary" id="sleepSave">সেভ করুন</button>
     </div>`;
+  $("modalBackdrop").classList.add("show");
+  $("sleepSave").onclick = () => {
+    const bed = $("sleepBed").value;
+    const wake = $("sleepWake").value;
+    const quality = $("sleepQuality").value;
+    if(!bed || !wake){ toast("সময় দিন","err"); return; }
+    const [bh,bm] = bed.split(":").map(Number);
+    const [wh,wm] = wake.split(":").map(Number);
+    let bedMin = bh*60+bm, wakeMin = wh*60+wm;
+    if(wakeMin <= bedMin) wakeMin += 24*60;
+    const hours = +((wakeMin - bedMin) / 60).toFixed(1);
+    sleepLog[today] = { bed, wake, hours, quality, loggedAt: Date.now() };
+    saveSleep();
+    closeModal();
+    renderView();
+    toast(`${hours} ঘণ্টা ঘুম লগ হয়েছে`,"ok","🌙");
+  };
+  const delBtn = $("sleepDelete");
+  if(delBtn) delBtn.onclick = () => {
+    delete sleepLog[today];
+    saveSleep(); closeModal(); renderView();
+    toast("মুছে ফেলা","info","🗑️");
+  };
+}
+window.logSleep = logSleep;
+
+function getSleepStats(days=7){
+  let totalHours = 0, count = 0, best = 0, worst = 24;
+  const today = new Date();
+  const data = [];
+  for(let i=0;i<days;i++){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const entry = sleepLog[key];
+    if(entry){
+      totalHours += entry.hours;
+      count++;
+      if(entry.hours > best) best = entry.hours;
+      if(entry.hours < worst) worst = entry.hours;
+      data.push({ key, day: DAYS_SHORT[d.getDay()], hours: entry.hours, quality: entry.quality });
+    } else {
+      data.push({ key, day: DAYS_SHORT[d.getDay()], hours: 0, missing: true });
+    }
+  }
+  return {
+    avgHours: count>0 ? +(totalHours/count).toFixed(1) : 0,
+    totalDays: count, best, worst: count>0?worst:0,
+    data: data.reverse()
+  };
+}
+function getSleepEmoji(hours){
+  if(hours >= 8) return "😴";
+  if(hours >= 7) return "😊";
+  if(hours >= 6) return "😐";
+  if(hours >= 5) return "😪";
+  return "🥱";
+}
+function getQualityLabel(q){
+  return { excellent:"🌟 চমৎকার", good:"😊 ভালো", ok:"😐 ঠিক আছে", poor:"😴 খারাপ" }[q] || "";
+}
+function getSleepAdvice(avg, days){
+  if(days === 0) return "এখনো কোনো ডেটা নেই। আজ রাত থেকেই লগ শুরু করুন।";
+  if(avg < 5) return "⚠️ আপনি খুব কম ঘুমাচ্ছেন। ৭-৮ ঘণ্টা লক্ষ্য রাখুন। ঘুমের ১ ঘণ্টা আগে ফোন বন্ধ করুন।";
+  if(avg < 6.5) return "আপনার ঘুম কিছুটা কম। রাতে ৩০ মিনিট আগে ঘুমাতে যাওয়ার চেষ্টা করুন।";
+  if(avg < 7.5) return "✅ আপনার ঘুম প্রায় স্বাভাবিক। ৭-৮ ঘণ্টায় পৌঁছাতে আরও একটু চেষ্টা করুন।";
+  if(avg <= 9) return "🌟 দুর্দান্ত! আপনি স্বাস্থ্যকর ঘুম পাচ্ছেন। এই ধারা রাখুন।";
+  return "💤 আপনি অনেক বেশি ঘুমাচ্ছেন। ৯ ঘণ্টার বেশি ঘুম অলসতা ডাকতে পারে।";
 }
 
-window.downloadRoutineTxt = function(){
-  const txt = buildRoutineText();
-  if(!txt){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-  downloadFile(`routine-${todayKey()}.txt`, txt, "text/plain;charset=utf-8");
-  toast("TXT ডাউনলোড","ok","📄");
-};
-window.downloadRoutineCSV = function(){
-  const csv = buildRoutineCSV();
-  if(!csv){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-  downloadFile(`routine-${todayKey()}.csv`, "\uFEFF"+csv, "text/csv;charset=utf-8");
-  toast("CSV ডাউনলোড","ok","📊");
-};
-window.downloadRoutineHTML = function(){
-  const html = buildRoutineHTML();
-  if(!html){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
-  downloadFile(`routine-${todayKey()}.html`, html, "text/html;charset=utf-8");
-  toast("HTML ডাউনলোড","ok","🌐");
-};
+function renderSleep(){
+  const stats = getSleepStats(7);
+  const today = todayKey();
+  const todayEntry = sleepLog[today];
+  const target = 8;
+  const pct = todayEntry ? Math.min(100, Math.round((todayEntry.hours / target) * 100)) : 0;
+  const maxChart = Math.max(...stats.data.map(d => d.hours), 8);
+
+  let html = `<h2 class="section-title">🌙 ঘুম ট্র্যাকার</h2>
+    <div class="card" style="background:linear-gradient(135deg,#2a3d5c,#1a2b45);color:#fff;border:none;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;opacity:.9;">গত রাত</div>
+          <div style="font-size:3rem;font-weight:800;line-height:1;margin:8px 0 4px;letter-spacing:-.03em;">
+            ${todayEntry ? todayEntry.hours : "—"}<span style="font-size:1.2rem;opacity:.7;"> ঘণ্টা</span>
+          </div>
+          <div style="font-size:.85rem;opacity:.9;">লক্ষ্য: ${target} ঘণ্টা · ${pct}%</div>
+        </div>
+        <div style="font-size:2.5rem;">${todayEntry ? getSleepEmoji(todayEntry.hours) : "🌙"}</div>
+      </div>
+      ${todayEntry ? `<div style="margin-top:12px;font-size:.8rem;opacity:.85;">${todayEntry.bed} → ${todayEntry.wake} · ${getQualityLabel(todayEntry.quality)}</div>` : ''}
+    </div>
+    <div class="stats" style="grid-template-columns:repeat(2,1fr);">
+      <div class="stat ok"><div class="label">গড় ঘুম</div><div class="value">${stats.avgHours}h</div><div class="delta">শেষ ৭ দিন</div></div>
+      <div class="stat high"><div class="label">সর্বোচ্চ</div><div class="value">${stats.best}h</div><div class="delta">একদিনে</div></div>
+    </div>
+    <div class="card">
+      <h3>📊 শেষ ৭ দিন</h3>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:140px;padding:10px 0;">
+        ${stats.data.map(d => {
+          const h = (d.hours / maxChart) * 100;
+          const color = d.missing ? 'var(--line)' : d.hours >= 7 ? 'var(--ok)' : d.hours >= 5 ? 'var(--warn)' : 'var(--danger)';
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="font-size:.65rem;color:var(--sub);font-weight:600;">${d.missing ? "—" : d.hours + "h"}</div>
+            <div style="width:100%;height:${h}%;background:${color};border-radius:6px 6px 0 0;min-height:4px;transition:height .4s;"></div>
+            <div style="font-size:.65rem;color:var(--sub);">${d.day}</div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+    <button class="btn-primary" onclick="logSleep()" style="width:100%;padding:16px;font-size:1rem;">
+      ${todayEntry ? "🔄 আজকের লগ আপডেট করুন" : "➕ গত রাতের ঘুম লগ করুন"}
+    </button>
+    <div class="card" style="margin-top:16px;">
+      <h3>💡 ঘুম পরামর্শ</h3>
+      <p style="font-size:.85rem;line-height:1.7;color:var(--ink);">${getSleepAdvice(stats.avgHours, stats.totalDays)}</p>
+    </div>`;
+  return html;
+}
 
 /* =========================================================
-   HABITS / REPORTS / BADGES / ANALYTICS
+   WATER TRACKER
    ========================================================= */
+function addWater(){
+  const key = todayKey();
+  const cur = waterLog[key] || 0;
+  if(cur >= 20){ toast("২০ গ্লাসের বেশি নয়!","err","💧"); return; }
+  waterLog[key] = cur + 1;
+  saveWater();
+  renderView();
+  playBeep(0.1, 1200, 1500);
+  toast(`${waterLog[key]} গ্লাস!`,"ok","💧");
+}
+function removeWater(){
+  const key = todayKey();
+  const cur = waterLog[key] || 0;
+  if(cur <= 0) return;
+  waterLog[key] = cur - 1;
+  saveWater();
+  renderView();
+}
+window.addWater = addWater;
+window.removeWater = removeWater;
+
+function getWaterStats(days=7){
+  const target = 8;
+  let totalGlasses = 0, count = 0, daysHitGoal = 0;
+  const data = [];
+  const today = new Date();
+  for(let i=0;i<days;i++){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const key = d.toISOString().slice(0,10);
+    const g = waterLog[key] || 0;
+    totalGlasses += g;
+    if(g > 0) count++;
+    if(g >= target) daysHitGoal++;
+    data.push({ key, day: DAYS_SHORT[d.getDay()], glasses: g, hit: g >= target });
+  }
+  return {
+    avg: count>0 ? (totalGlasses/count).toFixed(1) : 0,
+    total: totalGlasses,
+    hitGoal: daysHitGoal,
+    data: data.reverse()
+  };
+}
+function getWaterAdvice(avg){
+  if(avg < 3) return "⚠️ আপনি খুব কম পানি পান করছেন। প্রতিদিন সকালে উঠেই ১ গ্লাস, খাবারের সাথে ১ গ্লাস — এভাবে বাড়ান।";
+  if(avg < 6) return "আপনি কিছুটা কম পান করছেন। ফোনের পাশে একটি বোতল রাখুন — দেখলেই পান করুন।";
+  if(avg < 8) return "✅ ভালো! ৮ গ্লাসে পৌঁছাতে আরও ১-২ গ্লাস পান করুন।";
+  return "🌟 দুর্দান্ত! আপনি পর্যাপ্ত পানি পান করছেন।";
+}
+
+function renderWater(){
+  const today = todayKey();
+  const count = waterLog[today] || 0;
+  const target = 8;
+  const pct = Math.min(100, Math.round((count/target)*100));
+  const stats = getWaterStats(7);
+  const maxChart = Math.max(target, ...stats.data.map(d => d.glasses));
+
+  let html = `<h2 class="section-title">💧 পানি ট্র্যাকার</h2>
+    <div class="card" style="background:linear-gradient(135deg,#1a7fa8,#1565a0);color:#fff;border:none;text-align:center;">
+      <div style="font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;opacity:.9;">আজকের পানি</div>
+      <div style="font-size:3.5rem;font-weight:800;line-height:1;margin:8px 0;letter-spacing:-.03em;">
+        ${count}<span style="font-size:1.2rem;opacity:.7;">/${target} গ্লাস</span>
+      </div>
+      <div style="height:12px;background:rgba(255,255,255,.2);border-radius:6px;overflow:hidden;margin:12px auto;max-width:300px;">
+        <div style="height:100%;width:${pct}%;background:#fff;border-radius:6px;transition:width .4s;"></div>
+      </div>
+      <div style="font-size:.85rem;opacity:.95;">${pct}% · ${count >= target ? "🎉 লক্ষ্য পূরণ!" : `${target - count} গ্লাস বাকি`}</div>
+    </div>
+    <div class="card">
+      <h3>💧 আজ কত গ্লাস পান?</h3>
+      <div style="display:flex;gap:8px;justify-content:center;margin:16px 0;">
+        <button class="btn-secondary" onclick="removeWater()" style="font-size:1.2rem;padding:14px 24px;">−</button>
+        <button class="btn-primary" onclick="addWater()" style="font-size:1.4rem;padding:14px 40px;">+ ১ গ্লাস</button>
+      </div>
+      <div style="display:flex;gap:6px;justify-content:center;flex-wrap:wrap;">
+        ${Array.from({length: target}, (_,i) => `
+          <div style="width:32px;height:40px;border-radius:6px 6px 10px 10px;background:${i<count?'linear-gradient(180deg,#4db3d8,#1a7fa8)':'var(--bg)'};border:2px solid ${i<count?'#1a7fa8':'var(--line)'};display:grid;place-items:center;font-size:1.1rem;transition:all .3s;">${i<count?'💧':''}</div>
+        `).join("")}
+      </div>
+    </div>
+    <div class="stats" style="grid-template-columns:repeat(3,1fr);">
+      <div class="stat ok"><div class="label">দৈনিক গড়</div><div class="value">${stats.avg}</div><div class="delta">গ্লাস</div></div>
+      <div class="stat high"><div class="label">মোট</div><div class="value">${stats.total}</div><div class="delta">৭ দিনে</div></div>
+      <div class="stat gold"><div class="label">লক্ষ্য পূরণ</div><div class="value">${stats.hitGoal}</div><div class="delta">দিন</div></div>
+    </div>
+    <div class="card">
+      <h3>📊 শেষ ৭ দিন</h3>
+      <div style="display:flex;align-items:flex-end;gap:6px;height:120px;padding:10px 0;">
+        ${stats.data.map(d => {
+          const h = (d.glasses / maxChart) * 100;
+          const color = d.hit ? 'var(--ok)' : d.glasses >= 4 ? 'var(--warn)' : 'var(--danger)';
+          return `<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;">
+            <div style="font-size:.65rem;color:var(--sub);font-weight:600;">${d.glasses}</div>
+            <div style="width:100%;height:${h}%;background:${color};border-radius:6px 6px 0 0;min-height:4px;"></div>
+            <div style="font-size:.65rem;color:var(--sub);">${d.day}</div>
+          </div>`;
+        }).join("")}
+      </div>
+    </div>
+    <div class="card">
+      <h3>💡 পানি পরামর্শ</h3>
+      <p style="font-size:.85rem;line-height:1.7;">${getWaterAdvice(stats.avg)}</p>
+    </div>`;
+  return html;
+}
+
+/* =========================================================
+   JOURNAL
+   ========================================================= */
+const MOODS = [
+  { id:"amazing", emoji:"😄", label:"দুর্দান্ত", color:"ok" },
+  { id:"good", emoji:"😊", label:"ভালো", color:"ok" },
+  { id:"neutral", emoji:"😐", label:"সাধারণ", color:"warn" },
+  { id:"bad", emoji:"😔", label:"খারাপ", color:"danger" },
+  { id:"terrible", emoji:"😢", label:"খুব খারাপ", color:"danger" }
+];
+
+function writeJournal(){
+  const modal = $("modal");
+  const today = todayKey();
+  const existing = journalEntries.find(j => j.date === today);
+  modal.innerHTML = `
+    <h2>📝 আজকের জার্নাল</h2>
+    <p>আজকের দিন কেমন গেল? মনের কথা লিখুন।</p>
+    <div class="field">
+      <label>আজকের মুড</label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin:6px 0;">
+        ${MOODS.map(m => `
+          <button class="mood-btn" data-mood="${m.id}" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 14px;border-radius:12px;background:var(--bg);border:2px solid ${existing && existing.mood===m.id?'var(--accent)':'var(--line)'};cursor:pointer;transition:all .15s;">
+            <span style="font-size:1.6rem;">${m.emoji}</span>
+            <span style="font-size:.68rem;font-weight:600;color:var(--sub);">${m.label}</span>
+          </button>
+        `).join("")}
+      </div>
+    </div>
+    <div class="field">
+      <label>আজকের কথা</label>
+      <textarea id="journalText" rows="6" placeholder="আজ কী কী ঘটল? কেমন লাগল? কি করতে চান?">${escapeHtml(existing?.text || "")}</textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;">
+      <span style="font-size:.72rem;color:var(--sub);">✨ আইডিয়া:</span>
+      <span style="font-size:.72rem;color:var(--sub);">আজকের সেরা মুহূর্ত · আজ শেখা · আগামীকালের লক্ষ্য</span>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+      ${existing ? '<button class="btn-danger" id="journalDelete">মুছুন</button>' : ''}
+      <button class="btn-primary" id="journalSave">সেভ করুন</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  let selectedMood = existing?.mood || "good";
+  document.querySelectorAll(".mood-btn").forEach(btn => {
+    btn.onclick = () => {
+      selectedMood = btn.dataset.mood;
+      document.querySelectorAll(".mood-btn").forEach(b => {
+        b.style.border = b.dataset.mood === selectedMood ? "2px solid var(--accent)" : "2px solid var(--line)";
+      });
+    };
+  });
+  $("journalSave").onclick = () => {
+    const text = $("journalText").value.trim();
+    if(!text){ toast("কিছু লিখুন","err"); return; }
+    if(existing){
+      existing.text = text;
+      existing.mood = selectedMood;
+      existing.updatedAt = Date.now();
+    } else {
+      journalEntries.unshift({
+        id: "j_"+Date.now().toString(36)+Math.random().toString(36).slice(2,5),
+        date: today, mood: selectedMood, text,
+        createdAt: Date.now()
+      });
+    }
+    saveJournal(); closeModal(); renderView();
+    toast("জার্নাল সেভ হয়েছে","ok","📝");
+  };
+  const delBtn = $("journalDelete");
+  if(delBtn) delBtn.onclick = () => {
+    journalEntries = journalEntries.filter(j => j.date !== today);
+    saveJournal(); closeModal(); renderView();
+    toast("মুছে ফেলা","info","🗑️");
+  };
+}
+window.writeJournal = writeJournal;
+
+function getMoodEmoji(mood){
+  const m = MOODS.find(x => x.id === mood);
+  return m ? m.emoji : "📝";
+}
+function getJournalAdvice(){
+  const count = journalEntries.length;
+  const today = todayKey();
+  const wroteToday = journalEntries.some(j => j.date === today);
+  if(count === 0) return "আজ থেকেই শুরু করুন। প্রতিদিন মাত্র ২ মিনিট লিখলেই হবে।";
+  if(!wroteToday) return "💭 আজ এখনো লিখেননি। রাতে ঘুমানোর আগে ২ মিনিট বের করে লিখুন।";
+  if(count < 7) return "✅ ভালো শুরু! একটানা ৭ দিন লিখলে অভ্যাস হয়ে যাবে।";
+  if(count < 30) return "🌟 দারুণ! আপনি নিয়মিত জার্নাল লিখছেন।";
+  return "🏆 আপনি জার্নালের মাস্টার! ৩০+ এন্ট্রি — অসাধারণ।";
+}
+
+function renderJournal(){
+  const today = todayKey();
+  const todayEntry = journalEntries.find(j => j.date === today);
+  let html = `<h2 class="section-title">📝 দৈনিক জার্নাল</h2>
+    <div class="card" style="background:linear-gradient(135deg,var(--accent-soft),var(--card));border-color:var(--accent);">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <div>
+          <div style="font-weight:700;font-size:1rem;margin-bottom:4px;">আজকের জার্নাল</div>
+          <div style="font-size:.8rem;color:var(--sub);">${new Date().toLocaleDateString("bn-BD", {weekday:"long", day:"numeric", month:"long"})}</div>
+        </div>
+        <div style="font-size:2.5rem;">${todayEntry ? getMoodEmoji(todayEntry.mood) : "✍️"}</div>
+      </div>
+      ${todayEntry ? `<p style="font-size:.85rem;line-height:1.6;margin-top:12px;color:var(--ink);max-height:100px;overflow:hidden;">${escapeHtml(todayEntry.text).slice(0,200)}${todayEntry.text.length > 200 ? "..." : ""}</p>` : `<p style="font-size:.85rem;color:var(--sub);margin-top:12px;">আজ এখনো লিখেননি।</p>`}
+      <button class="btn-primary" onclick="writeJournal()" style="width:100%;padding:14px;margin-top:14px;">
+        ${todayEntry ? "✏️ আজকের এডিট করুন" : "✍️ আজকের জার্নাল লিখুন"}
+      </button>
+    </div>
+    <div class="card">
+      <h3>📊 মুড পরিসংখ্যান (৭ দিন)</h3>
+      ${(() => {
+        const recent = journalEntries.slice(0,7);
+        if(recent.length === 0) return '<div class="empty">এখনো কোনো এন্ট্রি নেই</div>';
+        const moodCount = {};
+        recent.forEach(j => { moodCount[j.mood] = (moodCount[j.mood] || 0) + 1; });
+        const max = Math.max(...Object.values(moodCount), 1);
+        return MOODS.map(m => {
+          const c = moodCount[m.id] || 0;
+          return `<div class="bar-row">
+            <span class="br-label">${m.emoji} ${m.label}</span>
+            <div class="br-bar-wrap"><div class="br-bar" style="width:${(c/max)*100}%;background:${m.color === 'ok' ? 'linear-gradient(90deg,var(--ok),#5fa585)' : m.color === 'warn' ? 'linear-gradient(90deg,var(--warn),#e0b06a)' : 'linear-gradient(90deg,var(--danger),#e57366)'}"></div></div>
+            <span class="br-value">${c}</span>
+          </div>`;
+        }).join("");
+      })()}
+    </div>
+    <div class="card">
+      <h3>📖 পুরনো এন্ট্রি (${journalEntries.length})</h3>
+      ${journalEntries.length === 0 ? '<div class="empty">এখনো কোনো জার্নাল এন্ট্রি নেই</div>' :
+        journalEntries.slice(0, 30).map(j => `
+          <div style="background:var(--bg);border-radius:10px;padding:12px;margin-bottom:8px;border-left:4px solid var(--accent);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:.75rem;font-weight:600;color:var(--sub);">${new Date(j.date).toLocaleDateString("bn-BD", {weekday:"short", day:"numeric", month:"short"})}</span>
+              <span style="font-size:1.3rem;">${getMoodEmoji(j.mood)}</span>
+            </div>
+            <p style="font-size:.85rem;line-height:1.6;margin:0;color:var(--ink);">${escapeHtml(j.text)}</p>
+          </div>
+        `).join("")}
+    </div>
+    <div class="card">
+      <h3>💡 জার্নাল পরামর্শ</h3>
+      <p style="font-size:.85rem;line-height:1.7;">${getJournalAdvice()}</p>
+    </div>`;
+  return html;
+}
+
+/* =========================================================
+   CUSTOM SOUND
+   ========================================================= */
+function uploadCustomSound(){
+  const input = document.createElement("input");
+  input.type = "file";
+  input.accept = "audio/*";
+  input.onchange = e => {
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 500*1024){ toast("ফাইল ৫০০KB এর বেশি","err"); return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      customSoundData = { name: file.name, type: file.type, dataUrl: reader.result, uploadedAt: Date.now() };
+      saveCustomSound(); renderView();
+      toast("সাউন্ড আপলোড হয়েছে","ok","🎵");
+      setTimeout(() => playAlertSound(), 300);
+    };
+    reader.readAsDataURL(file);
+  };
+  input.click();
+}
+window.uploadCustomSound = uploadCustomSound;
+
+function removeCustomSound(){
+  if(!confirm("কাস্টম সাউন্ড মুছবেন?")) return;
+  customSoundData = null;
+  saveCustomSound(); renderView();
+  toast("ডিফল্ট সাউন্ডে ফিরে গেছে","info","🔊");
+}
+window.removeCustomSound = removeCustomSound;
+
+function uploadCustomRecord(){
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    toast("এই ব্রাউজারে রেকর্ড সাপোর্ট নেই","err");
+    return;
+  }
+  const modal = $("modal");
+  modal.innerHTML = `
+    <h2>🎤 নিজের ভয়েস রেকর্ড</h2>
+    <p>২-১০ সেকেন্ডের একটি সাউন্ড রেকর্ড করুন।</p>
+    <div style="text-align:center;padding:20px;">
+      <div id="recStatus" style="font-size:1.2rem;font-weight:700;margin-bottom:12px;">🎙️ প্রস্তুত</div>
+      <div id="recTimer" style="font-size:2rem;font-weight:800;color:var(--accent);margin-bottom:12px;">০০:০০</div>
+      <button class="btn-primary" id="recBtn" style="padding:16px 40px;font-size:1rem;">🔴 রেকর্ড শুরু</button>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
+    </div>`;
+  $("modalBackdrop").classList.add("show");
+  let recorder = null, chunks = [], timerInterval = null, seconds = 0;
+  $("recBtn").onclick = async () => {
+    if(recorder && recorder.state === "recording"){ recorder.stop(); return; }
+    try{
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      recorder = new MediaRecorder(stream);
+      chunks = []; seconds = 0;
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        clearInterval(timerInterval);
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        if(blob.size > 500*1024){ toast("রেকর্ডিং বড়","err"); return; }
+        const reader = new FileReader();
+        reader.onload = () => {
+          customSoundData = { name: "রেকর্ডিং " + new Date().toLocaleTimeString("bn-BD"), type: blob.type, dataUrl: reader.result, uploadedAt: Date.now() };
+          saveCustomSound(); closeModal(); renderView();
+          toast("রেকর্ডিং সেভ হয়েছে","ok","🎤");
+          setTimeout(() => playAlertSound(), 300);
+        };
+        reader.readAsDataURL(blob);
+      };
+      recorder.start();
+      $("recBtn").textContent = "⏹️ থামান";
+      $("recStatus").textContent = "🔴 রেকর্ডিং...";
+      timerInterval = setInterval(() => {
+        seconds++;
+        const m = Math.floor(seconds/60), s = seconds%60;
+        $("recTimer").textContent = `${pad2(m)}:${pad2(s)}`;
+        if(seconds >= 10) recorder.stop();
+      }, 1000);
+    }catch(e){ toast("মাইক্রোফোন অনুমতি দিন","err"); }
+  };
+}
+window.uploadCustomRecord = uploadCustomRecord;
+
+function testCustomSound(){
+  if(!customSoundData){ toast("প্রথমে সাউন্ড দিন","err"); return; }
+  playAlertSound();
+  toast("সাউন্ড বাজছে...","info","🔊");
+}
+window.testCustomSound = testCustomSound;
+
+function testVoiceSample(){
+  speak("আসসালামু আলাইকুম। আজকের কাজ শুরু করার সময় হয়েছে।");
+  toast("ভয়েস বাজছে...","info","🗣️");
+}
+window.testVoiceSample = testVoiceSample;
+
+/* HABITS */
 function addHabit(){
   const modal = $("modal");
   modal.innerHTML = `
@@ -1834,7 +2162,6 @@ function renderHabits(){
     html += `<div class="card" style="text-align:center;padding:40px 20px;">
       <div style="font-size:3rem;margin-bottom:12px;">🎯</div>
       <div style="font-weight:700;margin-bottom:8px;">এখনো কোনো হ্যাবিট নেই</div>
-      <div style="color:var(--sub);font-size:.85rem;margin-bottom:20px;">নতুন অভ্যাস তৈরি করে শুরু করুন</div>
       <button class="btn-primary" onclick="addHabit()">+ নতুন হ্যাবিট</button>
     </div>`;
     return html;
@@ -1888,6 +2215,7 @@ function renderHabits(){
   return html;
 }
 
+/* REPORTS */
 function getMonthStats(offset=0){
   const today = new Date();
   const target = new Date(today.getFullYear(),today.getMonth()-offset,1);
@@ -1957,7 +2285,7 @@ function renderReports(){
       ${habits.map(h => `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border-radius:10px;font-size:.82rem;">
         <span style="font-size:1.4rem;">${h.icon}</span>
         <span style="flex:1;font-weight:600;">${escapeHtml(h.name)}</span>
-        <span style="font-size:.72rem;color:var(--sub);">${getHabitStreak(h.id)}🔥 · ${getHabitTotalDays(h.id)} দিন · ${getHabitCompletionRate(h.id,30)}%</span>
+        <span style="font-size:.72rem;color:var(--sub);">${getHabitStreak(h.id)}🔥 · ${getHabitTotalDays(h.id)} · ${getHabitCompletionRate(h.id,30)}%</span>
       </div>`).join("")}
     </div></div>`;
   }
@@ -1980,9 +2308,11 @@ function renderReports(){
 }
 function exportReportPDF(type){
   const w = window.open("","_blank");
-  if(!w){ toast("Popup blocked — browser allow করুন","err"); return; }
+  if(!w){ toast("Popup blocked","err"); return; }
   const stats = getMonthStats(0);
   const ds = getDisciplineStats();
+  const sleepStats = getSleepStats(7);
+  const waterStats = getWaterStats(7);
   let content = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Admin Agent রিপোর্ট</title>
 <style>body{font-family:"Noto Sans Bengali",Arial,sans-serif;padding:40px;color:#1a1916;max-width:800px;margin:0 auto;}
 h1{color:#b5502f;border-bottom:3px solid #b5502f;padding-bottom:12px;}
@@ -2012,7 +2342,12 @@ th{background:#f5f4f0;font-weight:700;color:#6f6e67;font-size:.72rem;text-transf
       <tr><td>লেভেল</td><td>${getDisciplineLevel(ds.score).name}</td></tr>
       <tr><td>স্ট্রিক</td><td>${ds.streak} দিন</td></tr>
       <tr><td>কনফার্মেশন</td><td>${ds.confirmationRate}%</td></tr>
-      <tr><td>গড় সাড়া</td><td>${ds.avgResponseSec} সেকেন্ড</td></tr>
+    </table>
+    <h2>🌙 ঘুম ও 💧 পানি (৭ দিন)</h2>
+    <table><tr><th>মেট্রিক</th><th>মান</th></tr>
+      <tr><td>গড় ঘুম</td><td>${sleepStats.avgHours} ঘণ্টা</td></tr>
+      <tr><td>গড় পানি</td><td>${waterStats.avg} গ্লাস</td></tr>
+      <tr><td>লক্ষ্য পূরণ</td><td>${waterStats.hitGoal} দিন</td></tr>
     </table>`;
     if(habits.length > 0){
       content += `<h2>🎯 হ্যাবিট</h2><table>
@@ -2045,7 +2380,9 @@ function exportReportJSON(){
     exported: new Date().toISOString(),
     discipline: getDisciplineStats(),
     months: [getMonthStats(0),getMonthStats(1),getMonthStats(2)],
-    habits: habits.map(h => ({ name:h.name, streak:getHabitStreak(h.id), total:getHabitTotalDays(h.id), rate30:getHabitCompletionRate(h.id,30) }))
+    habits: habits.map(h => ({ name:h.name, streak:getHabitStreak(h.id), total:getHabitTotalDays(h.id), rate30:getHabitCompletionRate(h.id,30) })),
+    sleep: getSleepStats(30),
+    water: getWaterStats(30)
   };
   downloadFile(`admin-agent-report-${todayKey()}.json`, JSON.stringify(data,null,2),"application/json");
   toast("JSON ডাউনলোড","ok","⬇");
@@ -2062,6 +2399,9 @@ const BADGES = [
   { id:"fast_responder", icon:"⚡", name:"দ্রুত সাড়া", desc:"সাড়া < ৩০s", check:s=>s.stats.avgResponseSec>0 && s.stats.avgResponseSec<30 },
   { id:"perfect_day", icon:"⭐", name:"নিখুঁত দিন", desc:"একদিনে সব সম্পন্ন", check:s=>s.hasPerfectDay },
   { id:"discipline_master", icon:"👑", name:"মাস্টার", desc:"৯০+ স্কোর", check:s=>s.stats.score>=90 },
+  { id:"sleep_champion", icon:"😴", name:"ঘুম চ্যাম্পিয়ন", desc:"৭ দিন ৭+ ঘণ্টা ঘুম", check:s=>s.goodSleepDays>=5 },
+  { id:"water_hero", icon:"💧", name:"পানি হিরো", desc:"৭ দিন ৮ গ্লাস", check:s=>s.waterStats.hitGoal>=5 },
+  { id:"journal_writer", icon:"📝", name:"জার্নাল লেখক", desc:"৭ দিন জার্নাল", check:s=>s.journalCount>=7 },
   { id:"sharer", icon:"👥", name:"শেয়ারার", desc:"রুটিন শেয়ার", check:s=>s.hasShared },
   { id:"planner", icon:"📝", name:"পরিকল্পক", desc:"টেমপ্লেট ব্যবহার", check:s=>s.hasTemplate }
 ];
@@ -2079,9 +2419,22 @@ function getUnlockedBadges(){
     const started = items.filter(r => dc[r.id]?.status === "started").length;
     if(started === items.length && items.length >= 3) hasPerfectDay = true;
   });
-  const ctx = { stats, maxHabitStreak, hasPerfectDay,
+  // Sleep good days
+  let goodSleepDays = 0;
+  const today = new Date();
+  for(let i=0;i<7;i++){
+    const d = new Date(today); d.setDate(d.getDate()-i);
+    const entry = sleepLog[d.toISOString().slice(0,10)];
+    if(entry && entry.hours >= 7) goodSleepDays++;
+  }
+  const ctx = {
+    stats, maxHabitStreak, hasPerfectDay,
+    goodSleepDays,
+    waterStats: getWaterStats(7),
+    journalCount: journalEntries.length,
     hasShared: localStorage.getItem("aa_has_shared") === "true",
-    hasTemplate: localStorage.getItem("aa_has_template") === "true" };
+    hasTemplate: localStorage.getItem("aa_has_template") === "true"
+  };
   return BADGES.filter(b => { try{ return b.check(ctx); }catch(e){ return false; } });
 }
 function renderBadges(){
@@ -2119,6 +2472,9 @@ function renderDashboard(){
   const rate = getCompletionRate(7);
   const stats = getDisciplineStats();
   const level = getDisciplineLevel(stats.score);
+  const sleepToday = sleepLog[todayKey()];
+  const waterToday = waterLog[todayKey()] || 0;
+  const journalToday = journalEntries.find(j => j.date === todayKey());
 
   let html = `
     <div class="discipline-card">
@@ -2153,16 +2509,36 @@ function renderDashboard(){
       </div>
     </div>
     <div class="card">
+      <h3>🌙💧📝 আজকের স্বাস্থ্য</h3>
+      <div style="display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));">
+        <div onclick="switchView('sleep')" style="background:linear-gradient(135deg,#2a3d5c,#1a2b45);color:#fff;border-radius:12px;padding:14px;cursor:pointer;">
+          <div style="font-size:1.6rem;">🌙</div>
+          <div style="font-size:.7rem;opacity:.9;margin-top:4px;">গত রাতে ঘুম</div>
+          <div style="font-size:1.4rem;font-weight:800;">${sleepToday ? sleepToday.hours+"h" : "—"}</div>
+        </div>
+        <div onclick="switchView('water')" style="background:linear-gradient(135deg,#1a7fa8,#1565a0);color:#fff;border-radius:12px;padding:14px;cursor:pointer;">
+          <div style="font-size:1.6rem;">💧</div>
+          <div style="font-size:.7rem;opacity:.9;margin-top:4px;">আজকের পানি</div>
+          <div style="font-size:1.4rem;font-weight:800;">${waterToday}/8</div>
+        </div>
+        <div onclick="switchView('journal')" style="background:linear-gradient(135deg,var(--accent),#d8734c);color:#fff;border-radius:12px;padding:14px;cursor:pointer;">
+          <div style="font-size:1.6rem;">${journalToday ? getMoodEmoji(journalToday.mood) : "📝"}</div>
+          <div style="font-size:.7rem;opacity:.9;margin-top:4px;">আজকের জার্নাল</div>
+          <div style="font-size:1.4rem;font-weight:800;">${journalToday ? "✓" : "লিখুন"}</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
       <h3>⚡ দ্রুত কাজ</h3>
-      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));">
         <button class="btn-secondary" onclick="switchView('templates')">📝 টেমপ্লেট</button>
         <button class="btn-secondary" onclick="syncToCalendar()">📅 Calendar</button>
         <button class="btn-secondary" onclick="switchView('share')">📤 শেয়ার</button>
-        <button class="btn-secondary" onclick="testCheckin()">🎯 টেস্ট Check-in</button>
-        <button class="btn-secondary" onclick="switchView('habits')">🎯 হ্যাবিট</button>
+        <button class="btn-secondary" onclick="testCheckin()">🎯 টেস্ট</button>
+        <button class="btn-secondary" onclick="switchView('sleep')">🌙 ঘুম</button>
+        <button class="btn-secondary" onclick="switchView('water')">💧 পানি</button>
+        <button class="btn-secondary" onclick="switchView('journal')">📝 জার্নাল</button>
         <button class="btn-secondary" onclick="switchView('reports')">📊 রিপোর্ট</button>
-        <button class="btn-secondary" onclick="switchView('badges')">🎁 ব্যাজ</button>
-        <button class="btn-secondary" onclick="testAllShares()">🧪 শেয়ার টেস্ট</button>
       </div>
     </div>`;
   if(insights.length === 0) generateInsights();
@@ -2193,41 +2569,6 @@ window.manualCheckin = function(routineId,status){
   history[key][routineId] = status === "started" ? "done" : "skipped";
   saveCheckins(); saveHistory(); renderView();
   toast(status === "started" ? "সম্পন্ন" : "বাদ","ok",status === "started"?"✅":"✕");
-};
-
-/* Test all share methods */
-window.testAllShares = function(){
-  const modal = $("modal");
-  const text = buildRoutineText() || "টেস্ট";
-  modal.innerHTML = `
-    <h2>🧪 শেয়ার টেস্ট</h2>
-    <p>প্রতিটি ফিচার আলাদা করে test করুন।</p>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div style="background:var(--bg);border-radius:10px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:6px;">1️⃣ Clipboard Test</div>
-        <button class="btn-secondary" style="width:100%;" onclick="copyToClipboard('test clipboard','✓ Clipboard কাজ করছে')">📋 কপি টেস্ট</button>
-      </div>
-      <div style="background:var(--bg);border-radius:10px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:6px;">2️⃣ Native Share Test</div>
-        <button class="btn-secondary" style="width:100%;" onclick="if(navigator.share){navigator.share({title:'টেস্ট',text:'test'}).then(()=>toast('✓ Native share কাজ করছে','ok')).catch(e=>toast('✗ Native share fail: '+e.name,'err'))}else{toast('✗ Native share নেই','err')}">📤 Native Share</button>
-      </div>
-      <div style="background:var(--bg);border-radius:10px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:6px;">3️⃣ WhatsApp Test</div>
-        <button class="btn-secondary" style="width:100%;" onclick="openUrl('https://wa.me/?text=test')">📤 WhatsApp</button>
-      </div>
-      <div style="background:var(--bg);border-radius:10px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:6px;">4️⃣ Mailto Test</div>
-        <button class="btn-secondary" style="width:100%;" onclick="window.location.href='mailto:test@example.com?subject=test&body=test'">✉️ Mail</button>
-      </div>
-      <div style="background:var(--bg);border-radius:10px;padding:12px;">
-        <div style="font-weight:600;margin-bottom:6px;">5️⃣ Gmail Web Test</div>
-        <button class="btn-secondary" style="width:100%;" onclick="openUrl('https://mail.google.com/mail/?view=cm&fs=1')">🌐 Gmail</button>
-      </div>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-ghost" onclick="closeModal()">বন্ধ</button>
-    </div>`;
-  $("modalBackdrop").classList.add("show");
 };
 
 function renderRoutineView(){
@@ -2285,7 +2626,6 @@ window.quickAddToGoogleCalendar = function(dayIdx,routineId){
   openUrl(`https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(item.text)}&dates=${fmt(start)}/${fmt(end)}&recur=RRULE:FREQ=WEEKLY;BYDAY=${ICS_DAY[dayIdx]}`);
   toast("Google Calendar খোলা হচ্ছে","info","📅");
 };
-
 function emailDay(dayIdx){
   const items = (routine[dayIdx]||[]).filter(r=>r.enabled);
   if(items.length === 0){ toast(`${DAYS[dayIdx]}-এ কোনো কাজ নেই`,"err"); return; }
@@ -2451,6 +2791,8 @@ function renderAnalytics(){
   const streak = getStreak();
   const loads = getDayLoad();
   const maxLoad = Math.max(...loads,1);
+  const sleepStats = getSleepStats(7);
+  const waterStats = getWaterStats(7);
   const heat = [];
   const today = new Date();
   for(let i=27;i>=0;i--){
@@ -2473,6 +2815,9 @@ function renderAnalytics(){
       <div class="analytics-card"><h4>🎯 সম্পন্নতার হার</h4><div class="streak-big">${rate}%</div><div class="streak-label">গত ৭ দিন</div></div>
       <div class="analytics-card"><h4>🔥 স্ট্রিক</h4><div class="streak-big">${streak}</div><div class="streak-label">দিন</div></div>
       <div class="analytics-card"><h4>📋 টাস্ক</h4><div class="streak-big">${tasks.length}</div><div class="streak-label">মোট</div></div>
+      <div class="analytics-card"><h4>🌙 গড় ঘুম</h4><div class="streak-big">${sleepStats.avgHours}h</div><div class="streak-label">৭ দিন</div></div>
+      <div class="analytics-card"><h4>💧 গড় পানি</h4><div class="streak-big">${waterStats.avg}</div><div class="streak-label">গ্লাস</div></div>
+      <div class="analytics-card"><h4>📝 জার্নাল</h4><div class="streak-big">${journalEntries.length}</div><div class="streak-label">এন্ট্রি</div></div>
     </div>
     <div class="card" style="margin-top:16px;"><h3>📊 ক্যাটাগরি</h3>
       ${Object.entries(catStats).map(([cat,n]) => {
@@ -2502,6 +2847,10 @@ function generateInsights(){
   const rate = getCompletionRate(7);
   if(rate>0 && rate<40) list.push({ icon:"📉", title:"সম্পন্নতা কম", text:`${rate}% — রুটিন কমান।` });
   else if(rate>=70) list.push({ icon:"🌟", title:"দুর্দান্ত", text:`${rate}% সম্পন্ন।` });
+  const sleepStats = getSleepStats(7);
+  if(sleepStats.avgHours < 6 && sleepStats.totalDays >= 2) list.push({ icon:"🌙", title:"ঘুম কম", text:`গড়ে ${sleepStats.avgHours} ঘণ্টা ঘুমাচ্ছেন। ৭-৮ ঘণ্টা লক্ষ্য রাখুন।` });
+  const waterStats = getWaterStats(7);
+  if(parseFloat(waterStats.avg) < 5 && waterStats.total > 0) list.push({ icon:"💧", title:"পানি কম", text:`গড়ে ${waterStats.avg} গ্লাস পান করছেন। ৮ গ্লাস লক্ষ্য রাখুন।` });
   if(!settings.sleepEnabled) list.push({ icon:"🌙", title:"স্লিপ মোড", text:"রাতে অ্যালার্ট বন্ধ রাখুন।" });
   insights = list;
   saveInsights();
@@ -2546,6 +2895,83 @@ function renderForecast(){
   return html;
 }
 
+/* SHARE VIEW */
+function renderShare(){
+  const hist = getShareHistory();
+  let total = 0;
+  for(let i=0;i<7;i++) total += (routine[i]||[]).filter(r=>r.enabled).length;
+  return `<h2 class="section-title">📤 শেয়ার সেন্টার</h2>
+    <div class="card" style="background:linear-gradient(135deg,var(--ok-soft),var(--card));border-color:var(--ok);">
+      <div style="display:flex;gap:14px;">
+        <div style="font-size:2.5rem;">📤</div>
+        <div style="flex:1;">
+          <div style="font-weight:700;margin-bottom:4px;">${total}টি রুটিন শেয়ার করুন</div>
+          <div style="font-size:.8rem;color:var(--sub);line-height:1.5;">WhatsApp, Email, SMS, Messenger, Telegram</div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📱 সরাসরি শেয়ার</h3>
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+        <button class="btn-primary" onclick="shareViaWhatsApp()" style="padding:14px;justify-content:center;">📤 WhatsApp</button>
+        <button class="btn-primary" onclick="shareViaEmail()" style="padding:14px;justify-content:center;">✉️ Email</button>
+        <button class="btn-secondary" onclick="shareViaSMS()" style="padding:14px;">💬 SMS</button>
+        <button class="btn-secondary" onclick="shareViaMessenger()" style="padding:14px;">💌 Messenger</button>
+        <button class="btn-secondary" onclick="shareViaTelegram()" style="padding:14px;">📨 Telegram</button>
+        <button class="btn-secondary" onclick="shareNative()" style="padding:14px;">📱 যেকোনো অ্যাপ</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>👥 ফ্যামিলি শেয়ার</h3>
+      <button class="btn-primary" onclick="generateFamilyLink()" style="width:100%;padding:14px;">🔗 শেয়ার তৈরি করুন</button>
+    </div>
+    <div class="card">
+      <h3>📥 শেয়ার কোড দিয়ে import</h3>
+      <div class="field">
+        <label>শেয়ার কোড</label>
+        <input id="importCode" placeholder="A7K9P2" maxlength="6" style="text-transform:uppercase;font-family:monospace;font-size:1.2rem;letter-spacing:.2em;text-align:center;">
+      </div>
+      <button class="btn-secondary" onclick="importFromCode()" style="width:100%;">📥 কোড থেকে import</button>
+    </div>
+    <div class="card">
+      <h3>⬇ ফাইল ডাউনলোড</h3>
+      <div style="display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+        <button class="btn-secondary" onclick="syncToCalendar()" style="padding:12px;">📅 ICS</button>
+        <button class="btn-secondary" onclick="downloadRoutineTxt()" style="padding:12px;">📄 TXT</button>
+        <button class="btn-secondary" onclick="downloadRoutineCSV()" style="padding:12px;">📊 CSV</button>
+        <button class="btn-secondary" onclick="downloadRoutineHTML()" style="padding:12px;">🌐 HTML</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>📜 শেয়ার ইতিহাস</h3>
+      ${hist.length === 0 ? '<div class="empty">এখনো কিছু শেয়ার করা হয়নি</div>' : `
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:.78rem;">
+          ${hist.slice(0,10).map(h => `<div style="display:flex;justify-content:space-between;padding:6px 10px;background:var(--bg);border-radius:8px;">
+            <span>${h.type} · ${escapeHtml(h.detail)}</span>
+            <span style="color:var(--sub);font-size:.7rem;">${new Date(h.at).toLocaleString("bn-BD")}</span>
+          </div>`).join("")}
+        </div>`}
+    </div>`;
+}
+window.downloadRoutineTxt = function(){
+  const txt = buildRoutineText();
+  if(!txt){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.txt`, txt, "text/plain;charset=utf-8");
+  toast("TXT ডাউনলোড","ok","📄");
+};
+window.downloadRoutineCSV = function(){
+  const csv = buildRoutineCSV();
+  if(!csv){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.csv`, "\uFEFF"+csv, "text/csv;charset=utf-8");
+  toast("CSV ডাউনলোড","ok","📊");
+};
+window.downloadRoutineHTML = function(){
+  const html = buildRoutineHTML();
+  if(!html){ toast("প্রথমে রুটিন যোগ করুন","err"); return; }
+  downloadFile(`routine-${todayKey()}.html`, html, "text/html;charset=utf-8");
+  toast("HTML ডাউনলোড","ok","🌐");
+};
+
 function renderSettings(){
   let html = `<h2 class="section-title">⚙️ সেটিংস</h2>`;
   html += `<div class="card"><h3>🎨 থিম</h3>
@@ -2559,12 +2985,51 @@ function renderSettings(){
   html += `<div class="card"><h3>🎯 Check-in</h3>
     <label class="check-row"><input type="checkbox" ${settings.checkinEnabled?"checked":""} onchange="window._updateSetting('checkinEnabled',this.checked)"> <span>Check-in কনফার্মেশন</span></label>
     <label class="check-row"><input type="checkbox" ${settings.welcomeEnabled?"checked":""} onchange="window._updateSetting('welcomeEnabled',this.checked)"> <span>সকালের স্বাগত</span></label>
+    <div class="field" style="margin-top:8px;"><label>Auto-skip (মিনিট): <span id="skipVal">${settings.autoSkipMinutes}</span></label>
+      <input type="range" min="1" max="10" value="${settings.autoSkipMinutes}" oninput="window._updateSetting('autoSkipMinutes',parseInt(this.value));document.getElementById('skipVal').textContent=this.value">
+    </div>
   </div>`;
   html += `<div class="card"><h3>🔔 অ্যালার্ট</h3>
     <label class="check-row"><input type="checkbox" ${settings.sound?"checked":""} onchange="window._updateSetting('sound',this.checked)"> <span>সাউন্ড</span></label>
     <label class="check-row"><input type="checkbox" ${settings.voice?"checked":""} onchange="window._updateSetting('voice',this.checked)"> <span>ভয়েস</span></label>
     <label class="check-row"><input type="checkbox" ${settings.notif?"checked":""} onchange="window._updateSetting('notif',this.checked)"> <span>নোটিফিকেশন</span></label>
+    <div class="field" style="margin-top:12px;"><label>ভলিউম: <span id="volVal">${Math.round(settings.volume*100)}</span>%</label>
+      <input type="range" min="0" max="1" step="0.05" value="${settings.volume}" oninput="window._updateSetting('volume',parseFloat(this.value));document.getElementById('volVal').textContent=Math.round(this.value*100)">
+    </div>
     <button class="btn-secondary" onclick="testAlert()" style="margin-top:8px;">🔊 টেস্ট</button>
+  </div>`;
+  html += `<div class="card"><h3>🎵 কাস্টম অ্যালার্ট সাউন্ড</h3>
+    <p style="font-size:.78rem;color:var(--sub);margin-bottom:12px;">নিজের পছন্দের সাউন্ড (সর্বোচ্চ ৫০০KB)।</p>
+    ${customSoundData ? `
+      <div style="background:var(--ok-soft);border:1px solid var(--ok);border-radius:10px;padding:12px;margin-bottom:12px;">
+        <div style="font-weight:600;font-size:.85rem;">✅ ${escapeHtml(customSoundData.name)}</div>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-secondary" onclick="testCustomSound()">🔊 টেস্ট</button>
+        <button class="btn-secondary" onclick="uploadCustomSound()">🔄 বদলান</button>
+        <button class="btn-danger" onclick="removeCustomSound()">🗑️ মুছুন</button>
+      </div>
+    ` : `
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="btn-primary" onclick="uploadCustomSound()">⬆ অডিও আপলোড</button>
+        <button class="btn-secondary" onclick="uploadCustomRecord()">🎤 রেকর্ড</button>
+      </div>
+    `}
+  </div>`;
+  html += `<div class="card"><h3>🗣️ ভয়েস সেটিংস</h3>
+    <div class="field">
+      <label>ভয়েস গতি: <span id="rateVal">${(settings.voiceRate||0.95).toFixed(2)}</span>x</label>
+      <input type="range" id="voiceRate" min="0.5" max="1.5" step="0.05" value="${settings.voiceRate||0.95}" oninput="window._updateSetting('voiceRate',parseFloat(this.value));document.getElementById('rateVal').textContent=this.value">
+    </div>
+    <div class="field">
+      <label>ভয়েস পিচ: <span id="pitchVal">${(settings.voicePitch||1.0).toFixed(2)}</span></label>
+      <input type="range" id="voicePitch" min="0.5" max="1.5" step="0.05" value="${settings.voicePitch||1.0}" oninput="window._updateSetting('voicePitch',parseFloat(this.value));document.getElementById('pitchVal').textContent=this.value">
+    </div>
+    <div class="field">
+      <label>উপলব্ধ ভয়েস</label>
+      <div id="voiceList" style="font-size:.78rem;color:var(--sub);">লোড হচ্ছে...</div>
+    </div>
+    <button class="btn-secondary" onclick="testVoiceSample()" style="margin-top:8px;">🗣️ ভয়েস টেস্ট</button>
   </div>`;
   html += `<div class="card"><h3>🌙 স্লিপ মোড</h3>
     <label class="check-row"><input type="checkbox" ${settings.sleepEnabled?"checked":""} onchange="window._updateSetting('sleepEnabled',this.checked);updateSleepIndicator()"> <span>চালু</span></label>
@@ -2580,6 +3045,9 @@ function renderSettings(){
       <button class="btn-secondary" onclick="removeCalendarDuplicates()">🧹 Calendar ডুপ্লিকেট</button>
       <button class="btn-danger" onclick="if(confirm('সব ডেটা মুছবেন?')){localStorage.clear();location.reload();}">🗑️ রিসেট</button>
     </div>
+  </div>`;
+  html += `<div class="card"><h3>ℹ️ সম্পর্কে</h3>
+    <p style="font-size:.8rem;color:var(--sub);line-height:1.6;">Admin Agent AI v7 · সব ডেটা ডিভাইসে সংরক্ষিত।</p>
   </div>`;
   return html;
 }
@@ -2599,8 +3067,9 @@ function renderIntegrations(){
 }
 
 function exportBackup(){
-  const payload = { version:6, exportedAt:new Date().toISOString(),
-    routine, tasks, settings, history, checkins, insights, habits, habitLog };
+  const payload = { version:7, exportedAt:new Date().toISOString(),
+    routine, tasks, settings, history, checkins, insights, habits, habitLog,
+    sleepLog, waterLog, journalEntries };
   downloadFile(`admin-agent-backup-${todayKey()}.json`, JSON.stringify(payload,null,2),"application/json");
   toast("ব্যাকআপ ডাউনলোড","ok","⬇");
 }
@@ -2618,8 +3087,11 @@ function importBackup(file){
       if(data.insights) insights = data.insights;
       if(data.habits) habits = data.habits;
       if(data.habitLog) habitLog = data.habitLog;
+      if(data.sleepLog) sleepLog = data.sleepLog;
+      if(data.waterLog) waterLog = data.waterLog;
+      if(data.journalEntries) journalEntries = data.journalEntries;
       saveRoutine(); saveTasks(); saveSettings(); saveHistory(); saveCheckins();
-      saveInsights(); saveHabits(); saveHabitLog();
+      saveInsights(); saveHabits(); saveHabitLog(); saveSleep(); saveWater(); saveJournal();
       renderView(); updateSleepIndicator(); updateSoundIcon();
       toast("রিস্টোর সফল","ok","⬆");
     }catch(e){ toast("ফাইল পড়া যায়নি","err"); }
@@ -2639,6 +3111,9 @@ const VIEW_TITLES = {
   dashboard:["ড্যাশবোর্ড","সবকিছু এক নজরে।"],
   routine:["৭ দিনের রুটিন","সাপ্তাহিক কাজ।"],
   tasks:["টাস্ক বোর্ড","সব টাস্ক।"],
+  sleep:["ঘুম ট্র্যাকার","ঘুমের মান ট্র্যাক।"],
+  water:["পানি ট্র্যাকার","দৈনিক পানি।"],
+  journal:["দৈনিক জার্নাল","মনের কথা।"],
   discipline:["নিয়মানুবর্তিতা","স্কোর।"],
   habits:["হ্যাবিট","নতুন অভ্যাস।"],
   analytics:["অগ্রগতি","পরিসংখ্যান।"],
@@ -2662,6 +3137,9 @@ function renderView(){
     case "dashboard": html = renderDashboard(); break;
     case "routine": html = renderRoutineView(); break;
     case "tasks": html = renderTasksView(); break;
+    case "sleep": html = renderSleep(); break;
+    case "water": html = renderWater(); break;
+    case "journal": html = renderJournal(); break;
     case "discipline": html = renderDiscipline(); break;
     case "habits": html = renderHabits(); break;
     case "analytics": html = renderAnalytics(); break;
@@ -2794,6 +3272,28 @@ function init(){
   setInterval(() => { checkSchedule(); updateSleepIndicator(); },20000);
   checkSchedule();
   setInterval(generateInsights,3600000);
+
+  // Voice list loader
+  if("speechSynthesis" in window){
+    const loadVoices = () => {
+      const voices = window.speechSynthesis.getVoices();
+      const el = $("voiceList");
+      if(!el) return;
+      const bnVoices = voices.filter(v => v.lang.startsWith("bn"));
+      const enVoices = voices.filter(v => v.lang.startsWith("en")).slice(0, 3);
+      let html = "";
+      if(bnVoices.length > 0){
+        html += "<b style='color:var(--ok);'>বাংলা:</b><br>" + bnVoices.map(v => "• " + escapeHtml(v.name)).join("<br>");
+      } else {
+        html += "<span style='color:var(--warn);'>⚠️ বাংলা ভয়েস পাওয়া যায়নি। ডিভাইস সেটিংস থেকে বাংলা TTS যোগ করুন।</span>";
+      }
+      html += "<br><br><b>ইংরেজি:</b><br>" + enVoices.map(v => "• " + escapeHtml(v.name)).join("<br>");
+      el.innerHTML = html;
+    };
+    window.speechSynthesis.onvoiceschanged = loadVoices;
+    setTimeout(loadVoices, 200);
+    setTimeout(loadVoices, 1000);
+  }
 }
 
 document.addEventListener("DOMContentLoaded",init);
