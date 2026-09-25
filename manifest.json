@@ -1,7 +1,7 @@
 {
   "name": "Personal Admin Agent AI",
   "short_name": "Admin Agent",
-  "description": "৭ দিনের রুটিন, Check-in কনফার্মেশন ও নিয়মানুবর্তিতা স্কোরিং সহ স্মার্ট সহকারী",
+  "description": "৭ দিনের রুটিন, Check-in, হ্যাবিট ট্র্যাকার, রিপোর্ট সহ স্মার্ট সহকারী",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -18,6 +18,7 @@
   ],
   "shortcuts": [
     { "name": "৭ দিনের রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
-    { "name": "নিয়মানুবর্তিতা", "short_name": "স্কোর", "url": "./index.html?view=discipline" }
+    { "name": "হ্যাবিট", "short_name": "হ্যাবিট", "url": "./index.html?view=habits" },
+    { "name": "রিপোর্ট", "short_name": "রিপোর্ট", "url": "./index.html?view=reports" }
   ]
 }
