@@ -1,4 +1,4 @@
-const CACHE = "admin-agent-v7";
+const CACHE = "admin-agent-v8";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
@@ -19,6 +19,10 @@ self.addEventListener("activate", e => {
 
 self.addEventListener("fetch", e => {
   if(e.request.method !== "GET") return;
+  // Don't cache Firebase requests
+  if(e.request.url.includes("googleapis.com") || e.request.url.includes("firebase")){
+    return;
+  }
   e.respondWith(
     caches.match(e.request).then(cached => {
       if(cached) return cached;
