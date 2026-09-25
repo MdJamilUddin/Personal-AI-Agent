@@ -1,7 +1,7 @@
 {
   "name": "Personal Admin Agent AI",
   "short_name": "Admin Agent",
-  "description": "৭ দিনের রুটিন, Check-in, হ্যাবিট, ঘুম, পানি, জার্নাল, রিপোর্ট",
+  "description": "রুটিন, হ্যাবিট, ঘুম, পানি, জার্নাল, Cloud Sync সহ স্মার্ট সহকারী",
   "start_url": "./index.html",
   "scope": "./",
   "display": "standalone",
@@ -17,9 +17,10 @@
     { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
   "shortcuts": [
-    { "name": "৭ দিনের রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
-    { "name": "ঘুম ট্র্যাকার", "short_name": "ঘুম", "url": "./index.html?view=sleep" },
-    { "name": "পানি ট্র্যাকার", "short_name": "পানি", "url": "./index.html?view=water" },
-    { "name": "জার্নাল", "short_name": "জার্নাল", "url": "./index.html?view=journal" }
+    { "name": "রুটিন", "short_name": "রুটিন", "url": "./index.html?view=routine" },
+    { "name": "ঘুম", "short_name": "ঘুম", "url": "./index.html?view=sleep" },
+    { "name": "পানি", "short_name": "পানি", "url": "./index.html?view=water" },
+    { "name": "জার্নাল", "short_name": "জার্নাল", "url": "./index.html?view=journal" },
+    { "name": "Cloud Sync", "short_name": "Cloud", "url": "./index.html?view=cloud" }
   ]
 }
