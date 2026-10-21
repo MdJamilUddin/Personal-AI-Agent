@@ -119,6 +119,7 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 .icon-round:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);}
 .icon-round.active{background:var(--ok);color:#fff;border-color:var(--ok);}
 .icon-round.cloud-active{background:var(--cloud);color:#fff;border-color:var(--cloud);}
+@media (max-width:400px){.icon-round{width:40px;height:40px;min-width:40px;font-size:.92rem;}}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:var(--pad-md);margin-bottom:var(--gap-md);box-shadow:var(--shadow-sm);overflow:hidden;}
 .card h3{margin:0 0 var(--gap-sm);font-size:var(--fs-md);font-weight:600;}
@@ -136,6 +137,7 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 .btn-ai{background:linear-gradient(135deg,var(--ai),#a855f7);color:#fff;box-shadow:0 4px 12px rgba(124,58,237,.25);}
 .btn-ai:hover{transform:translateY(-1px);filter:brightness(1.05);}
 .btn-ai:disabled{opacity:.6;cursor:not-allowed;transform:none;}
+@media (max-width:400px){.btn-primary,.btn-secondary,.btn-ghost,.btn-danger,.btn-ok,.btn-cloud,.btn-ai{font-size:var(--fs-sm);padding:10px 14px;}}
 
 .stats{display:grid;gap:var(--gap-sm);margin-bottom:var(--pad-md);grid-template-columns:repeat(2,minmax(0,1fr));}
 @media (min-width:600px){.stats{grid-template-columns:repeat(4,minmax(0,1fr));}}
@@ -265,11 +267,6 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 .check-row{display:flex;align-items:center;gap:10px;padding:10px 0;cursor:pointer;font-size:var(--fs-base);min-height:var(--tap-min);}
 .check-row input{width:auto;min-width:20px;min-height:20px;flex-shrink:0;}
 
-.time-picker{display:flex;gap:8px;align-items:center;}
-.time-picker input[type="number"]{width:70px;text-align:center;padding:12px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--bg);font-size:1.1rem;font-weight:700;}
-.time-picker select{padding:12px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--bg);font-weight:700;}
-.time-picker .separator{font-size:1.5rem;font-weight:800;color:var(--sub);}
-
 .toast-container{position:fixed;bottom:calc(20px + env(safe-area-inset-bottom));right:calc(16px + env(safe-area-inset-right));left:auto;display:flex;flex-direction:column;gap:8px;z-index:200;pointer-events:none;max-width:calc(100vw - 32px);}
 @media (max-width:500px){.toast-container{left:calc(12px + env(safe-area-inset-left));right:calc(12px + env(safe-area-inset-right));bottom:calc(12px + env(safe-area-inset-bottom));align-items:stretch;}}
 .toast{background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);padding:12px 16px;box-shadow:var(--shadow-lg);font-size:var(--fs-sm);display:flex;align-items:center;gap:10px;min-width:220px;max-width:100%;animation:slideIn .3s var(--ease);pointer-events:auto;border-left:4px solid var(--accent);word-break:break-word;}
@@ -281,9 +278,6 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 @keyframes slideIn{from{opacity:0;transform:translateX(30px);}to{opacity:1;transform:translateX(0);}}
 .toast.out{animation:slideOut .3s var(--ease) forwards;}
 @keyframes slideOut{to{opacity:0;transform:translateX(30px);}}
-
-@keyframes shake{0%,100%{transform:translateX(0);}25%{transform:translateX(-6px);}75%{transform:translateX(6px);}}
-.shake{animation:shake .4s var(--ease);border-color:var(--danger) !important;box-shadow:0 0 0 3px var(--danger-soft) !important;}
 
 .modal-backdrop{position:fixed;inset:0;background:rgba(20,18,12,.5);-webkit-backdrop-filter:blur(4px);backdrop-filter:blur(4px);z-index:150;display:none;place-items:center;padding:var(--pad-md);padding-top:calc(var(--pad-md) + env(safe-area-inset-top));padding-bottom:calc(var(--pad-md) + env(safe-area-inset-bottom));opacity:0;transition:opacity .2s var(--ease);overflow-y:auto;}
 .modal-backdrop.show{display:grid;opacity:1;}
@@ -332,9 +326,11 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 .cloud-indicator{right:calc(12px + env(safe-area-inset-right));margin-top:38px;background:var(--cloud-soft);border-color:var(--cloud);color:var(--cloud);}
 .sleep-indicator.show,.cloud-indicator.show{display:flex;}
 .sleep-indicator.active{background:var(--ink);color:var(--bg);}
+@media (max-width:500px){.sleep-indicator,.cloud-indicator{font-size:10px;padding:4px 10px;}}
 
 .pwa-install-banner{display:none;position:fixed;bottom:calc(16px + env(safe-area-inset-bottom));left:calc(16px + env(safe-area-inset-left));right:calc(16px + env(safe-area-inset-right));background:var(--card);border:2px solid var(--accent);border-radius:16px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,.2);z-index:250;align-items:center;gap:12px;max-width:520px;margin:0 auto;flex-wrap:wrap;}
 .pwa-install-banner.show{display:flex;}
+@media (max-width:400px){.pwa-install-banner{padding:12px;gap:8px;}.pwa-install-banner > div{flex:1 1 100%;}.pwa-install-banner button{flex:1;}}
 
 .habit-grid{display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fill, minmax(min(100%, 320px), 1fr));}
 .badge-grid{display:grid;gap:var(--gap-sm);grid-template-columns:repeat(auto-fill, minmax(min(100%, 140px), 1fr));}
@@ -349,10 +345,15 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 .exam-type-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill, minmax(min(100%, 140px), 1fr));}
 .exam-type-card{background:var(--card);border:2px solid var(--line);border-radius:var(--radius);padding:14px;cursor:pointer;transition:all .2s var(--ease);text-align:center;min-width:0;}
 .exam-type-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md);}
+.exam-type-card:active{transform:translateY(-1px);}
 .exam-type-card .etc-icon{font-size:clamp(1.6rem, 5vw, 2rem);margin-bottom:6px;}
 .exam-type-card .etc-name{font-weight:700;font-size:var(--fs-sm);line-height:1.3;word-break:break-word;}
 .exam-type-card .etc-full{font-size:var(--fs-xs);color:var(--sub);margin-top:2px;line-height:1.3;word-break:break-word;}
-.exam-type-card.medical,.exam-type-card.engineering,.exam-type-card.agriculture,.exam-type-card.university,.exam-type-card.nursing{border-color:var(--accent);}
+.exam-type-card.medical{border-color:var(--accent);}
+.exam-type-card.engineering{border-color:var(--accent);}
+.exam-type-card.agriculture{border-color:var(--accent);}
+.exam-type-card.university{border-color:var(--accent);}
+.exam-type-card.nursing{border-color:var(--accent);}
 
 .chat-container{display:flex;flex-direction:column;height:60vh;max-height:600px;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:var(--gap-md);}
 .chat-messages{flex:1;overflow-y:auto;padding:var(--pad-md);display:flex;flex-direction:column;gap:12px;-webkit-overflow-scrolling:touch;}
@@ -493,30 +494,30 @@ input,select,textarea{font:inherit;color:inherit;font-size:16px;}
 
 <script>
 /* =========================================================
-   PERSONAL ADMIN AGENT · AI v13 FINAL
-   All features + proper API validation + AM/PM + Subject CRUD
+   PERSONAL ADMIN AGENT · AI v12
+   Full featured + Gemini AI + 17 Templates
    ========================================================= */
 
 const KEYS = {
-  routine:"aa_routine_v13", tasks:"aa_tasks_v13", settings:"aa_settings_v13",
-  theme:"aa_theme_v13", history:"aa_history_v13", insights:"aa_insights_v13",
-  checkins:"aa_checkins_v13", welcome:"aa_welcome_v13",
-  habits:"aa_habits_v13", habitLog:"aa_habit_log_v13",
-  shareCodes:"aa_share_codes_v13", shareHistory:"aa_share_history_v13",
-  sleep:"aa_sleep_v13", water:"aa_water_v13", journal:"aa_journal_v13",
-  customSound:"aa_custom_sound_v13",
-  smartReminders:"aa_smart_reminders_v13",
-  emailRecipients:"aa_email_recipients_v13",
-  weeklySummaries:"aa_weekly_summaries_v13",
-  firebaseConfig:"aa_firebase_config_v13",
-  syncEnabled:"aa_sync_enabled_v13",
-  lastSync:"aa_last_sync_v13",
-  exams:"aa_exams_v13",
-  examSubjects:"aa_exam_subjects_v13",
-  crashPlans:"aa_crash_plans_v13",
-  geminiApiKey:"aa_gemini_api_key_v13",
-  chatHistory:"aa_chat_history_v13",
-  aiInsights:"aa_ai_insights_v13"
+  routine:"aa_routine_v12", tasks:"aa_tasks_v12", settings:"aa_settings_v12",
+  theme:"aa_theme_v12", history:"aa_history_v12", insights:"aa_insights_v12",
+  checkins:"aa_checkins_v12", welcome:"aa_welcome_v12",
+  habits:"aa_habits_v12", habitLog:"aa_habit_log_v12",
+  shareCodes:"aa_share_codes_v12", shareHistory:"aa_share_history_v12",
+  sleep:"aa_sleep_v12", water:"aa_water_v12", journal:"aa_journal_v12",
+  customSound:"aa_custom_sound_v12",
+  smartReminders:"aa_smart_reminders_v12",
+  emailRecipients:"aa_email_recipients_v12",
+  weeklySummaries:"aa_weekly_summaries_v12",
+  firebaseConfig:"aa_firebase_config_v12",
+  syncEnabled:"aa_sync_enabled_v12",
+  lastSync:"aa_last_sync_v12",
+  exams:"aa_exams_v12",
+  examSubjects:"aa_exam_subjects_v12",
+  crashPlans:"aa_crash_plans_v12",
+  geminiApiKey:"aa_gemini_api_key_v12",
+  chatHistory:"aa_chat_history_v12",
+  aiInsights:"aa_ai_insights_v12"
 };
 
 const DAYS = ["রবিবার","সোমবার","মঙ্গলবার","বুধবার","বৃহস্পতিবার","শুক্রবার","শনিবার"];
@@ -597,44 +598,6 @@ function todayKey(){ return new Date().toISOString().slice(0,10); }
 function escapeHtml(s){ return String(s).replace(/[&<>"']/g,c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
 function $(id){ return document.getElementById(id); }
 
-/* Time Helpers */
-function time24To12(time24){
-  if(!time24) return { hour: 9, minute: 0, period: "AM" };
-  const [h, m] = time24.split(":").map(Number);
-  const period = h >= 12 ? "PM" : "AM";
-  let hour = h % 12;
-  if(hour === 0) hour = 12;
-  return { hour, minute: m, period };
-}
-function time12To24(hour, minute, period){
-  let h = parseInt(hour) || 12;
-  let m = parseInt(minute) || 0;
-  if(period === "AM" && h === 12) h = 0;
-  if(period === "PM" && h !== 12) h += 12;
-  return `${pad2(h)}:${pad2(m)}`;
-}
-function buildTimePickerHTML(id, time24, label){
-  const { hour, minute, period } = time24To12(time24);
-  return `<div class="field">
-    <label>${label || "সময়"}</label>
-    <div class="time-picker">
-      <input type="number" id="${id}Hour" min="1" max="12" value="${hour}">
-      <span class="separator">:</span>
-      <input type="number" id="${id}Minute" min="0" max="59" value="${pad2(minute)}">
-      <select id="${id}Period">
-        <option value="AM" ${period === "AM" ? "selected" : ""}>AM</option>
-        <option value="PM" ${period === "PM" ? "selected" : ""}>PM</option>
-      </select>
-    </div>
-  </div>`;
-}
-function getTimePickerValue(id){
-  const hour = $(`${id}Hour`)?.value || "12";
-  const minute = $(`${id}Minute`)?.value || "00";
-  const period = $(`${id}Period`)?.value || "AM";
-  return time12To24(hour, minute, period);
-}
-
 function toast(msg,type="info",icon){
   const el = document.createElement("div");
   el.className = "toast" + (type==="ok"?" ok":type==="err"?" err":type==="gold"?" gold":type==="cloud"?" cloud":type==="ai"?" ai":"");
@@ -647,7 +610,9 @@ window.closeModal = closeModal;
 
 function copyToClipboard(text, successMsg = "কপি হয়েছে"){
   if(navigator.clipboard && window.isSecureContext){
-    navigator.clipboard.writeText(text).then(() => toast(successMsg,"ok","📋")).catch(() => copyFallback(text,successMsg));
+    navigator.clipboard.writeText(text)
+      .then(() => toast(successMsg,"ok","📋"))
+      .catch(() => copyFallback(text,successMsg));
     return;
   }
   copyFallback(text,successMsg);
@@ -655,7 +620,8 @@ function copyToClipboard(text, successMsg = "কপি হয়েছে"){
 function copyFallback(text, successMsg){
   try{
     const ta = $("hiddenCopyArea");
-    ta.value = text; ta.style.position = "fixed"; ta.style.left = "-9999px";
+    ta.value = text;
+    ta.style.position = "fixed"; ta.style.left = "-9999px";
     ta.focus(); ta.select(); ta.setSelectionRange(0, 99999);
     const ok = document.execCommand("copy");
     ta.value = ""; ta.blur();
@@ -674,6 +640,17 @@ function showManualCopy(text){
 }
 window.selectAllManual = function(){ const ta = $("manualCopyText"); if(ta){ ta.focus(); ta.select(); ta.setSelectionRange(0, 99999); } };
 window.copyText = function(text, msg){ copyToClipboard(text, msg || "কপি হয়েছে"); };
+function shareContent(title, text, url){
+  if(navigator.share){
+    const payload = { title, text }; if(url) payload.url = url;
+    navigator.share(payload)
+      .then(() => toast("শেয়ার হয়েছে","ok","📤"))
+      .catch(err => { if(err.name === "AbortError") return; copyToClipboard(url || text, "কপি হয়েছে"); });
+    return true;
+  }
+  copyToClipboard(url || text, "কপি হয়েছে");
+  return false;
+}
 function openUrl(url){
   try{
     const win = window.open(url, "_blank", "noopener,noreferrer");
@@ -838,7 +815,8 @@ function initFirebase(){
 }
 function setupFirebaseConfig(){
   const modal = $("modal");
-  modal.innerHTML = `<h2>🔥 Firebase কনফিগারেশন</h2>
+  modal.innerHTML = `
+    <h2>🔥 Firebase কনফিগারেশন</h2>
     <p>Firebase Console থেকে <code>firebaseConfig</code> কপি করে পেস্ট করুন।</p>
     <div class="field"><label>firebaseConfig</label>
       <textarea id="fbConfigInput" rows="8" placeholder='{"apiKey":"...","authDomain":"...","projectId":"...","storageBucket":"...","messagingSenderId":"...","appId":"..."}' style="font-family:var(--font-mono);font-size:0.72rem;">${firebaseConfig ? JSON.stringify(firebaseConfig, null, 2) : ''}</textarea>
@@ -912,7 +890,7 @@ function buildSyncPayload(){
     routine, tasks, settings, history, checkins, habits, habitLog,
     sleepLog, waterLog, journalEntries, smartReminders, emailRecipients, weeklySummaries,
     exams, examSubjects, crashPlans, chatHistory, aiInsights,
-    version: 13, updatedAt: Date.now(), updatedFrom: navigator.userAgent.slice(0, 100)
+    version: 12, updatedAt: Date.now(), updatedFrom: navigator.userAgent.slice(0, 100)
   };
 }
 function applySyncPayload(data){
@@ -1162,7 +1140,7 @@ function showApiKeySetup(){
       3. Key কপি → নিচে paste করুন
     </div>
     <div class="field"><label>API Key</label>
-      <input type="password" id="apiKeyInput" placeholder="যেকোনো API key পেস্ট করুন" value="${geminiApiKey ? "••••••••" + geminiApiKey.slice(-6) : ''}" autocomplete="off">
+      <input type="password" id="apiKeyInput" placeholder="AIzaSy..." value="${geminiApiKey ? "••••••••" + geminiApiKey.slice(-6) : ''}" autocomplete="off">
     </div>
     <div style="background:var(--ok-soft);border-radius:10px;padding:12px;margin-bottom:14px;font-size:var(--fs-sm);line-height:1.6;">
       🔒 <b>নিরাপত্তা:</b> Key শুধু আপনার ডিভাইসে সংরক্ষিত।<br>
@@ -1174,130 +1152,20 @@ function showApiKeySetup(){
       <button class="btn-ai" id="saveApiKeyBtn">সেভ করুন</button>
     </div>`;
   $("modalBackdrop").classList.add("show");
-  
-  $("saveApiKeyBtn").onclick = async () => {
-  let key = $("apiKeyInput").value;
-  
-  // ========== LAYER 1: Sanitize ==========
-  // Remove all whitespace (space, tab, newline)
-  key = key.replace(/\s+/g, "");
-  
-  // Remove any quote characters
-  key = key.replace(/["']/g, "");
-  
-  // Remove invisible Unicode chars (zero-width space, BOM, etc.)
-  key = key.replace(/[\u200B-\u200D\uFEFF]/g, "");
-  
-  // Trim
-  key = key.trim();
-  
-  // ========== LAYER 2: Validate ==========
-  
-  // Rule 1: Not empty
-  if(!key){
-    toast("API key খালি — পেস্ট করুন","err","🔑");
-    shakeInput();
-    return;
-  }
-  
-  // Rule 2: Minimum length (20 chars)
-  if(key.length < 20){
-    toast(`Key খুব ছোট (${key.length} অক্ষর)। কমপক্ষে ২০ অক্ষর দিন`,"err","🔑");
-    shakeInput();
-    return;
-  }
-  
-  // Rule 3: Maximum length (200 chars for safety)
-  if(key.length > 200){
-    toast("Key অনেক বড় — সঠিক key দিন","err","⚠️");
-    shakeInput();
-    return;
-  }
-  
-  // Rule 4: Valid characters only
-  if(!/^[A-Za-z0-9_\-]+$/.test(key)){
-    const invalid = key.match(/[^A-Za-z0-9_\-]/g);
-    toast(`অবৈধ character: "${invalid[0]}" — শুধু letter, number, -, _ অনুমোদিত`,"err","⚠️");
-    shakeInput();
-    return;
-  }
-  
-  // ========== LAYER 3: Save & Test ==========
-  
-  geminiApiKey = key;
-  saveGeminiApiKey();
-  closeModal();
-  renderView();
-  toast("API key সেভ ✓ — পরীক্ষা করছি...","ok","🔑");
-  
-  // Real test with detailed error
-  try{
-    const res = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=${key}`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: "hi" }] }],
-          generationConfig: { maxOutputTokens: 5 }
-        })
-      }
-    );
-    
-    if(!res.ok){
-      const err = await res.json().catch(() => ({}));
-      const msg = err.error?.message || `HTTP ${res.status}`;
-      const status = res.status;
-      
-      // Detailed error
-      let friendly = "";
-      if(status === 400){
-        if(msg.includes("API_KEY_INVALID")){
-          friendly = "❌ Key সঠিক নয়। AI Studio থেকে নতুন key নিন: aistudio.google.com/apikey";
-        } else if(msg.includes("API key not valid")){
-          friendly = "❌ Key সঠিক নয়। নতুন key তৈরি করুন।";
-        } else {
-          friendly = "❌ Key-তে সমস্যা: " + msg;
-        }
-      } else if(status === 403){
-        friendly = "❌ Key blocked বা Generative Language API enabled নয়। Google Cloud Console → APIs → Library → 'Generative Language API' → Enable করুন";
-      } else if(status === 429){
-        friendly = "⏳ Rate limit — ১ মিনিট পরে try করুন (দিনে ১৫০০ request limit)";
-      } else if(status === 404){
-        friendly = "❌ Model পাওয়া যায়নি। নতুন key নিন।";
-      } else {
-        friendly = `❌ HTTP ${status}: ${msg}`;
-      }
-      toast(friendly, "err");
-      return;
-    }
-    
-    // Success
-    const data = await res.json();
-    if(data.candidates && data.candidates.length > 0){
-      toast("✅ AI প্রস্তুত! 💬","ok","✨");
-      playSuccessSound();
-    } else {
-      toast("⚠️ Key কাজ করে কিন্তু response আসেনি","err");
-    }
-  }catch(e){
-    let friendly = "❌ ";
-    if(e.message.includes("Failed to fetch") || e.message.includes("NetworkError")){
-      friendly += "ইন্টারনেট সংযোগ চেক করুন";
-    } else if(e.message.includes("CORS")){
-      friendly += "Browser security block — HTTPS দিয়ে খুলুন (Netlify URL ব্যবহার করুন)";
-    } else {
-      friendly += e.message;
-    }
-    toast(friendly,"err");
-  }
-};
-
-function shakeInput(){
-  $("apiKeyInput").classList.add("shake");
-  setTimeout(() => $("apiKeyInput").classList.remove("shake"), 400);
-}
-  
+  $("saveApiKeyBtn").onclick = () => {
+    const key = $("apiKeyInput").value.trim();
+    if(!key){ toast("Key দিন","err"); return; }
+    if(!key.startsWith("AIza")){ toast("মনে হচ্ছে key সঠিক নয়","err"); return; }
+    geminiApiKey = key;
+    saveGeminiApiKey();
+    closeModal();
+    renderView();
+    toast("API key সেভ হয়েছে ✓","ok","🔑");
+    setTimeout(async () => {
+      try{ await callGemini("হ্যালো", false); toast("AI প্রস্তুত! 💬","ok","✨"); }
+      catch(e){ toast("Test ব্যর্থ: " + e.message,"err"); }
+    }, 500);
+  };
   const rmBtn = $("removeApiKeyBtn");
   if(rmBtn) rmBtn.onclick = () => {
     if(!confirm("API key মুছবেন?")) return;
@@ -1408,7 +1276,9 @@ async function generateAIReport(){
 }
 window.generateAIReport = generateAIReport;
 
-/* EXAM PRESETS */
+/* =========================================================
+   EXAM PRESETS
+   ========================================================= */
 const EXAM_PRESETS = {
   ssc:{name:"SSC",icon:"📗",color:"accent",description:"মাধ্যমিক",examWindow:{monthsFromNow:4,days:30},subjects:[
     {name:"বাংলা ১ম",chapters:20,difficulty:"medium"},{name:"বাংলা ২য়",chapters:15,difficulty:"medium"},
@@ -1498,9 +1368,6 @@ const ADMISSION_ROADMAP = {
   custom:{months:[{phase:"Phase 1",title:"সিলেবাস",tasks:["সব পড়ুন","নোট"]},{phase:"Phase 2",title:"প্র্যাকটিস",tasks:["MCQ + লিখিত","মক"]},{phase:"Phase 3",title:"রিভিশন",tasks:["রিভিশন","মক"]}]}
 };
 
-/* =========================================================
-   EXAM FUNCTIONS
-   ========================================================= */
 function addExam(preType = null){
   const modal = $("modal");
   modal.innerHTML = `<h2>📚 নতুন পরীক্ষা</h2>
@@ -1569,115 +1436,31 @@ function deleteExam(examId){
   toast("মুছে ফেলা","info","🗑️");
 }
 window.deleteExam = deleteExam;
-
-function addExamSubject(examId){
-  const exam = exams.find(e => e.id === examId);
-  if(!exam){ toast("পরীক্ষা নেই","err"); return; }
-  const modal = $("modal");
-  modal.innerHTML = `<h2>➕ নতুন বিষয় যোগ</h2>
-    <p>${escapeHtml(exam.name)}</p>
-    <div class="field"><label>বিষয়ের নাম</label><input id="newSubName" placeholder="যেমন: গণিত, পদার্থবিজ্ঞান" required autofocus></div>
-    <div class="field"><label>পরীক্ষার তারিখ</label><input type="date" id="newSubDate" value="${exam.examDate}"></div>
-    <div class="field-row">
-      <div class="field"><label>মোট চ্যাপ্টার</label><input type="number" id="newSubTotal" value="10" min="1"></div>
-      <div class="field"><label>কঠিনতা</label>
-        <select id="newSubDifficulty">
-          <option value="easy">🟢 সহজ</option>
-          <option value="medium" selected>🟡 মাঝারি</option>
-          <option value="hard">🔴 কঠিন</option>
-        </select>
-      </div>
-    </div>
-    <div class="field"><label>প্রায়োরিটি</label>
-      <select id="newSubPriority">
-        <option value="high">উচ্চ</option>
-        <option value="medium" selected>মাঝারি</option>
-        <option value="low">কম</option>
-      </select>
-    </div>
-    <div class="modal-actions">
-      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
-      <button class="btn-primary" id="newSubSave">যোগ করুন</button>
-    </div>`;
-  $("modalBackdrop").classList.add("show");
-  setTimeout(() => $("newSubName").focus(), 200);
-  $("newSubSave").onclick = () => {
-    const name = $("newSubName").value.trim();
-    if(!name){ toast("বিষয়ের নাম দিন","err"); return; }
-    examSubjects.push({
-      id: "sub_" + Date.now().toString(36) + Math.random().toString(36).slice(2,5),
-      examId,
-      name,
-      examDate: $("newSubDate").value || exam.examDate,
-      totalChapters: Math.max(1, parseInt($("newSubTotal").value) || 1),
-      completedChapters: 0,
-      difficulty: $("newSubDifficulty").value,
-      priority: $("newSubPriority").value,
-      status: "not_started",
-      createdAt: new Date().toISOString()
-    });
-    saveExamSubjects(); closeModal(); renderView();
-    toast(`${name} যোগ হয়েছে`,"ok","📖");
-  };
-}
-window.addExamSubject = addExamSubject;
-
 function editExamSubject(subjectId){
   const sub = examSubjects.find(s => s.id === subjectId); if(!sub) return;
-  const exam = exams.find(e => e.id === sub.examId);
   const modal = $("modal");
   modal.innerHTML = `<h2>📖 ${escapeHtml(sub.name)}</h2>
-    <p>${exam ? escapeHtml(exam.name) : ""}</p>
-    <div class="field"><label>বিষয়ের নাম</label><input id="subName" value="${escapeHtml(sub.name)}" placeholder="যেমন: গণিত"></div>
-    <div class="field"><label>পরীক্ষার তারিখ</label><input type="date" id="subDate" value="${sub.examDate}"></div>
-    <div class="field-row">
-      <div class="field"><label>মোট চ্যাপ্টার</label><input type="number" id="subTotal" value="${sub.totalChapters}" min="1"></div>
-      <div class="field"><label>সম্পন্ন</label><input type="number" id="subCompleted" value="${sub.completedChapters}" min="0" max="${sub.totalChapters}"></div>
-    </div>
-    <div class="field"><label>কঠিনতা</label>
-      <select id="subDifficulty">
-        <option value="easy" ${sub.difficulty==="easy"?"selected":""}>🟢 সহজ</option>
-        <option value="medium" ${sub.difficulty==="medium"?"selected":""}>🟡 মাঝারি</option>
-        <option value="hard" ${sub.difficulty==="hard"?"selected":""}>🔴 কঠিন</option>
-      </select>
-    </div>
-    <div class="field"><label>প্রায়োরিটি</label>
-      <select id="subPriority">
-        <option value="high" ${sub.priority==="high"?"selected":""}>উচ্চ</option>
-        <option value="medium" ${sub.priority==="medium"||!sub.priority?"selected":""}>মাঝারি</option>
-        <option value="low" ${sub.priority==="low"?"selected":""}>কম</option>
-      </select>
-    </div>
-    <div class="modal-actions" style="flex-wrap:wrap;">
-      <button class="btn-secondary" onclick="closeModal()">বাতিল</button>
-      <button class="btn-danger" onclick="deleteExamSubject('${subjectId}')">🗑️ মুছুন</button>
-      <button class="btn-primary" id="subSave">সেভ</button>
-    </div>`;
+    <div class="field"><label>তারিখ</label><input type="date" id="subDate" value="${sub.examDate}"></div>
+    <div class="field-row"><div class="field"><label>মোট</label><input type="number" id="subTotal" value="${sub.totalChapters}" min="1"></div><div class="field"><label>সম্পন্ন</label><input type="number" id="subCompleted" value="${sub.completedChapters}" min="0"></div></div>
+    <div class="field"><label>কঠিনতা</label><select id="subDifficulty"><option value="easy" ${sub.difficulty==="easy"?"selected":""}>🟢 সহজ</option><option value="medium" ${sub.difficulty==="medium"?"selected":""}>🟡 মাঝারি</option><option value="hard" ${sub.difficulty==="hard"?"selected":""}>🔴 কঠিন</option></select></div>
+    <div class="modal-actions"><button class="btn-secondary" onclick="closeModal()">বাতিল</button><button class="btn-danger" onclick="deleteExamSubject('${subjectId}')">মুছুন</button><button class="btn-primary" id="subSave">সেভ</button></div>`;
   $("modalBackdrop").classList.add("show");
   $("subSave").onclick = () => {
-    const newName = $("subName").value.trim();
-    if(!newName){ toast("বিষয়ের নাম দিন","err"); return; }
-    sub.name = newName;
     sub.examDate = $("subDate").value;
-    sub.totalChapters = Math.max(1, parseInt($("subTotal").value) || 1);
-    sub.completedChapters = Math.min(Math.max(0, parseInt($("subCompleted").value) || 0), sub.totalChapters);
+    sub.totalChapters = parseInt($("subTotal").value);
+    sub.completedChapters = Math.min(parseInt($("subCompleted").value), sub.totalChapters);
     sub.difficulty = $("subDifficulty").value;
-    sub.priority = $("subPriority").value;
     sub.status = sub.completedChapters >= sub.totalChapters ? "completed" : sub.completedChapters > 0 ? "in_progress" : "not_started";
-    saveExamSubjects(); closeModal(); renderView();
-    toast("আপডেট হয়েছে","ok","✅");
+    saveExamSubjects(); closeModal(); renderView(); toast("আপডেট","ok","✅");
   };
 }
 window.editExamSubject = editExamSubject;
-
 function deleteExamSubject(subjectId){
   if(!confirm("বিষয় মুছবেন?")) return;
   examSubjects = examSubjects.filter(s => s.id !== subjectId);
   saveExamSubjects(); closeModal(); renderView();
-  toast("মুছে ফেলা","info","🗑️");
 }
 window.deleteExamSubject = deleteExamSubject;
-
 function markChapter(subjectId, delta){
   const sub = examSubjects.find(s => s.id === subjectId); if(!sub) return;
   sub.completedChapters = Math.max(0, Math.min(sub.totalChapters, sub.completedChapters + delta));
@@ -1686,7 +1469,6 @@ function markChapter(subjectId, delta){
   if(delta > 0){ playSuccessSound(); toast(`${sub.name}: ${sub.completedChapters}/${sub.totalChapters}`,"ok","📖"); }
 }
 window.markChapter = markChapter;
-
 function getCountdown(dateStr){
   const today = new Date(); today.setHours(0,0,0,0);
   const target = new Date(dateStr); target.setHours(0,0,0,0);
@@ -1757,7 +1539,9 @@ function getCrashStrategy(daysLeft){
   return { mode:"📚 Planned", color:"ok", text:`${daysLeft} দিন — পরিকল্পিতভাবে।`, focus:["সম্পূর্ণ সিলেবাস","নিজের নোট","সাপ্তাহিক পরীক্ষা","স্বাস্থ্য"] };
 }
 
-/* TEMPLATES */
+/* =========================================================
+   TEMPLATES (17 total)
+   ========================================================= */
 const TEMPLATES = {
   student_exam: {name:"পরীক্ষার্থী",icon:"📚",desc:"SSC/HSC/Admission প্রস্তুতি",data:{
     0:[{time:"05:00",text:"ফজর + রিভিশন"},{time:"06:30",text:"কঠিন বিষয়"},{time:"09:00",text:"নাস্তা"},{time:"10:00",text:"MCQ প্র্যাকটিস"},{time:"13:00",text:"দুপুরের খাবার"},{time:"15:00",text:"সৃজনশীল"},{time:"17:30",text:"ব্রেক"},{time:"18:30",text:"GK/English"},{time:"21:00",text:"রাতের খাবার"},{time:"22:00",text:"রিভিশন"}],
@@ -1917,7 +1701,10 @@ function applyTemplate(key){
 }
 window.applyTemplate = applyTemplate;
 
-/* REST OF FUNCTIONS */
+/* =========================================================
+   THE REST OF THE FUNCTIONS
+   ========================================================= */
+
 function getWeekCheckins(daysBack=7){
   const all = {}; const today = new Date();
   for(let i=0;i<daysBack;i++){
@@ -2085,20 +1872,19 @@ function showWelcome(){
 function addRoutineItem(dayIndex){
   const modal = $("modal");
   modal.innerHTML = `<h2>➕ ${DAYS[dayIndex]}</h2>
-    ${buildTimePickerHTML("r", "09:00", "সময়")}
+    <div class="field"><label>সময়</label><input type="time" id="rTime" value="09:00" required></div>
     <div class="field"><label>কাজের নাম</label><input id="rText" placeholder="পড়া, ব্যায়াম" required></div>
     <div class="modal-actions"><button class="btn-secondary" onclick="closeModal()">বাতিল</button><button class="btn-primary" id="rSaveBtn">যোগ</button></div>`;
   $("modalBackdrop").classList.add("show");
   setTimeout(()=>$("rText").focus(),100);
   $("rSaveBtn").onclick = () => {
-    const time = getTimePickerValue("r");
-    const text = $("rText").value.trim();
-    if(!text){ toast("কাজের নাম দিন","err"); return; }
+    const time = $("rTime").value, text = $("rText").value.trim();
+    if(!time||!text){ toast("সময় ও নাম","err"); return; }
     if(!routine[dayIndex]) routine[dayIndex] = [];
-    routine[dayIndex].push({ id:"r_"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), time, text, enabled:true, createdAt:new Date().toISOString() });
+    routine[dayIndex].push({ id:"r_"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), time,text,enabled:true,createdAt:new Date().toISOString() });
     routine[dayIndex].sort((a,b)=>a.time.localeCompare(b.time));
     saveRoutine(); renderView(); closeModal();
-    toast(`যোগ · ${time}`,"ok","✅");
+    toast("যোগ","ok","✅");
   };
 }
 function deleteRoutineItem(dayIndex,id){
@@ -2725,7 +2511,9 @@ function emailFullReport(){
 }
 window.emailFullReport = emailFullReport;
 
-/* VIEWS */
+/* =========================================================
+   VIEWS
+   ========================================================= */
 function renderDashboard(){
   const todayIdx = new Date().getDay();
   const todayItems = (routine[todayIdx]||[]).filter(r=>r.enabled);
@@ -2749,13 +2537,14 @@ function renderDashboard(){
       </div>
     </div>`;
 
+  // AI Chat alert
   if(geminiApiKey && chatHistory.length === 0){
     html += `<div class="card" style="background:linear-gradient(135deg,var(--ai-soft),var(--card));border-color:var(--ai);">
       <div style="display:flex;gap:12px;align-items:flex-start;">
         <div style="font-size:2rem;flex-shrink:0;">💬</div>
         <div style="flex:1;min-width:0;">
           <div style="font-weight:700;font-size:var(--fs-base);margin-bottom:4px;">AI Chat ব্যবহার করুন</div>
-          <div style="font-size:var(--fs-sm);color:var(--sub);line-height:1.5;">প্রস্তুতি, স্বাস্থ্য, মুড — যেকোনো বিষয়ে জিজ্ঞেস করুন।</div>
+          <div style="font-size:var(--fs-sm);color:var(--sub);line-height:1.5;">আপনার প্রস্তুতি, স্বাস্থ্য, মুড — যেকোনো বিষয়ে জিজ্ঞেস করুন।</div>
           <button class="btn-ai" onclick="switchView('ai-chat')" style="margin-top:10px;padding:8px 14px;font-size:var(--fs-sm);">শুরু করুন</button>
         </div>
       </div>
@@ -3080,7 +2869,6 @@ function renderExams(){
       <div style="display:flex;gap:6px;flex-wrap:wrap;">
         <button class="btn-primary" onclick="generateCrashCourse('${exam.id}');switchView('crash');" style="flex:1;min-width:120px;padding:10px;">⚡ Crash Plan</button>
         <button class="btn-secondary" onclick="viewExamSubjects('${exam.id}')" style="flex:1;min-width:100px;padding:10px;">📖 বিষয়</button>
-        <button class="btn-secondary" onclick="addExamSubject('${exam.id}')" style="padding:10px;" title="নতুন বিষয়">➕</button>
         <button class="btn-ghost" onclick="deleteExam('${exam.id}')" style="padding:10px;">🗑️</button>
       </div>
     </div>`;
@@ -3093,32 +2881,17 @@ function viewExamSubjects(examId){
   const subjects = examSubjects.filter(s => s.examId === examId);
   const preset = EXAM_PRESETS[exam.type] || EXAM_PRESETS.custom;
   const modal = $("modal");
-  modal.innerHTML = `<h2>${preset.icon} ${escapeHtml(exam.name)}</h2>
-    <p>${subjects.length}টি বিষয়</p>
-    <button class="btn-primary" onclick="closeModal();setTimeout(()=>addExamSubject('${examId}'),100);" style="width:100%;margin-bottom:12px;padding:12px;">➕ নতুন বিষয় যোগ করুন</button>
+  modal.innerHTML = `<h2>${preset.icon} ${escapeHtml(exam.name)}</h2><p>${subjects.length}টি বিষয়</p>
     <div style="display:flex;flex-direction:column;gap:8px;max-height:55vh;overflow-y:auto;">
-      ${subjects.length === 0 ? '<div class="empty">কোনো বিষয় নেই। উপরের বাটনে ক্লিক করে যোগ করুন।</div>' :
-        subjects.map(s => {
-          const progress = s.totalChapters > 0 ? Math.round((s.completedChapters / s.totalChapters) * 100) : 0;
-          const cd = getCountdown(s.examDate);
-          return `<div style="background:var(--bg);border-radius:10px;padding:12px;border-left:4px solid ${s.difficulty === "hard" ? "var(--danger)" : s.difficulty === "medium" ? "var(--warn)" : "var(--ok)"};">
-            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;">
-              <div style="flex:1;cursor:pointer;min-width:0;" onclick="closeModal();setTimeout(()=>editExamSubject('${s.id}'),100);">
-                <div style="font-weight:700;font-size:var(--fs-base);word-break:break-word;">${escapeHtml(s.name)}</div>
-                <div style="font-size:var(--fs-xs);color:var(--sub);margin-top:2px;">${s.totalChapters} ch. · ${cd.days} দিন · ${s.difficulty === "hard" ? "🔴" : s.difficulty === "medium" ? "🟡" : "🟢"}</div>
-              </div>
-              <div style="font-size:var(--fs-sm);font-weight:700;color:var(--accent);flex-shrink:0;">${progress}%</div>
-            </div>
-            <div style="height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:8px;">
-              <div style="height:100%;width:${progress}%;background:linear-gradient(90deg,var(--ok),#5fa585);"></div>
-            </div>
-            <div style="display:flex;gap:4px;">
-              <button class="btn-secondary" onclick="markChapter('${s.id}',-1)" style="padding:6px 12px;font-size:var(--fs-sm);">−</button>
-              <button class="btn-primary" onclick="markChapter('${s.id}',1)" style="flex:1;padding:6px 12px;font-size:var(--fs-sm);">+ চ্যাপ্টার</button>
-              <button class="btn-secondary" onclick="closeModal();setTimeout(()=>editExamSubject('${s.id}'),100);" style="padding:6px 12px;font-size:var(--fs-sm);">✏️</button>
-            </div>
-          </div>`;
-        }).join("")}
+      ${subjects.map(s => {
+        const progress = s.totalChapters > 0 ? Math.round((s.completedChapters / s.totalChapters) * 100) : 0;
+        const cd = getCountdown(s.examDate);
+        return `<div style="background:var(--bg);border-radius:10px;padding:12px;border-left:4px solid ${s.difficulty === "hard" ? "var(--danger)" : s.difficulty === "medium" ? "var(--warn)" : "var(--ok)"};">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;gap:8px;"><div style="flex:1;cursor:pointer;min-width:0;" onclick="editExamSubject('${s.id}')"><div style="font-weight:700;font-size:var(--fs-base);word-break:break-word;">${escapeHtml(s.name)}</div><div style="font-size:var(--fs-xs);color:var(--sub);margin-top:2px;">${s.totalChapters} ch. · ${cd.days} দিন · ${s.difficulty === "hard" ? "🔴" : s.difficulty === "medium" ? "🟡" : "🟢"}</div></div><div style="font-size:var(--fs-sm);font-weight:700;color:var(--accent);flex-shrink:0;">${progress}%</div></div>
+          <div style="height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:8px;"><div style="height:100%;width:${progress}%;background:linear-gradient(90deg,var(--ok),#5fa585);"></div></div>
+          <div style="display:flex;gap:4px;"><button class="btn-secondary" onclick="markChapter('${s.id}',-1)" style="padding:6px 12px;font-size:var(--fs-sm);">−</button><button class="btn-primary" onclick="markChapter('${s.id}',1)" style="flex:1;padding:6px 12px;font-size:var(--fs-sm);">+ চ্যাপ্টার</button><button class="btn-secondary" onclick="editExamSubject('${s.id}')" style="padding:6px 12px;font-size:var(--fs-sm);">✏️</button></div>
+        </div>`;
+      }).join("")}
     </div>
     <div class="modal-actions"><button class="btn-secondary" onclick="closeModal()">বন্ধ</button></div>`;
   $("modalBackdrop").classList.add("show");
@@ -3204,6 +2977,7 @@ function renderSmartRemindersView(){
 
 function renderWeeklyView(){
   const cur = generateWeeklySummary();
+  const past = weeklySummaries.filter(s => s.weekKey !== cur.weekKey).slice(0, 6);
   return `<h2 class="section-title">🏅 সাপ্তাহিক</h2>
     <div class="card" style="background:linear-gradient(135deg,var(--accent),#d8734c);color:#fff;border:none;">
       <div style="font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.08em;opacity:.9;">এই সপ্তাহ</div>
@@ -3324,7 +3098,7 @@ function renderIntegrations(){
 }
 
 function exportBackup(){
-  const payload = { version:13, exportedAt:new Date().toISOString(), routine, tasks, settings, history, checkins, insights, habits, habitLog, sleepLog, waterLog, journalEntries, smartReminders, emailRecipients, weeklySummaries, exams, examSubjects, crashPlans, chatHistory, aiInsights };
+  const payload = { version:12, exportedAt:new Date().toISOString(), routine, tasks, settings, history, checkins, insights, habits, habitLog, sleepLog, waterLog, journalEntries, smartReminders, emailRecipients, weeklySummaries, exams, examSubjects, crashPlans, chatHistory, aiInsights };
   downloadFile(`admin-agent-backup-${todayKey()}.json`, JSON.stringify(payload,null,2),"application/json");
   toast("ব্যাকআপ ডাউনলোড","ok","⬇");
 }
