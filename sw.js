@@ -1,4 +1,4 @@
-const CACHE = "admin-agent-v12";
+const CACHE = "admin-agent-v13";
 const ASSETS = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", e => {
